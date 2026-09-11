@@ -1,0 +1,24 @@
+{
+  "name": "synthetic-demonstration-can-v1",
+  "manufacturer_specific": false,
+  "warning": "Synthetic mapping only. It is not compatible with a real ECU or FADEC.",
+  "frames": {
+    "0x500": {
+      "description": "Synthetic RPM and throttle demonstration frame",
+      "byte_order": "little",
+      "signals": [
+        {"name": "rpm", "start_bit": 0, "length": 16, "scale": 0.25, "offset": 0, "unit": "rpm", "signed": false},
+        {"name": "throttle_percent", "start_bit": 16, "length": 8, "scale": 0.5, "offset": 0, "unit": "percent", "signed": false}
+      ]
+    },
+    "0x501": {
+      "description": "Synthetic oil and electrical demonstration frame",
+      "byte_order": "little",
+      "signals": [
+        {"name": "oil_pressure_kpa", "start_bit": 0, "length": 16, "scale": 0.1, "offset": 0, "unit": "kPa", "signed": false},
+        {"name": "oil_temperature_c", "start_bit": 16, "length": 16, "scale": 0.1, "offset": -50, "unit": "degC", "signed": false},
+        {"name": "alternator_voltage", "start_bit": 32, "length": 16, "scale": 0.01, "offset": 0, "unit": "V", "signed": false}
+      ]
+    }
+  }
+}

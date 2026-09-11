@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "classification": "engineering hypothesis / prototype threshold",
+    "manufacturer_approved": false,
+    "version": "prototype-thresholds-v1"
+  },
+  "thresholds": {
+    "running_rpm": {"value": 900.0, "unit": "rpm", "classification": "engineering hypothesis / prototype threshold"},
+    "oil_pressure_warning_kpa": {"value": 180.0, "unit": "kPa", "classification": "engineering hypothesis / prototype threshold"},
+    "oil_pressure_critical_kpa": {"value": 100.0, "unit": "kPa", "classification": "engineering hypothesis / prototype threshold"},
+    "oil_temperature_warning_c": {"value": 125.0, "unit": "degC", "classification": "engineering hypothesis / prototype threshold"},
+    "alternator_warning_v": {"value": 27.0, "unit": "V", "classification": "engineering hypothesis / prototype threshold"},
+    "alternator_critical_v": {"value": 22.0, "unit": "V", "classification": "engineering hypothesis / prototype threshold"},
+    "battery_warning_v": {"value": 23.5, "unit": "V", "classification": "engineering hypothesis / prototype threshold"},
+    "vibration_warning_rms": {"value": 3.5, "unit": "RMS", "classification": "engineering hypothesis / prototype threshold"},
+    "vibration_critical_rms": {"value": 7.0, "unit": "RMS", "classification": "engineering hypothesis / prototype threshold"},
+    "cht_warning_c": {"value": 190.0, "unit": "degC", "classification": "engineering hypothesis / prototype threshold"},
+    "cht_critical_c": {"value": 230.0, "unit": "degC", "classification": "engineering hypothesis / prototype threshold"},
+    "cht_spread_warning_c": {"value": 20.0, "unit": "degC", "classification": "engineering hypothesis / prototype threshold"},
+    "egt_spread_warning_c": {"value": 55.0, "unit": "degC", "classification": "engineering hypothesis / prototype threshold"},
+    "rpm_uncommanded_rate_warning": {"value": 120.0, "unit": "rpm/s", "classification": "engineering hypothesis / prototype threshold"},
+    "throttle_stationary_delta": {"value": 3.0, "unit": "percent", "classification": "engineering hypothesis / prototype threshold"},
+    "fuel_flow_residual_warning_lph": {"value": 12.0, "unit": "L/h", "classification": "engineering hypothesis / prototype threshold"},
+    "injection_timing_residual_warning_deg": {"value": 4.0, "unit": "deg", "classification": "engineering hypothesis / prototype threshold"},
+    "telemetry_stale_seconds": {"value": 30.0, "unit": "s", "classification": "engineering hypothesis / prototype threshold"},
+    "anomaly_alert_score": {"value": 0.35, "unit": "ratio", "classification": "engineering hypothesis / prototype threshold"},
+    "critical_anomaly_score": {"value": 0.70, "unit": "ratio", "classification": "engineering hypothesis / prototype threshold"},
+    "nominal_health": {"value": 99.0, "unit": "percent", "classification": "engineering hypothesis / prototype threshold"},
+    "nominal_rul_hours": {"value": 1800.0, "unit": "h", "classification": "engineering hypothesis / prototype threshold"}
+  }
+}

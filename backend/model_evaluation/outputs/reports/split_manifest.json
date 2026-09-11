@@ -1,0 +1,58 @@
+{
+  "strategy": "engine-disjoint validation/challenge plus time-forward audit within training engines",
+  "seed": 26054,
+  "engines": {
+    "fit": [
+      "ENGINE_001",
+      "ENGINE_002",
+      "ENGINE_004",
+      "ENGINE_006",
+      "ENGINE_007",
+      "ENGINE_008"
+    ],
+    "time_forward": [
+      "ENGINE_001",
+      "ENGINE_002",
+      "ENGINE_004",
+      "ENGINE_006",
+      "ENGINE_007",
+      "ENGINE_008"
+    ],
+    "validation": [
+      "ENGINE_005",
+      "ENGINE_009",
+      "ENGINE_012"
+    ],
+    "challenge": [
+      "ENGINE_003",
+      "ENGINE_010",
+      "ENGINE_011"
+    ]
+  },
+  "missions": {
+    "fit": 41,
+    "time_forward": 19,
+    "validation": 30,
+    "challenge": 30
+  },
+  "profile_definition": "hash of phase-duration fractions and altitude/temperature/throttle trajectory statistics; mission identity is excluded",
+  "challenge_profile_overlap_with_fit": [],
+  "engine_disjoint": {
+    "fit_vs_validation": true,
+    "fit_vs_challenge": true,
+    "validation_vs_challenge": true
+  },
+  "mission_disjoint": true,
+  "time_forward": true,
+  "time_forward_class_coverage": [
+    "Alternator_Degradation",
+    "Bearing_Wear",
+    "Combustion_Instability",
+    "Cooling_System_Degradation",
+    "Fuel_Injector_Degradation",
+    "Healthy",
+    "Lubrication_System_Degradation",
+    "Sensor_Drift",
+    "Spark_Plug_Misfire"
+  ]
+}

@@ -1,0 +1,10 @@
+fault_type,count,percentage
+Healthy,55906,55.906
+Spark_Plug_Misfire,5622,5.622
+Fuel_Injector_Degradation,5774,5.774
+Lubrication_System_Degradation,5513,5.513
+Cooling_System_Degradation,5475,5.475
+Bearing_Wear,5462,5.462
+Combustion_Instability,5428,5.428
+Sensor_Drift,5563,5.563
+Alternator_Degradation,5257,5.257

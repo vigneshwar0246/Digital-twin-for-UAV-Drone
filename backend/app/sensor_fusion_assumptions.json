@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "version": "prototype-sensor-fusion-v1",
+    "classification": "engineering hypothesis / prototype threshold",
+    "manufacturer_approved": false
+  },
+  "assumptions": {
+    "window_samples": {"value": 21, "unit": "samples", "description": "Past/current-only feature window reset at mission boundaries."},
+    "minimum_temporal_samples": {"value": 5, "unit": "samples", "description": "Minimum history before temporal evidence receives full consideration."},
+    "cht_ambient_load_reference": {"value": 155, "unit": "degC", "description": "Prototype residual scaling for CHT after ambient and load context."},
+    "egt_ambient_load_reference": {"value": 600, "unit": "degC", "description": "Prototype residual scaling for EGT after ambient and load context."},
+    "oil_pressure_running_reference": {"value": 350, "unit": "kPa", "description": "Prototype running-engine lubrication reference, not an operating limit."},
+    "oil_temperature_reference": {"value": 105, "unit": "degC", "description": "Prototype oil-temperature reference, not an operating limit."},
+    "fuel_residual_scale": {"value": 12, "unit": "L/h", "description": "Prototype scale for expected-versus-observed fuel-flow residual."},
+    "timing_residual_scale": {"value": 4, "unit": "deg", "description": "Prototype scale for expected-versus-observed injection timing."},
+    "egt_spread_scale": {"value": 55, "unit": "degC", "description": "Prototype combustion/cylinder-balance scale."},
+    "vibration_mean_reference": {"value": 3.5, "unit": "RMS", "description": "Prototype rolling vibration mean reference."},
+    "vibration_std_reference": {"value": 0.8, "unit": "RMS", "description": "Prototype rolling vibration variability reference."},
+    "cht_peer_spread_scale": {"value": 20, "unit": "degC", "description": "Prototype cross-cylinder consistency scale."},
+    "stuck_tolerance": {"value": 0.0001, "unit": "native sensor unit", "description": "Prototype exact-repeat tolerance used only as suspect evidence."}
+  }
+}

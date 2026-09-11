@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "version": "prototype-hybrid-diagnostics-v1",
+    "classification": "engineering hypothesis / prototype threshold",
+    "manufacturer_approved": false,
+    "probabilities_calibrated": false
+  },
+  "assumptions": {
+    "activation_score": {"value": 0.35, "description": "Minimum combined engineering score for an active diagnostic."},
+    "warning_score": {"value": 0.60, "description": "Prototype warning severity boundary."},
+    "critical_score": {"value": 0.82, "description": "Prototype critical severity boundary."},
+    "rule_weight": {"value": 0.75, "description": "Weight of correlated engineering-rule evidence when no served ML model exists."},
+    "statistical_weight": {"value": 0.25, "description": "Weight of past/current-only statistical anomaly evidence."},
+    "minimum_statistical_samples": {"value": 5, "description": "Minimum prior valid samples required for a statistical contribution."},
+    "zscore_onset": {"value": 2.0, "description": "Robust z-score onset used to scale statistical anomaly evidence."},
+    "trend_window_samples": {"value": 21, "description": "Maximum mission-scoped history used by diagnostics."}
+  }
+}

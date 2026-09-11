@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "model": "PrototypePhysicsModel",
+    "version": "prototype-physics-v1",
+    "classification": "synthetic engineering assumption; not validated aircraft-engine physics",
+    "manufacturer_specific": false,
+    "purpose": "Software architecture, simulation, and relative health indication only"
+  },
+  "assumptions": {
+    "sea_level_pressure_kpa": {"value": 101.325, "unit": "kPa", "description": "Reference pressure used only to normalize the density proxy."},
+    "reference_temperature_k": {"value": 288.15, "unit": "K", "description": "Reference temperature used only to normalize the density proxy."},
+    "humidity_density_weight": {"value": 0.003, "unit": "ratio", "description": "Small prototype correction representing lower moist-air density."},
+    "fallback_pressure_lapse_exponent": {"value": 5.2559, "unit": "dimensionless", "description": "Standard-atmosphere-shaped fallback when pressure telemetry is unavailable; not local weather truth."},
+    "fallback_pressure_lapse_coefficient": {"value": 0.0000225577, "unit": "1/m", "description": "Standard-atmosphere-shaped fallback coefficient."},
+    "reported_load_weight": {"value": 0.7, "unit": "ratio", "description": "Weight assigned to reported engine load in the load proxy."},
+    "throttle_load_weight": {"value": 0.3, "unit": "ratio", "description": "Weight assigned to throttle corrected by density in the load proxy."},
+    "reference_rpm": {"value": 2700.0, "unit": "rpm", "description": "Prototype normalization reference; not an operating limit."},
+    "fuel_flow_scale_lph": {"value": 50.0, "unit": "L/h", "description": "Prototype proportional fuel-flow scale; not a calibrated fuel map."},
+    "injection_base_deg": {"value": 18.0, "unit": "deg", "description": "Prototype timing-map intercept; not an ECU command recommendation."},
+    "injection_load_coefficient": {"value": 0.055, "unit": "deg/percent", "description": "Prototype timing dependence on load."},
+    "injection_altitude_coefficient": {"value": 0.00035, "unit": "deg/m", "description": "Prototype timing dependence on altitude."},
+    "cht_stress_reference_c": {"value": 175.0, "unit": "degC", "description": "Reference for relative thermal stress, not a safe/unsafe limit."},
+    "cht_stress_span_c": {"value": 75.0, "unit": "degC", "description": "Scaling span for the dimensionless thermal indicator."},
+    "egt_stress_reference_c": {"value": 650.0, "unit": "degC", "description": "Reference for relative exhaust thermal stress, not a limit."},
+    "egt_stress_span_c": {"value": 250.0, "unit": "degC", "description": "Scaling span for exhaust thermal stress."},
+    "oil_pressure_reference_kpa": {"value": 350.0, "unit": "kPa", "description": "Prototype pressure health reference while running."},
+    "oil_pressure_span_kpa": {"value": 250.0, "unit": "kPa", "description": "Scaling span for lubrication health."},
+    "oil_temperature_reference_c": {"value": 105.0, "unit": "degC", "description": "Reference for relative oil-temperature penalty, not a limit."},
+    "oil_temperature_span_c": {"value": 45.0, "unit": "degC", "description": "Scaling span for oil-temperature penalty."},
+    "egt_spread_reference_c": {"value": 55.0, "unit": "degC", "description": "Prototype cylinder-balance reference."},
+    "vibration_reference_rms": {"value": 3.5, "unit": "RMS", "description": "Prototype vibration-health reference; sensor bandwidth is not modeled."},
+    "vibration_span_rms": {"value": 5.0, "unit": "RMS", "description": "Scaling span for vibration health."},
+    "alternator_reference_v": {"value": 27.0, "unit": "V", "description": "Prototype charging-system reference while running."},
+    "alternator_span_v": {"value": 6.0, "unit": "V", "description": "Scaling span for electrical health."},
+    "battery_reference_v": {"value": 24.0, "unit": "V", "description": "Prototype battery reference."},
+    "battery_span_v": {"value": 4.0, "unit": "V", "description": "Scaling span for battery health."},
+    "nominal_efficiency_percent": {"value": 88.0, "unit": "percent", "description": "Relative software-demonstrator efficiency baseline, not measured efficiency."},
+    "minimum_efficiency_percent": {"value": 40.0, "unit": "percent", "description": "Display floor for the prototype efficiency proxy."},
+    "running_rpm_reference": {"value": 900.0, "unit": "rpm", "description": "Prototype switch for applying running-engine relationships."}
+  }
+}

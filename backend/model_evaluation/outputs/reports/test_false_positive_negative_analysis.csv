@@ -1,0 +1,10 @@
+fault_class,support,predicted_count,false_negatives,false_negative_rate,false_positives,false_positive_rate,top_false_negative_prediction,top_false_positive_actual
+Alternator_Degradation,1828,1567,274,0.14989059080962802,13,0.00056102192301053,Healthy,Healthy
+Bearing_Wear,809,476,336,0.415327564894932,3,0.00012401306270927204,Lubrication_System_Degradation,Lubrication_System_Degradation
+Combustion_Instability,1621,1693,95,0.05860579888957434,167,0.007143162667351041,Healthy,Healthy
+Cooling_System_Degradation,1496,640,1023,0.6838235294117647,167,0.007105173587474472,Fuel_Injector_Degradation,Healthy
+Fuel_Injector_Degradation,1309,2147,177,0.13521772345301758,1015,0.04284327381706133,Healthy,Cooling_System_Degradation
+Healthy,13892,14228,1051,0.07565505326806796,1387,0.12486496218941304,Sensor_Drift,Sensor_Drift
+Lubrication_System_Degradation,1220,1169,386,0.3163934426229508,335,0.014087468460891506,Fuel_Injector_Degradation,Bearing_Wear
+Sensor_Drift,1432,1448,539,0.37639664804469275,555,0.02354887983706721,Healthy,Healthy
+Spark_Plug_Misfire,1393,1632,103,0.07394113424264179,342,0.014487228364468167,Healthy,Healthy

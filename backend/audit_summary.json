@@ -1,0 +1,36 @@
+{
+  "audit_date": "2026-09-11",
+  "prototype_status": "pass",
+  "operational_release_status": "blocked",
+  "dataset": {
+    "critical_checks_passed": 16,
+    "critical_checks_total": 16,
+    "rows": 100000,
+    "columns": 40,
+    "missions": 120,
+    "missing_values": 0,
+    "duplicate_rows": 0,
+    "mission_split_overlap": 0
+  },
+  "backend_tests": {"passed": 7, "failed": 0},
+  "classifier": {
+    "validation_accuracy": 0.9041461138514865,
+    "test_accuracy": 0.8864590972731515,
+    "test_balanced_accuracy": 0.8182797312645471,
+    "test_macro_f1": 0.8328763055572045,
+    "minimum_fault_recall": 0.8,
+    "release_gate_passed": false,
+    "test_recall_failures": {
+      "Cooling_System_Degradation": 0.40172579098753597,
+      "Fuel_Injector_Degradation": 0.7196029776674938,
+      "Sensor_Drift": 0.6839237057220708
+    }
+  },
+  "limitations": [
+    "synthetic data only",
+    "not flight-certified",
+    "no CAN/FADEC hardware adapter",
+    "no production authentication or RBAC",
+    "RUL is an explainable engineering proxy, not a validated ML estimate"
+  ]
+}

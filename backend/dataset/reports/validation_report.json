@@ -1,0 +1,101 @@
+{
+  "all_critical_passed": true,
+  "checks": [
+    {
+      "check": "required_files",
+      "passed": true,
+      "critical": true,
+      "detail": "all four CSV files exist"
+    },
+    {
+      "check": "expected_columns",
+      "passed": true,
+      "critical": true,
+      "detail": "40 columns"
+    },
+    {
+      "check": "no_missing_values",
+      "passed": true,
+      "critical": true,
+      "detail": "missing=0"
+    },
+    {
+      "check": "no_duplicate_rows",
+      "passed": true,
+      "critical": true,
+      "detail": "duplicates=0"
+    },
+    {
+      "check": "timestamps_increasing",
+      "passed": true,
+      "critical": true,
+      "detail": "strictly increasing by mission"
+    },
+    {
+      "check": "continuous_time_seconds",
+      "passed": true,
+      "critical": true,
+      "detail": "interval=5.0s"
+    },
+    {
+      "check": "physical_bounds",
+      "passed": true,
+      "critical": true,
+      "detail": "all values in bounds"
+    },
+    {
+      "check": "valid_categories",
+      "passed": true,
+      "critical": true,
+      "detail": "fault and severity labels"
+    },
+    {
+      "check": "fault_class_coverage",
+      "passed": true,
+      "critical": true,
+      "detail": "minimum=5257, required=200"
+    },
+    {
+      "check": "healthy_and_faulty_missions",
+      "passed": true,
+      "critical": true,
+      "detail": "healthy=14, faulty=106"
+    },
+    {
+      "check": "mission_split_no_overlap",
+      "passed": true,
+      "critical": true,
+      "detail": "overlap=0"
+    },
+    {
+      "check": "mission_fault_severity_stratification",
+      "passed": true,
+      "critical": true,
+      "detail": "{'train': {'missions': 84, 'fault_classes': 9, 'severities': ['High', 'Low', 'Medium', 'None']}, 'validation': {'missions': 18, 'fault_classes': 9, 'severities': ['High', 'Low', 'Medium', 'None']}, 'test': {'missions': 18, 'fault_classes': 9, 'severities': ['High', 'Low', 'Medium', 'None']}}"
+    },
+    {
+      "check": "expected_sensor_directions",
+      "passed": true,
+      "critical": true,
+      "detail": "{'throttle_rpm': np.float64(0.9782907610833218), 'load_fuel': np.float64(0.9704626140324378), 'altitude_pressure': np.float64(-0.9972138161866424)}"
+    },
+    {
+      "check": "observable_fault_effects",
+      "passed": true,
+      "critical": true,
+      "detail": "{'misfire_vibration': np.True_, 'lubrication_pressure': np.True_, 'bearing_vibration': np.True_, 'alternator_voltage': np.True_, 'cooling_cht_residual': np.True_}"
+    },
+    {
+      "check": "valid_phase_order",
+      "passed": true,
+      "critical": true,
+      "detail": "canonical order with optional phases"
+    },
+    {
+      "check": "severity_progression",
+      "passed": true,
+      "critical": true,
+      "detail": "non-decreasing by mission"
+    }
+  ]
+}

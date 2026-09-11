@@ -1,0 +1,5 @@
+/* The aircraft becomes the main subject as it reaches the interaction checkpoint. */
+.experience[data-state="AIRCRAFT_SETTLED"] .hero-copy,
+.experience[data-state="AIRCRAFT_SELECTED"] .hero-copy {opacity:.32}
+.experience.is-engine .hero-copy{opacity:.13}
+.experience.is-engine .object-caption{color:#737c6b}
