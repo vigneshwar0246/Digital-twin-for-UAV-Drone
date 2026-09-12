@@ -3,14 +3,21 @@ import {FIELD_MAP,PARAMETERS} from './config';
 type Obj=Record<string,unknown>;
 const obj=(x:unknown):Obj=>typeof x==='object'&&x!==null&&!Array.isArray(x)?x as Obj:{};
 const number=(x:unknown):number|null=>typeof x==='number'&&Number.isFinite(x)?x:null;
-let token='';
+const TOKEN_KEY='aerion.backend.token';
+let token=sessionStorage.getItem(TOKEN_KEY)||'';
+const authListeners=new Set<()=>void>();
+function publishAuth(){authListeners.forEach(listener=>listener());}
+export const isAuthenticated=()=>Boolean(token);
+export function onAuthChange(listener:()=>void){authListeners.add(listener);return()=>authListeners.delete(listener);}
+export const developmentCredentials=import.meta.env.DEV?{username:'admin',password:'AerionLocalDemo!2026'}:null;
 export const base=(import.meta.env.VITE_API_BASE_URL||'/api/v1').replace(/\/$/,'');
 export async function request(path:string,body?:unknown,signal?:AbortSignal):Promise<unknown>{
  const timeout=AbortSignal.timeout(45000);const response=await fetch(base+path,{method:body===undefined?'GET':'POST',signal:signal?AbortSignal.any([signal,timeout]):timeout,headers:{'Content-Type':'application/json','X-Request-ID':crypto.randomUUID(),...(token?{Authorization:`Bearer ${token}`}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})});
- if(!response.ok){if(response.status===401)token='';throw new Error(response.status===401?'Sign in to the backend in System Configuration.':response.status===403?'Your backend role does not permit this operation.':`Backend request failed (${response.status})`);}return response.json();
+ if(!response.ok){if(response.status===401){token='';sessionStorage.removeItem(TOKEN_KEY);publishAuth();}const error=new Error(response.status===401?'Sign in to the backend in System Configuration.':response.status===403?'Your backend role does not permit this operation.':response.status===404?'No telemetry has been ingested for this engine yet.':`Backend request failed (${response.status})`);Object.assign(error,{status:response.status});throw error;}return response.json();
 }
-export async function login(username:string,password:string){const result=obj(await request('/auth/token',{username,password}));if(typeof result.access_token!=='string')throw new Error('Invalid authentication response');token=result.access_token;return result;}
-export function logout(){token='';}
+export async function login(username:string,password:string){const result=obj(await request('/auth/token',{username,password}));if(typeof result.access_token!=='string')throw new Error('Invalid authentication response');token=result.access_token;sessionStorage.setItem(TOKEN_KEY,token);publishAuth();return result;}
+export async function ensureDevelopmentLogin(){if(!isAuthenticated()&&developmentCredentials)await login(developmentCredentials.username,developmentCredentials.password);}
+export function logout(){token='';sessionStorage.removeItem(TOKEN_KEY);publishAuth();}
 export function normalize(input:unknown,source:string):Frame{
  const row=obj(input),raw=obj(row.telemetry),assessment=obj(row.assessment),state=obj(row.state),telemetry=obj(state.telemetry),parameters=obj(telemetry.parameters),health=obj(state.health),prediction=obj(state.prediction),faultState=obj(state.faults);
  const timestamp=String(raw.timestamp||telemetry.observed_at||'');if(!Number.isFinite(Date.parse(timestamp)))throw new Error('Invalid telemetry timestamp');
@@ -20,7 +27,7 @@ export function normalize(input:unknown,source:string):Frame{
  const subsystems:Record<string,number>={};for(const [k,v] of Object.entries(obj(health.subsystem_indices)))if(number(v)!==null)subsystems[k]=v as number;
  return {timestamp,engineId:String(raw.engine_id||state.engine_id||'unknown'),missionId:String(raw.mission_id||obj(state.mission).mission_id||'unknown'),phase:String(raw.mission_phase||'unknown'),source,signals,health:number(health.overall_index??assessment.health_index),rul:number(prediction.rul_hours??assessment.rul_hours),anomaly:number(faultState.anomaly_score??assessment.anomaly_score),faults,subsystems,advisory:String(prediction.maintenance_advisory||assessment.maintenance_advisory||''),synchronized:state.synchronized===true};
 }
-export async function latest(id:string,signal?:AbortSignal){return normalize(await request(`/engines/${encodeURIComponent(id)}/latest`,undefined,signal),'BACKEND TELEMETRY • SOURCE UNVERIFIED');}
+export async function latest(id:string,signal?:AbortSignal){const history=await request(`/engines/${encodeURIComponent(id)}/history?limit=1`,undefined,signal);if(!Array.isArray(history)||!history.length){const error=new Error('No telemetry has been ingested for this engine yet.');Object.assign(error,{status:404});throw error;}return normalize(history[0],'BACKEND TELEMETRY • SOURCE UNVERIFIED');}
 export async function simulate(config:SimulationRequest):Promise<Frame[]>{const result=obj(await request('/simulations',config));if(!Array.isArray(result.telemetry)||!Array.isArray(result.assessments))throw new Error('Invalid simulation response');const assessments=result.assessments;return result.telemetry.map((t,i)=>normalize({telemetry:t,assessment:assessments[i]},'BACKEND SIMULATION'));}
 export async function loadReplay(id:string):Promise<Frame[]>{const session=obj(await request('/replays',{mission_id:id,speed:1}));const replayId=String(session.replay_id);const frames:Frame[]=[];let completed=false;while(!completed&&frames.length<15000){const output=obj(await request(`/replays/${encodeURIComponent(replayId)}/advance`,{virtual_seconds:3600}));if(!Array.isArray(output.frames)||output.frames.length===0)break;frames.push(...output.frames.map(x=>normalize(x,'HISTORICAL REPLAY • SYNTHETIC SOURCE')));completed=obj(output.status).completed===true;}if(!frames.length)throw new Error('No replay frames returned');return frames;}
 export function stream(url:string,onFrame:(frame:Frame)=>void,onStatus:(status:string)=>void){let socket:WebSocket|null=null,timer:ReturnType<typeof setTimeout>,closed=false,attempt=0,last=0;const connect=()=>{if(closed)return;socket=new WebSocket(url);socket.onopen=()=>{attempt=0;onStatus('WAITING FOR TELEMETRY');};socket.onmessage=e=>{try{const f=normalize(JSON.parse(e.data),'BACKEND STREAM • SOURCE UNVERIFIED');const t=Date.parse(f.timestamp);if(t<=last)return;last=t;onFrame(f);}catch{onStatus('INVALID PACKET');}};socket.onclose=()=>{onStatus('DISCONNECTED');if(!closed)timer=setTimeout(connect,Math.min(30000,1000*2**attempt++));};socket.onerror=()=>socket?.close();};connect();return()=>{closed=true;clearTimeout(timer);socket?.close();};}

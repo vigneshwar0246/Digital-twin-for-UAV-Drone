@@ -1,5 +1,5 @@
-import csv, json, os, re, secrets, uuid
-from datetime import datetime
+import asyncio, csv, json, os, re, secrets, uuid
+from datetime import datetime, timedelta, timezone
 from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,20 +11,23 @@ from .twin import TwinEngine
 from .adapters.base import TelemetryPacket
 from .adapters.factory import create_adapter
 from .adapters.base import TelemetryAdapter
-from .replay import (AdvanceRequest, MissionTelemetrySource, ReplayManager, ReplayRequest, SeekRequest, analyze_mission)
+from .replay import (AdvanceRequest, MissionTelemetrySource, ReplayManager, ReplayRequest, SeekRequest, analyze_mission, csv_row_to_telemetry)
 from .auth import AuthRepository,AuthService,AuthenticationError,CreateUserRequest,LoginRequest,PasswordHasher,Role,TokenService
 from .security import RateLimiter,authorization_dependency,request_id_context
 
 twin: TwinEngine | None=None; store: TelemetryStore | None=None; telemetry_adapter: TelemetryAdapter | None=None; replay_manager: ReplayManager | None=None
 auth_service:AuthService|None=None; rate_limiter:RateLimiter|None=None
+demo_task:asyncio.Task|None=None; demo_status={"enabled":False,"running":False}
+
+def allow_demo(): return None
 
 def require(*roles:Role):
-    return authorization_dependency(lambda:auth_service,lambda:rate_limiter,set(roles))
+    return allow_demo if settings.demo_mode else authorization_dependency(lambda:auth_service,lambda:rate_limiter,set(roles))
 ALL_ROLES=(Role.ADMIN,Role.OPERATOR,Role.MAINTENANCE_ENGINEER,Role.ANALYST,Role.VIEWER)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global store, twin, telemetry_adapter, replay_manager, auth_service, rate_limiter
+    global store, twin, telemetry_adapter, replay_manager, auth_service, rate_limiter, demo_task
     twin=TwinEngine()
     store=TelemetryStore(settings.database_path)
     telemetry_adapter=create_adapter(settings.adapter_mode,settings.can_mapping_path,settings.socketcan_channel)
@@ -38,8 +41,48 @@ async def lifespan(app: FastAPI):
     bootstrap_username=os.getenv("DIGITAL_TWIN_BOOTSTRAP_ADMIN_USERNAME","admin")
     if bootstrap_password and auth_service.repository.count_users()==0:
         auth_service.create_user(bootstrap_username,bootstrap_password,Role.ADMIN)
+    if settings.demo_mode:
+        demo_task=asyncio.create_task(feed_demo_dataset())
     yield
+    if demo_task:
+        demo_task.cancel()
+        try: await demo_task
+        except asyncio.CancelledError: pass
     telemetry_adapter.stop()
+
+async def feed_demo_dataset():
+    """Continuously feed a CSV mission segment through the normal twin path."""
+    global demo_status
+    rows=[]
+    with settings.replay_data_path.open(encoding="utf-8",newline="") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("mission_id")==settings.demo_mission_id: rows.append(row)
+    if not rows:
+        demo_status={"enabled":True,"running":False,"error":"configured dataset mission was not found"}; return
+    # Begin with one minute of healthy context, then reach the clearly
+    # observable low-oil-pressure region quickly during a judge demo.
+    first_fault=next((i for i,row in enumerate(rows)
+        if float(row["rpm"])>1000 and float(row["oil_pressure_kpa"])<150),len(rows)//2)
+    rows=rows[max(0,first_fault-60):]
+    demo_status={"enabled":True,"running":True,"source":"backend/dataset/data/aero_engine_full.csv",
+        "dataset_mission":settings.demo_mission_id,"engine_id":"DATASET_ENGINE_010","samples_in_loop":len(rows),"position":0}
+    assert store is not None
+    store.clear_engine("DATASET_ENGINE_010")
+    virtual_clock=datetime.now(timezone.utc)
+    while True:
+        assert twin is not None
+        twin.reset_engine_state("DATASET_ENGINE_010")
+        base_time=virtual_clock; first_seconds=float(rows[0]["time_seconds"])
+        for index,row in enumerate(rows):
+            sample=csv_row_to_telemetry(row).model_copy(update={"engine_id":"DATASET_ENGINE_010",
+                "mission_id":f"LIVE_{settings.demo_mission_id}",
+                "timestamp":base_time+timedelta(seconds=float(row["time_seconds"])-first_seconds)})
+            assessment,state=process_telemetry_state(sample,persist=True)
+            demo_status.update(position=index+1,phase=sample.mission_phase,health_index=assessment.health_index,
+                anomaly_score=assessment.anomaly_score,predicted_fault=assessment.predicted_fault,rul_hours=assessment.rul_hours,
+                source_fault_label=row.get("fault_type"),last_timestamp=sample.timestamp.isoformat())
+            await asyncio.sleep(.15)
+        virtual_clock=sample.timestamp+timedelta(seconds=5)
 
 app=FastAPI(title=settings.title,version=settings.version,lifespan=lifespan,
     description="Prototype digital-twin API. Synthetic evidence only; not flight-certified.")
@@ -60,7 +103,10 @@ async def request_identity_and_audit(request:Request,call_next):
     response.headers["X-Request-ID"]=request_id; request_id_context.reset(token); return response
 
 @app.get("/api/v1/health")
-def health(): return {"status":"ok","version":settings.version,"mode":"prototype","flight_certified":False}
+def health(): return {"status":"ok","version":settings.version,"mode":"dataset_demo" if settings.demo_mode else "prototype","flight_certified":False}
+
+@app.get("/api/v1/demo/status")
+def dataset_demo_status(): return demo_status
 
 @app.post("/api/v1/auth/token")
 def login(value:LoginRequest,request:Request):

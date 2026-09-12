@@ -18,7 +18,10 @@ def mission_profile_fingerprint(group: pd.DataFrame) -> str:
     summary={"phase_fraction":phase_fraction,"altitude_mean":round(group.altitude_m.mean(),2),"altitude_std":round(group.altitude_m.std(),2),
         "temperature_mean":round(group.ambient_temperature_c.mean(),2),"temperature_std":round(group.ambient_temperature_c.std(),2),
         "throttle_mean":round(group.throttle_percent.mean(),2),"throttle_std":round(group.throttle_percent.std(),2),"duration":round(group.time_seconds.max(),2)}
-    return hashlib.sha256(json.dumps(summary,sort_keys=True).encode()).hexdigest()[:16]
+    # Pandas/NumPy may return scalar subclasses (for example np.int64), which
+    # the standard JSON encoder does not serialize directly.
+    encoded=json.dumps(summary,sort_keys=True,default=lambda value:value.item() if isinstance(value,np.generic) else str(value))
+    return hashlib.sha256(encoded.encode()).hexdigest()[:16]
 
 def _coverage(frame,engine_ids,target):
     return set(frame.loc[frame.engine_id.isin(engine_ids),target].unique())

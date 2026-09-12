@@ -34,6 +34,11 @@ class TelemetryStore:
     def latest(self, engine_id: str):
         rows=self.history(engine_id,1); return rows[0] if rows else None
 
+    def clear_engine(self,engine_id:str):
+        """Clear only an ephemeral demo engine stream before a new run."""
+        with self._lock, self._connect() as db:
+            db.execute("DELETE FROM telemetry WHERE engine_id=?",(engine_id,))
+
     def save_simulation(self,mission_id:str,engine_id:str,start_time:str,seed:int,configuration:dict):
         with self._lock,self._connect() as db:
             db.execute("INSERT OR REPLACE INTO simulation_missions(mission_id,engine_id,start_time,seed,configuration_json) VALUES(?,?,?,?,?)",

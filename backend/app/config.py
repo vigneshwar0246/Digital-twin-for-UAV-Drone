@@ -20,6 +20,8 @@ class Settings:
     token_lifetime_minutes: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_TOKEN_MINUTES", "30")))
     requests_per_minute: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_RATE_LIMIT", "120")))
     token_secret: str | None = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_TOKEN_SECRET"))
+    demo_mode: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MODE", "false").lower() in {"1","true","yes"})
+    demo_mission_id: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MISSION", "MISSION_0110"))
 
     def __post_init__(self):
         if self.environment not in {"development","production"}: raise ValueError("DIGITAL_TWIN_ENV must be development or production")
