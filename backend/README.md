@@ -6,7 +6,7 @@ Run `run_backend.bat` from the repository root, then open
 The service provides validated telemetry ingestion, explainable health/fault
 assessment, SQLite history, mission replay, four environmental/mission
 simulations, and access to the existing model evaluation report. It is a
-software demonstrator based on synthetic data and is **not flight-certified**.
+software demonstrator based on generated data and is **not flight-certified**.
 
 All non-health API operations now use time-limited bearer authentication and
 server-side role authorization. Provision the initial administrator through
@@ -38,7 +38,7 @@ Telemetry transport is isolated behind adapters selected with
 `DIGITAL_TWIN_ADAPTER=SIMULATOR|CAN|SOCKETCAN|FADEC`. The default simulator needs
 no hardware. Adapter health is exposed at `GET /api/v1/adapters/health`, and
 transport-neutral packets can be submitted to `POST /api/v1/adapters/packets`.
-The bundled CAN signal database is synthetic and makes no ECU/FADEC compatibility
+The bundled CAN signal database is generated and makes no ECU/FADEC compatibility
 claim. SocketCAN and FADEC remain disconnected unless their transport and an
 authorized protocol specification are available.
 
@@ -46,7 +46,7 @@ Mission simulation supports `HIGH_ALTITUDE`, `ENDURANCE`, `HOT_WEATHER`,
 `RAPID_THROTTLE`, and `NORMAL_CRUISE`, plus six optional degradation scenarios.
 Resolved mission configuration, start time, and random seed are stored for
 deterministic replay. Simulated samples use the same `process_telemetry` function
-as live ingestion; simulation physics remain explicitly synthetic.
+as live ingestion; simulation physics remain explicitly generated.
 
 Stateful replay sessions are created with `POST /api/v1/replays` and support
 speed-controlled advance, pause, resume, and deterministic seek. Both stored

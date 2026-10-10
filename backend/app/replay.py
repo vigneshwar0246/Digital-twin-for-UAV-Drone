@@ -55,7 +55,7 @@ class MissionTelemetrySource:
                 with self.csv_path.open(encoding="utf-8",newline="") as handle:
                     for row in csv.DictReader(handle):
                         if row.get("mission_id")==request.mission_id: samples.append(csv_row_to_telemetry(row))
-            source={"type":"historical_csv","path":str(self.csv_path),"synthetic_dataset":True}
+            source={"type":"historical_csv","path":str(self.csv_path),"generated_dataset":True}
         if request.engine_id: samples=[x for x in samples if x.engine_id==request.engine_id]
         if request.start_time: samples=[x for x in samples if x.timestamp>=request.start_time]
         if request.end_time: samples=[x for x in samples if x.timestamp<=request.end_time]
@@ -139,4 +139,4 @@ def analyze_mission(session:ReplaySession)->dict:
             "ambient_pressure_kpa":{"minimum":min(x.ambient_pressure_kpa for x in samples if x.ambient_pressure_kpa is not None),"maximum":max(x.ambient_pressure_kpa for x in samples if x.ambient_pressure_kpa is not None)},
             "humidity_percent":{"minimum":min(x.humidity_percent for x in samples if x.humidity_percent is not None),"maximum":max(x.humidity_percent for x in samples if x.humidity_percent is not None)}},
         "rul_proxy":{"start_hours":states[0].prediction.rul_hours,"end_hours":states[-1].prediction.rul_hours,"method":states[-1].prediction.method},
-        "deterministic_replay":True,"notice":"Synthetic/prototype analysis; not manufacturer-approved or flight-validation evidence."}
+        "deterministic_replay":True,"notice":"Generated-data prototype analysis; not manufacturer-approved or flight-validation evidence."}

@@ -1,4 +1,4 @@
-"""Physics-guided synthetic aero-engine telemetry dataset."""
+"""Physics-guided generated aero-engine telemetry dataset."""
 
 from .config import DEFAULT_CONFIG, DatasetConfig
 

@@ -8,7 +8,7 @@ from ..states import QualityFlag
 
 @dataclass(frozen=True)
 class RawCANFrame:
-    arbitration_id:int; data:bytes; timestamp:datetime; channel:str="synthetic-can"
+    arbitration_id:int; data:bytes; timestamp:datetime; channel:str="generated-can"
 
 class CANSignalDatabase:
     def __init__(self,path:Path):

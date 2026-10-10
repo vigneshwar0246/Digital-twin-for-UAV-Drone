@@ -212,7 +212,7 @@ def evaluate():
     artifact={"model":model,"features":features,"metadata":{k:all_metrics[k] for k in ("model_version","training_dataset_version","feature_schema_version","training_timestamp","evaluation_timestamp","split_strategy","model_status","release_readiness","release_gate")},
         "metrics":{k:all_metrics[k] for k in gate_splits}}
     joblib.dump(artifact,OUTPUT_DIR/"fault_classifier_candidate.joblib")
-    (OUTPUT_DIR/"MODEL_NOT_FOR_PRODUCTION.txt").write_text(f"MODEL_STATUS={all_metrics['model_status']}\nRELEASE_READINESS={all_metrics['release_readiness']}\nSynthetic data only. Do not use for operational decisions.\n",encoding="utf-8")
+    (OUTPUT_DIR/"MODEL_NOT_FOR_PRODUCTION.txt").write_text(f"MODEL_STATUS={all_metrics['model_status']}\nRELEASE_READINESS={all_metrics['release_readiness']}\nGenerated test data only. Do not use for operational decisions.\n",encoding="utf-8")
     print(json.dumps({k:all_metrics[k] for k in ("model_status","release_readiness","release_gate","time_forward","validation","challenge")}, indent=2))
     return all_metrics
 

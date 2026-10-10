@@ -19,7 +19,7 @@ const capabilities = [
   ['Maintenance recommendations', 'Prototype'], ['CAN, ECU and edge deployment', 'Planned'],
 ];
 const stages = [
-  ['Now', 'Software demonstrator', 'Synthetic data, simulation, dashboards and model validation.'],
+  ['Now', 'Software demonstrator', 'Generated data, simulation, dashboards and model validation.'],
   ['Next', 'Test-rig integration', 'Real sensors, CAN ingestion and calibrated engine models.'],
   ['Later', 'Operational deployment', 'Secure edge inference, GCS integration and fleet intelligence.'],
 ];
@@ -35,6 +35,6 @@ export default function WhyItMatters() {
     <section className="wim-section" id="how-it-works"><header className="wim-section-title"><span>HOW IT WORKS</span><h2>One clear path from signal to action.</h2><p>RPM, temperature, pressure, fuel, vibration and electrical signals are evaluated together—not as isolated readings.</p></header><div className="wim-workflow">{workflow.map(([number, title, body]) => <article key={title}><b>{number}</b><div><h3>{title}</h3><p>{body}</p></div></article>)}</div></section>
     <section className="wim-section"><header className="wim-section-title"><span>VERIFIED SCOPE</span><h2>What the prototype demonstrates today.</h2><p>Status labels describe evidence in this repository. They do not imply flight validation or manufacturer-approved limits.</p></header><div className="wim-capabilities">{capabilities.map(([name, status]) => <div key={name}><span>{name}</span><b className={`wim-status ${status.toLowerCase()}`}>{status}</b></div>)}</div></section>
     <section className="wim-section"><header className="wim-section-title"><span>DELIVERY PATH</span><h2>Prototype now. Real-engine validation next.</h2></header><div className="wim-stages">{stages.map(([label, title, body], index) => <article className={index === 0 ? 'current' : ''} key={title}><span>{label}</span><h3>{title}</h3><p>{body}</p></article>)}</div></section>
-    <section className="wim-final"><span>WHY IT MATTERS</span><h2>Understand the engine now. Predict what may happen next. Act before degradation becomes critical.</h2><button onClick={() => navigate('/twin')}>Explore the live digital twin →</button></section>
+    <section className="wim-final"><span>PROJECT CONCLUSION</span><h2>Understand the engine now. Predict what may happen next. Act before degradation becomes critical.</h2><p>AERION connects engine data, explainable diagnostics, component visualization, replay and maintenance guidance in one engineering workflow.</p><button onClick={() => navigate('/')}>Finish with the aircraft experience →</button></section>
   </article>;
 }

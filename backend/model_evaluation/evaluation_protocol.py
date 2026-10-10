@@ -1,4 +1,4 @@
-"""Leakage-resistant evaluation splits for synthetic engine missions."""
+"""Leakage-resistant evaluation splits for generated engine missions."""
 from dataclasses import dataclass
 import hashlib, itertools, json
 import numpy as np

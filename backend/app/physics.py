@@ -10,7 +10,7 @@ import json, math
 from pathlib import Path
 from typing import Mapping, Protocol
 
-CLASSIFICATION="synthetic engineering assumption; not validated aircraft-engine physics"
+CLASSIFICATION="prototype engineering assumption; not validated aircraft-engine physics"
 
 @dataclass(frozen=True)
 class PhysicsInput:

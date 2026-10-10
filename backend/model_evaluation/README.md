@@ -22,5 +22,5 @@ are written to `outputs/reports`. Graphs are written to `outputs/graphs`.
 
 The saved candidate artifact is accompanied by `MODEL_NOT_FOR_PRODUCTION.txt`.
 It must not be connected to live diagnostics while its release gate fails.
-Results apply only to this synthetic dataset and do not establish real-flight
+Results apply only to this generated dataset and do not establish real-flight
 performance or airworthiness.

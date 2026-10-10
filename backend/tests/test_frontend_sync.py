@@ -25,3 +25,16 @@ def test_synchronize_does_not_accept_out_of_schema_signals():
     with TestClient(app) as client:
         authenticate(client)
         assert client.post('/api/v1/telemetry/synchronize',json={**SAMPLE,'rpm':9000}).status_code==422
+
+def test_simulation_includes_diagnostic_state_for_each_sample():
+    with TestClient(app) as client:
+        authenticate(client)
+        response=client.post('/api/v1/simulations',json={'profile':'NORMAL_CRUISE','duration_minutes':1,'interval_seconds':5,'degradation_scenario':'LUBRICATION_DEGRADATION','degradation_severity':1})
+        assert response.status_code==200
+        data=response.json()
+        assert len(data['states'])==len(data['telemetry'])==len(data['assessments'])
+        for telemetry,state in zip(data['telemetry'],data['states']):
+            assert telemetry['timestamp']==state['synchronized_at']
+            for fault in state['faults']['diagnostics']:
+                assert fault['probability'] is None
+                assert {'fault_code','engineering_score','uncertainty','affected_subsystems','evidence'} <= fault.keys()

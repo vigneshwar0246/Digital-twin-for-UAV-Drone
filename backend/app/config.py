@@ -14,7 +14,7 @@ class Settings:
     metrics_path: Path = BACKEND_DIR / "model_evaluation" / "outputs" / "reports" / "metrics_summary.json"
     max_history_rows: int = int(os.getenv("DIGITAL_TWIN_HISTORY_LIMIT", "1000"))
     adapter_mode: AdapterMode = AdapterMode(os.getenv("DIGITAL_TWIN_ADAPTER", "SIMULATOR").upper())
-    can_mapping_path: Path = Path(os.getenv("DIGITAL_TWIN_CAN_MAPPING", BACKEND_DIR / "app" / "adapters" / "sample_synthetic_can.json"))
+    can_mapping_path: Path = Path(os.getenv("DIGITAL_TWIN_CAN_MAPPING", BACKEND_DIR / "app" / "adapters" / "sample_data_can.json"))
     socketcan_channel: str = os.getenv("DIGITAL_TWIN_SOCKETCAN_CHANNEL", "can0")
     environment: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ENV", "development").lower())
     token_lifetime_minutes: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_TOKEN_MINUTES", "30")))

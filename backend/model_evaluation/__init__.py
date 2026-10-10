@@ -1,1 +1,1 @@
-"""Leakage-aware baseline evaluation for the synthetic telemetry dataset."""
+"""Leakage-aware baseline evaluation for the generated telemetry dataset."""

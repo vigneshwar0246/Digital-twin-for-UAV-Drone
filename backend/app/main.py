@@ -85,7 +85,7 @@ async def feed_demo_dataset():
         virtual_clock=sample.timestamp+timedelta(seconds=5)
 
 app=FastAPI(title=settings.title,version=settings.version,lifespan=lifespan,
-    description="Prototype digital-twin API. Synthetic evidence only; not flight-certified.")
+    description="Prototype digital-twin API. Generated test evidence only; not flight-certified.")
 app.add_middleware(CORSMiddleware,allow_origins=["http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"],allow_credentials=True,allow_methods=["GET","POST"],allow_headers=["*"])
 
 @app.middleware("http")
@@ -173,15 +173,19 @@ def history(engine_id: str,limit:int=Query(100,ge=1,le=settings.max_history_rows
 @app.post("/api/v1/simulations",dependencies=[Depends(require(Role.ADMIN,Role.OPERATOR,Role.ANALYST))])
 def run_simulation(request: SimulationRequest, persist:bool=False):
     assert store is not None
-    mission=build_mission(request); assessments=[]
+    mission=build_mission(request); assessments=[]; states=[]
     assert twin is not None
     twin.reset_engine_state(mission.engine_id)
     # The exact same processor used by POST /telemetry is used here. Persist only
     # controls telemetry history; deterministic mission configuration is always stored.
-    for sample in mission.telemetry: assessments.append(process_telemetry(sample,persist=persist))
+    for sample in mission.telemetry:
+        assessment,state=process_telemetry_state(sample,persist=persist)
+        assessments.append(assessment); states.append(state)
     resolved=request.model_copy(update={"mission_id":mission.mission_id,"start_time":mission.start_time})
     store.save_simulation(mission.mission_id,mission.engine_id,mission.start_time.isoformat(),mission.seed,resolved.model_dump(mode="json"))
-    return {**mission.model_dump(mode="json"),"sample_count":len(mission.telemetry),"assessments":[x.model_dump(mode="json") for x in assessments],"persisted_telemetry":persist}
+    return {**mission.model_dump(mode="json"),"sample_count":len(mission.telemetry),
+        "assessments":[x.model_dump(mode="json") for x in assessments],
+        "states":[x.model_dump(mode="json") for x in states],"persisted_telemetry":persist}
 
 @app.get("/api/v1/simulations/{mission_id}/configuration",dependencies=[Depends(require(*ALL_ROLES))])
 def simulation_configuration(mission_id:str):
@@ -276,7 +280,7 @@ def model_report():
             "MODEL_STATUS":data.get("model_status","NOT_VALIDATED") if not ready else data.get("model_status","VALIDATED_CANDIDATE"),
             "RELEASE_READINESS":data.get("release_readiness","NOT_RELEASE_READY") if not ready else data.get("release_readiness","RELEASE_CANDIDATE_REQUIRES_REAL_DATA_VALIDATION"),
             "release_gate_passed":ready,
-            "warning":"Synthetic dataset performance is not evidence of flightworthiness."}
+            "warning":"Generated dataset performance is not evidence of flightworthiness."}
 
 @app.get("/api/v1/engines/{engine_id}/state",dependencies=[Depends(require(*ALL_ROLES))])
 def twin_state(engine_id: str):

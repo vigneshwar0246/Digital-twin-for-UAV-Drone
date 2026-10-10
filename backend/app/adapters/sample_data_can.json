@@ -1,10 +1,10 @@
 {
-  "name": "synthetic-demonstration-can-v1",
+  "name": "data-demonstration-can-v1",
   "manufacturer_specific": false,
-  "warning": "Synthetic mapping only. It is not compatible with a real ECU or FADEC.",
+  "warning": "Generated mapping only. It is not compatible with a real ECU or FADEC.",
   "frames": {
     "0x500": {
-      "description": "Synthetic RPM and throttle demonstration frame",
+      "description": "Generated RPM and throttle demonstration frame",
       "byte_order": "little",
       "signals": [
         {"name": "rpm", "start_bit": 0, "length": 16, "scale": 0.25, "offset": 0, "unit": "rpm", "signed": false},
@@ -12,7 +12,7 @@
       ]
     },
     "0x501": {
-      "description": "Synthetic oil and electrical demonstration frame",
+      "description": "Generated oil and electrical demonstration frame",
       "byte_order": "little",
       "signals": [
         {"name": "oil_pressure_kpa", "start_bit": 0, "length": 16, "scale": 0.1, "offset": 0, "unit": "kPa", "signed": false},

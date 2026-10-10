@@ -1,5 +1,12 @@
 import {test,expect} from '@playwright/test';
 test('workspace simulation, navigation, replay and report',async({page})=>{
+ // Deterministic API contract fixtures keep this navigation test independent of a local database.
+ await page.route('**/api/v1/**',async route=>{
+  const submitted=route.request().method()==='POST'?route.request().postDataJSON():null;
+  const telemetry=submitted||{timestamp:new Date().toISOString(),engine_id:'E2E',mission_id:'M1',rpm:2200};
+  const entry={telemetry,state:{synchronized:true,telemetry:{parameters:{}},faults:{diagnostics:submitted?[{fault_code:'FUEL_INJECTOR_DEGRADATION',fault_name:'Injector Degradation',severity:'WARNING',engineering_score:.7,uncertainty:'high',affected_subsystems:['FUEL_SYSTEM_HEALTH'],evidence:{fuel_flow_residual_lph:7}}]:[]}}};
+  await route.fulfill({json:submitted?entry:[entry]});
+ });
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('/twin');await expect(page.getByRole('heading',{name:'Live Digital Twin',exact:true})).toBeVisible();
  await expect(page.locator('.wt-metric').first().locator('strong')).not.toContainText('—');

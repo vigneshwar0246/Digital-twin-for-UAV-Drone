@@ -2,7 +2,7 @@
   "metadata": {
     "model": "PrototypePhysicsModel",
     "version": "prototype-physics-v1",
-    "classification": "synthetic engineering assumption; not validated aircraft-engine physics",
+    "classification": "prototype engineering assumption; not validated aircraft-engine physics",
     "manufacturer_specific": false,
     "purpose": "Software architecture, simulation, and relative health indication only"
   },

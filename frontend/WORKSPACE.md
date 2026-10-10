@@ -12,7 +12,7 @@ Demo is the initial mode. Local equations are UI demonstration relationships, no
 
 Playback uses telemetry timestamps and a separate simulation clock. The conceptual SVG cutaway slows the crank motion for visibility. It is not the supplied photograph or a validated kinematic engine model. The reference PNG was not available as a filesystem attachment: use Import engine PNG in the viewer. Image imports are session-local; the component maintains aspect ratio and supports exterior/cutaway, pan, zoom and reset. A future shipped image can replace this input; no remote asset URL is invented.
 
-Current limitations: fleet inventory, raw CAN stream, maintenance persistence, performance maps and preflight approval have no supplied backend contracts. Their pages expose available data and explicit unavailable states. Acknowledgements and maintenance notes are session-local. Chart history is 240 frames; recordings are capped at 14,400 frames. Reports describe this bounded recording. Historical backend datasets and backend physics/RUL remain prototype/synthetic.
+Current limitations: fleet inventory, raw CAN stream, maintenance persistence, performance maps and preflight approval have no supplied backend contracts. Their pages expose available data and explicit unavailable states. Acknowledgements and maintenance notes are session-local. Chart history is 240 frames; recordings are capped at 14,400 frames. Reports describe this bounded recording. Historical backend datasets and backend physics/RUL remain prototype and simulation based.
 
 ## Verification
 

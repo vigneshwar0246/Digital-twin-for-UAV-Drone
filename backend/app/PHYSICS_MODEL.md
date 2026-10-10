@@ -1,6 +1,6 @@
 # Prototype physics model assumptions
 
-Status: **synthetic engineering model; not validated aircraft-engine physics**.
+Status: **generated engineering model; not validated aircraft-engine physics**.
 It contains no manufacturer-approved limits, performance maps, control laws, or
 airworthiness evidence. It is intended to exercise the digital-twin software and
 to produce explainable relative indicators.
@@ -51,4 +51,3 @@ boundary. A future validated implementation can use an engine performance map,
 cycle model, system-identification model, or approved external service without
 placing physics calculations in API routes or changing the digital-twin state
 contract.
-

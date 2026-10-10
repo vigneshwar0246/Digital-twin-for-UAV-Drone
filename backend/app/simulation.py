@@ -1,10 +1,10 @@
-"""Deterministic synthetic missions; not validated engine physics or limits."""
+"""Deterministic simulated missions; not validated engine physics or limits."""
 from datetime import datetime, timedelta, timezone
 import math, random
 from pydantic import BaseModel
 from .schemas import DegradationScenario, MissionProfile, SimulationRequest, Telemetry
 
-NOTICE="Synthetic prototype mission; not validated aircraft-engine behavior."
+NOTICE="Generated prototype mission; not validated aircraft-engine behavior."
 class ProfilePoint(BaseModel):
     time_seconds:int; value:float; unit:str
 class SimulationMission(BaseModel):
@@ -56,7 +56,7 @@ def build_mission(request:SimulationRequest)->SimulationMission:
             profiles[name].append(ProfilePoint(time_seconds=seconds,value=round(value,3),unit=unit))
     return SimulationMission(mission_id=mission_id,engine_id=request.engine_id,start_time=start,duration_seconds=request.duration_minutes*60,
         profile=request.profile,degradation_scenario=request.degradation_scenario,seed=request.seed,interval_seconds=request.interval_seconds,
-        environment_parameters={"pressure_model":"standard-atmosphere-shaped synthetic proxy","humidity_available":True,
+        environment_parameters={"pressure_model":"standard-atmosphere-shaped prototype proxy","humidity_available":True,
             "units":{"altitude":"m","temperature":"degC","pressure":"kPa","humidity":"percent"}},altitude_profile=profiles["altitude"],
         ambient_temperature_profile=profiles["ambient"],throttle_profile=profiles["throttle"],rpm_profile=profiles["rpm"],telemetry=output)
 

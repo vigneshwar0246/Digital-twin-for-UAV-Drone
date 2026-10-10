@@ -2,7 +2,7 @@ import {useSyncExternalStore} from 'react';
 import type {Snapshot,Frame,Mode,Controls} from './types';
 import {DEFAULT_CONTROLS} from './config';
 import {demoFrame} from './demo';
-import {isAuthenticated,latest,onAuthChange,stream} from './api';
+import {assessDemo,isAuthenticated,latest,onAuthChange,stream} from './api';
 let state:Snapshot={mode:'REAL',frame:null,history:[],recording:[],playing:false,speed:1,seconds:0,cursor:0,controls:DEFAULT_CONTROLS,status:'CONNECTING TO DATASET',error:'',engineId:'DATASET_ENGINE_010',connected:false};
 const listeners=new Set<()=>void>();let epoch=Date.now(),frames:Frame[]=[],lastWall=0;let stopTransport:(()=>void)|undefined;
 export const getSnapshot=()=>state;
@@ -30,6 +30,11 @@ export function startStore(){lastWall=performance.now();let stopped=false,busy=f
  if(!state.playing)return;
  const seconds=state.seconds+dt*state.speed;
  if(frames.length){const target=Date.parse(frames[0].timestamp)+seconds*1000;let cursor=state.cursor;while(cursor<frames.length-1&&Date.parse(frames[cursor+1].timestamp)<=target)cursor++;seek(cursor);set({seconds,playing:cursor<frames.length-1});}
- else if(state.mode==='SIMULATION'){set({seconds,playing:seconds<state.controls.duration});accept(demoFrame(seconds,state.controls,epoch));}
+ else if(state.mode==='SIMULATION'&&!busy){
+  const runEpoch=epoch;busy=true;const demo=demoFrame(seconds,state.controls,epoch);
+  try{const assessed=await assessDemo(demo,controller.signal);if(!stopped&&state.mode==='SIMULATION'&&epoch===runEpoch&&!frames.length){set({seconds,playing:seconds<state.controls.duration,error:''});accept(assessed);}}
+  catch(e){if(!stopped&&state.mode==='SIMULATION'&&epoch===runEpoch&&!frames.length){set({seconds,playing:false,error:'Demo diagnostics unavailable: '+(e as Error).message});accept({...demo,faults:[],synchronized:false});}}
+  finally{busy=false;}
+ }
  },250);
  return()=>{stopped=true;controller.abort();clearInterval(interval);removeAuthListener();stopTransport?.();stopTransport=undefined;};}

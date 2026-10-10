@@ -1,8 +1,8 @@
-# SIH26054 physics-guided synthetic dataset
+# SIH26054 physics-guided generated dataset
 
 This package creates deterministic telemetry for a generic turbocharged,
 four-cylinder, four-stroke aero piston engine used by a conceptual MALE UAV.
-Synthetic data is necessary because representative run-to-failure flight data is
+Generated data is necessary because representative run-to-failure flight data is
 scarce, safety-sensitive, and not supplied with this prototype. This is an
 educational simulator, not flight-certified data and not validated against
 confidential DRDO or manufacturer data.

@@ -27,7 +27,7 @@
     }
   },
   "limitations": [
-    "synthetic data only",
+    "generated data only",
     "not flight-certified",
     "no CAN/FADEC hardware adapter",
     "no production authentication or RBAC",

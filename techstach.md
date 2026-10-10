@@ -1,6 +1,6 @@
 # AERION / AERO-TWIN — Complete Technology Stack and Implementation Guide
 
-> This document describes what is actually implemented in this repository. The project is an engineering demonstrator built around synthetic data. It is **not flight-certified**, does not use manufacturer-approved limits or engine maps, and must not be used for operational or airworthiness decisions.
+> This document describes what is actually implemented in this repository. The project is an engineering demonstrator built around generated data. It is **not flight-certified**, does not use manufacturer-approved limits or engine maps, and must not be used for operational or airworthiness decisions.
 
 ## 1. What the project is
 
@@ -12,7 +12,7 @@ AERION is a full-stack digital-twin prototype for the aero-piston engine of a co
 - a replaceable, first-order prototype physics model;
 - windowed sensor-fusion and explainable hybrid diagnostics;
 - SQLite telemetry, authentication, and audit storage;
-- a deterministic synthetic aero-engine dataset generator; and
+- a deterministic generated aero-engine dataset generator; and
 - an offline scikit-learn fault-classification experiment.
 
 The most important distinction is that the live application does **not** serve the saved ML classifier. Live diagnostic results come from engineering rules plus statistical history features. The offline classifier is an evaluated candidate whose release gate failed and is explicitly marked not for production.
@@ -20,7 +20,7 @@ The most important distinction is that the live application does **not** serve t
 ## 2. High-level architecture
 
 ```text
-Synthetic dataset / API telemetry / adapter packet
+Generated dataset / API telemetry / adapter packet
                     |
                     v
         Pydantic schema + quality checks
@@ -121,7 +121,7 @@ It calculates explainable relative proxies for:
 - efficiency; and
 - overall health.
 
-All coefficients come from `backend/app/prototype_physics_assumptions.json`. These are explicitly synthetic engineering assumptions, not thermodynamic-cycle simulation, CFD, a manufacturer performance map, or approved control logic.
+All coefficients come from `backend/app/prototype_physics_assumptions.json`. These are explicitly generated engineering assumptions, not thermodynamic-cycle simulation, CFD, a manufacturer performance map, or approved control logic.
 
 ### 4.2 Live sensor-fusion model
 
@@ -213,7 +213,7 @@ The recorded challenge/test result is approximately 84.06% accuracy, 74.61% bala
 
 No LLM, generative-AI API, computer-vision model, hosted foundation model, OpenAI model, or third-party inference service is used by the application. No external 3D or image service is required at runtime.
 
-## 5. Synthetic dataset
+## 5. Generated dataset
 
 The dataset package lives in `backend/dataset/`. It creates deterministic, physics-guided telemetry because representative real run-to-failure flight data was not supplied.
 
@@ -253,7 +253,7 @@ Rejected/suspect signals are not silently treated as valid. Parameter state carr
 `DIGITAL_TWIN_ADAPTER` selects `SIMULATOR`, `CAN`, `SOCKETCAN`, or `FADEC`.
 
 - Simulator is the default and requires no hardware.
-- CAN decodes the bundled synthetic signal mapping.
+- CAN decodes the bundled generated signal mapping.
 - SocketCAN adds a configured Linux CAN channel such as `can0` but remains disconnected without transport support.
 - FADEC is a protocol placeholder and will not claim compatibility without an authorized specification.
 
@@ -350,7 +350,7 @@ aircraft/
 ├── backend/
 │   ├── app/                  API, twin core, physics, fusion, diagnostics
 │   │   └── adapters/         simulator/CAN/SocketCAN/FADEC boundaries
-│   ├── dataset/              synthetic generator, CSVs, validation, graphs
+│   ├── dataset/              generated generator, CSVs, validation, graphs
 │   ├── model_evaluation/     offline ML training, evaluation, artifact/reports
 │   └── tests/                backend and integration tests
 ├── requirements.txt         Python dependencies
@@ -431,14 +431,14 @@ Engineering behavior is separately configurable through `engineering_thresholds.
 
 ## 13. Honest limitations and production gaps
 
-- All flight/engine data is synthetic; no real aircraft or manufacturer dataset is included.
+- All flight/engine data is generated; no real aircraft or manufacturer dataset is included.
 - Physics is a first-order relative model, not CFD, a cycle solver, HIL, or a validated engine map.
 - Thresholds and health/RUL outputs are hypotheses and proxies.
-- The offline classifier is trained only on synthetic data, is uncalibrated, failed its per-class recall gate, and is not connected to live diagnostics.
+- The offline classifier is trained only on generated data, is uncalibrated, failed its per-class recall gate, and is not connected to live diagnostics.
 - The live hybrid diagnostic engine is explainable but unvalidated; engineering scores are not probabilities.
 - Dataset generation introduces only one fault per mission, limiting compound-fault realism.
 - Scalar vibration RMS is available, but waveform/frequency-order analysis is not implemented.
-- CAN mapping is synthetic; SocketCAN and FADEC require real transport and authorized protocol specifications.
+- CAN mapping is generated; SocketCAN and FADEC require real transport and authorized protocol specifications.
 - SQLite and the in-process store/locks are appropriate for a local prototype, not a distributed fleet platform.
 - No production deployment definition, managed database, message broker, observability stack, secrets manager, TLS termination, or CI workflow is present.
 - The custom client router and store are intentionally lightweight and would need broader hardening for a large application.
@@ -448,4 +448,4 @@ Engineering behavior is separately configurable through `engineering_thresholds.
 
 When the combined launcher starts, FastAPI initializes configuration, SQLite storage, authentication, the selected adapter, the twin processor, and optional demo dataset feed. Vite serves the React application and proxies `/api`. The user enters through a WebGL aircraft sequence and opens the workspace. Telemetry—whether demo, simulated, historical, adapter-originated, or API-submitted—is validated, assigned explicit quality state, evaluated by the prototype physics model, fused into subsystem health, assessed by explainable diagnostics, assembled into a synchronized twin state, persisted where requested, and exposed as JSON. The frontend normalizes that JSON into a common frame, keeps bounded history, and renders engineering metrics, charts, faults, 3D state, simulation, and replay controls.
 
-That is the complete implemented stack: a local full-stack digital-twin demonstrator with procedural 3D visualization, typed web UI, validated telemetry APIs, synthetic engineering models/data, explainable live diagnostics, and a deliberately quarantined offline ML candidate.
+That is the complete implemented stack: a local full-stack digital-twin demonstrator with procedural 3D visualization, typed web UI, validated telemetry APIs, generated engineering models/data, explainable live diagnostics, and a deliberately quarantined offline ML candidate.

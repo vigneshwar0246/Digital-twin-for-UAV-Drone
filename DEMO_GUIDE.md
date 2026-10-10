@@ -107,7 +107,7 @@ storage, calibrated ML trained on real engine data, and certification evidence.â
 ## Honest answers to likely judge questions
 
 - **Is this flight certified?** No. It is a functional software demonstrator
-  using synthetic data and prototype engineering assumptions.
+  using generated data and prototype engineering assumptions.
 - **Is the fault label leaked into prediction?** No. The online core receives the
   telemetry schema only. The dataset label is retained only in demo status for
   verification.

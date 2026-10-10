@@ -46,20 +46,20 @@ def test_stale_and_future_timestamp_detection():
 def test_packet_rejects_naive_timestamp():
     with pytest.raises(ValidationError): packet(0,datetime(2026,1,1))
 
-def test_synthetic_can_mapping_decodes_without_manufacturer_claim():
-    mapping=Path("backend/app/adapters/sample_synthetic_can.json")
+def test_data_can_mapping_decodes_without_manufacturer_claim():
+    mapping=Path("backend/app/adapters/sample_data_can.json")
     adapter=CANAdapter(mapping); frame=next(SimulatedCANStream(NOW).frames(1))
     decoded=adapter.decode_frame(frame,"ENGINE","MISSION",0)
     assert decoded is not None and decoded.signals["rpm"]==1800 and decoded.signals["throttle_percent"]==55
-    assert decoded.protocol_metadata.extra["signal_database"]=="synthetic-demonstration-can-v1"
+    assert decoded.protocol_metadata.extra["signal_database"]=="data-demonstration-can-v1"
 
 def test_unmapped_and_invalid_can_frames_are_counted_not_crashed():
-    adapter=CANAdapter(Path("backend/app/adapters/sample_synthetic_can.json"))
+    adapter=CANAdapter(Path("backend/app/adapters/sample_data_can.json"))
     result=adapter.decode_frame(RawCANFrame(0x999,b"\x00"*8,NOW),"ENGINE","MISSION",0)
     assert result is None and adapter.adapter_health().invalid_frames==1 and adapter.adapter_health().messages_dropped==1
 
 def test_factory_supports_all_configured_modes_without_hardware():
-    mapping=Path("backend/app/adapters/sample_synthetic_can.json")
+    mapping=Path("backend/app/adapters/sample_data_can.json")
     for mode in AdapterMode:
         adapter=create_adapter(mode,mapping)
         assert adapter.adapter_health().mode==mode
@@ -71,5 +71,5 @@ def test_simulator_adapter_produces_complete_packet_metadata():
     adapter=SimulatorAdapter(); adapter.start(); packets=adapter.poll()
     assert packets and packets[0].source=="SIMULATOR"
     assert packets[0].protocol_metadata.clock.synchronized
-    assert packets[0].protocol_metadata.extra["synthetic"] is True
+    assert packets[0].protocol_metadata.extra["generated"] is True
     health=adapter.adapter_health(); assert health.connected and health.messages_received==len(packets)

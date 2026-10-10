@@ -14,7 +14,7 @@ a layered digital twin, prototype physics, sensor fusion, eleven fault
 categories, history, simulations, deterministic replay, post-flight reports,
 hardware-adapter interfaces and role-protected APIs.
 
-This is not a validated aircraft-engine product. All datasets are synthetic.
+This is not a validated aircraft-engine product. All datasets are generated.
 There are no manufacturer-approved limits/maps, real ECU/FADEC protocol, engine
 test-cell or flight results, calibrated fault probabilities, validated RUL
 labels, safety assessment, hardware qualification or certification evidence.
@@ -25,8 +25,8 @@ labels, safety assessment, hardware qualification or certification evidence.
 | Physics and sensor fusion | Prototype complete | Validated maps, limits and uncertainty missing |
 | Fault diagnostics | 11 categories implemented | Calibration and real fault evidence missing |
 | ML evaluation | Evaluation framework complete | Safety release gate fails |
-| Simulation and replay | Prototype complete | Synthetic fidelity not established |
-| CAN/SocketCAN/FADEC | Interfaces and synthetic demo complete | Real compatibility unimplemented/unvalidated |
+| Simulation and replay | Prototype complete | Generated fidelity not established |
+| CAN/SocketCAN/FADEC | Interfaces and generated demo complete | Real compatibility unimplemented/unvalidated |
 | Authentication/RBAC | Prototype complete | Enterprise controls incomplete |
 | Persistence/scalability | Demonstrator complete | SQLite/in-memory state production-blocking |
 | Verification | 71 automated tests pass | No HIL, load, security or real-data validation |
@@ -60,7 +60,7 @@ backend/
 │   ├── store.py                SQLite persistence
 │   ├── thresholds.py           labeled prototype thresholds
 │   └── adapters/               Simulator, CAN, SocketCAN, ECU and FADEC interfaces
-├── dataset/                    synthetic generation and validation
+├── dataset/                    generated generation and validation
 ├── model_evaluation/           splits, metrics, gates, artifacts and reports
 ├── tests/                      backend automated tests
 ├── runtime/                    demonstrator database
@@ -163,9 +163,9 @@ Current output is `MODEL_STATUS=NOT_VALIDATED` and
 `RELEASE_READINESS=NOT_RELEASE_READY`. The safety gate fails. Historical weak
 test recalls—Cooling 0.4017, Injector 0.7196, Sensor Drift 0.6839—remain warning
 evidence, not current readiness claims. Do not manipulate thresholds or the
-synthetic dataset merely to pass the gate.
+generated dataset merely to pass the gate.
 
-### Simulation — KEEP AS SYNTHETIC DEMONSTRATOR
+### Simulation — KEEP AS A DATA DEMONSTRATOR
 
 `HIGH_ALTITUDE`, `ENDURANCE`, `HOT_WEATHER`, `RAPID_THROTTLE` and
 `NORMAL_CRUISE` profiles generate all required signals. Cooling, injector,
@@ -191,7 +191,7 @@ version determinism, signed provenance and approved maintenance wording.
 
 Interfaces exist for every requested adapter, with configuration modes,
 transport-neutral packets, sequence/duplicate/missing/stale/timestamp checks,
-buffering, invalid-frame handling, counters, configurable synthetic CAN mapping
+buffering, invalid-frame handling, counters, configurable generated CAN mapping
 and a simulated CAN stream.
 
 Missing: authorized DBC/protocol, qualified physical interface, ECU/FADEC
@@ -282,7 +282,7 @@ chaos/recovery and independent real-data acceptance tests.
 
 ## Highest-priority problems
 
-1. Synthetic-only evidence; no test-cell or flight validation.
+1. Generated-only evidence; no test-cell or flight validation.
 2. Classifier safety gate fails and must remain `NOT_RELEASE_READY`.
 3. RUL is only an engineering proxy.
 4. Physics/thresholds are not manufacturer-approved.
