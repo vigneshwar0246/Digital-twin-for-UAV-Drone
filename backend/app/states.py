@@ -102,6 +102,7 @@ class FaultState(BaseModel):
     hypotheses: list[FaultHypothesis] = Field(default_factory=list)
     diagnostics: list[FaultDiagnostic] = Field(default_factory=list)
     supported_diagnostic_categories: list[str] = Field(default_factory=list)
+    ml_inference: dict = Field(default_factory=lambda: {"status": "disabled"})
 
 class PredictionState(BaseModel):
     rul_hours: float

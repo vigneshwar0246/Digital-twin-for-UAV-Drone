@@ -15,7 +15,7 @@ AERION is a full-stack digital-twin prototype for the aero-piston engine of a co
 - a deterministic generated aero-engine dataset generator; and
 - an offline scikit-learn fault-classification experiment.
 
-The most important distinction is that the live application does **not** serve the saved ML classifier. Live diagnostic results come from engineering rules plus statistical history features. The offline classifier is an evaluated candidate whose release gate failed and is explicitly marked not for production.
+Live diagnostic assessments come from engineering rules plus statistical history features. The original offline classifier failed its release gate. A separate live-compatible candidate is connected through an optional backend provider, but is disabled by default because it also failed the gate. An explicit development override can expose its independent, uncalibrated prediction without changing the engineering assessment.
 
 ## 2. High-level architecture
 
@@ -35,6 +35,7 @@ Generated dataset / API telemetry / adapter packet
                     |
                     v
    Explainable rules + robust statistics diagnostics
+        + optional gated ML evidence
                     |
                     v
      Unified digital-twin engine state + assessment
@@ -150,7 +151,7 @@ It combines two active evidence sources:
 - correlated engineering-rule evidence; and
 - causal statistical anomalies derived only from previous/current samples in the same mission, using a robust median/MAD-style z-score.
 
-It has an interface for a future `MLDiagnosticProvider`, but no provider is connected. The output therefore reports `probability: null`, labels its result an **uncalibrated engineering score**, and exposes rule, statistical, and ML contributions separately.
+An optional `MLDiagnosticProvider` is connected to the normal digital-twin path. It reports its own class and uncalibrated model score in `ml_inference`. Its output is independent evidence: it does not alter rule/statistical scores, health, severity, or the primary engineering assessment. It is disabled by default because the candidate failed validation. The engineering diagnostic still reports `probability: null` and an **uncalibrated engineering score**.
 
 The eleven live diagnostic categories are:
 
@@ -202,12 +203,22 @@ Potential leakage fields are excluded: timestamp, engine/mission identity, opera
 
 Evaluation uses mission-disjoint partitions, engine-disjoint validation/challenge groups, and a separate time-forward audit on fitting-engine identities. It generates classification reports, raw/normalized confusion matrices, precision-recall curves, calibration measures, false-positive/negative analyses, per-class recall/F1 graphs, a split manifest, and a dataset hash.
 
-The recorded challenge/test result is approximately 84.06% accuracy, 74.61% balanced accuracy, and 75.06% macro F1. Those aggregate numbers are not sufficient for release: several important fault classes miss the required 0.80 recall on one or more required splits. Probabilities are also uncalibrated. Consequently:
+The earlier recorded challenge/test result was approximately 84.06% accuracy, 74.61% balanced accuracy, and 75.06% macro F1. The October 2026 rerun produced 84.58%, 74.76%, and 75.82% on the same dataset hash and split manifest; the small difference has not been isolated. Those aggregate numbers are not sufficient for release: several important fault classes miss the required 0.80 recall on one or more required splits. Probabilities are also uncalibrated. Consequently:
 
 - `model_status`: `NOT_VALIDATED`
 - `release_readiness`: `NOT_RELEASE_READY`
 - release gate: failed
 - live serving: disabled
+
+A separate live-compatible HGB/Extra Trees search uses only fields accepted by
+the live telemetry API. Its validation-selected regularized HGB trial has
+challenge macro F1 0.5090 and balanced accuracy 0.5157, below the existing
+offline benchmark. The experimental artifact is versioned under
+`backend/model_evaluation/outputs/live_candidate/`. Its provider loads only
+when `DIGITAL_TWIN_ML_ENABLED=true`; because the gate failed, development also
+requires `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true`. Production never serves this
+failed candidate. Feature schema, class mapping, invalid/stale telemetry, and
+inference errors are checked before reporting ML evidence.
 
 ### 4.6 AI/LLM and external models
 
@@ -434,7 +445,7 @@ Engineering behavior is separately configurable through `engineering_thresholds.
 - All flight/engine data is generated; no real aircraft or manufacturer dataset is included.
 - Physics is a first-order relative model, not CFD, a cycle solver, HIL, or a validated engine map.
 - Thresholds and health/RUL outputs are hypotheses and proxies.
-- The offline classifier is trained only on generated data, is uncalibrated, failed its per-class recall gate, and is not connected to live diagnostics.
+- The original offline classifier is trained only on generated data, is uncalibrated, and failed its per-class recall gate. The separate live-compatible classifier also failed; its optional provider is disabled by default and cannot serve this failed artifact in production.
 - The live hybrid diagnostic engine is explainable but unvalidated; engineering scores are not probabilities.
 - Dataset generation introduces only one fault per mission, limiting compound-fault realism.
 - Scalar vibration RMS is available, but waveform/frequency-order analysis is not implemented.

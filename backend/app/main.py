@@ -273,13 +273,21 @@ def model_report():
     data=json.loads(settings.metrics_path.read_text(encoding="utf-8"))
     gate=data.get("release_gate",{})
     ready=bool(gate.get("passed",data.get("validation",{}).get("recall_requirement",{}).get("passed") and data.get("test",{}).get("recall_requirement",{}).get("passed")))
+    candidate_path=settings.ml_artifact_path.with_name("evaluation.json")
+    candidate=None
+    if candidate_path.exists():
+        try:
+            trial=json.loads(candidate_path.read_text(encoding="utf-8"))
+            candidate={key:trial.get(key) for key in ("version","selected","feature_schema_version","dataset_sha256","release_gate_passed","status","probability_status","selected_assessments")}
+        except (OSError,ValueError):
+            candidate={"status":"report_unavailable"}
     return {"model":data.get("model"),"model_version":data.get("model_version"),"training_dataset_version":data.get("training_dataset_version"),
             "feature_schema_version":data.get("feature_schema_version"),"training_timestamp":data.get("training_timestamp"),"evaluation_timestamp":data.get("evaluation_timestamp"),
             "split_strategy":data.get("split_strategy"),"metrics":{k:data.get(k) for k in ("time_forward","validation","challenge","test") if data.get(k) is not None},
             "validation":data.get("validation"),"test":data.get("test"),"release_gate":gate,
             "MODEL_STATUS":data.get("model_status","NOT_VALIDATED") if not ready else data.get("model_status","VALIDATED_CANDIDATE"),
             "RELEASE_READINESS":data.get("release_readiness","NOT_RELEASE_READY") if not ready else data.get("release_readiness","RELEASE_CANDIDATE_REQUIRES_REAL_DATA_VALIDATION"),
-            "release_gate_passed":ready,
+            "release_gate_passed":ready,"live_candidate":candidate,"ml_enabled":settings.ml_enabled,
             "warning":"Generated dataset performance is not evidence of flightworthiness."}
 
 @app.get("/api/v1/engines/{engine_id}/state",dependencies=[Depends(require(*ALL_ROLES))])

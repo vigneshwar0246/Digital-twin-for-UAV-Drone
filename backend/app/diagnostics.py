@@ -4,7 +4,7 @@ Scores are engineering scores, not probabilities. The current repository has an
 offline, uncalibrated classifier report but no deployable model artifact, so ML
 contribution is explicitly unavailable rather than fabricated.
 """
-from collections import defaultdict, deque
+from collections import defaultdict, deque, OrderedDict
 from datetime import datetime
 import json, math, statistics
 from pathlib import Path
@@ -25,21 +25,26 @@ SUPPORTED_DIAGNOSTICS={
 class MLDiagnosticProvider(Protocol):
     calibrated: bool
     version: str
-    def scores(self, valid_features:dict[str,float|str])->dict[str,float]: ...
+    def predict(self, valid_features:dict[str,float|str])->dict: ...
 
 class HybridDiagnosticEngine:
-    def __init__(self,path:Path|None=None,ml_provider:MLDiagnosticProvider|None=None):
+    def __init__(self,path:Path|None=None,ml_provider:MLDiagnosticProvider|None=None,ml_enabled:bool=False):
         raw=json.loads((path or Path(__file__).with_name("diagnostic_assumptions.json")).read_text(encoding="utf-8"))
         if raw["metadata"]["probabilities_calibrated"] is not False: raise ValueError("prototype diagnostics must not claim calibrated probabilities")
         self.version=raw["metadata"]["version"]; self.classification=raw["metadata"]["classification"]
-        self._a={k:float(v["value"]) for k,v in raw["assumptions"].items()}; self.ml_provider=ml_provider
+        self._a={k:float(v["value"]) for k,v in raw["assumptions"].items()}; self.ml_provider=ml_provider; self.ml_enabled=ml_enabled
         self._history=defaultdict(lambda:deque(maxlen=int(self._a["trend_window_samples"])))
-        self._mission={}; self._active={}; self._lock=RLock()
+        self._mission={}; self._active={}; self._lock=RLock(); self._ml_results=OrderedDict()
+
+    def ml_result(self,engine_id:str)->dict:
+        with self._lock:
+            return dict(self._ml_results.get(engine_id,{"status":"disabled"}))
 
     def reset(self,engine_id:str):
         with self._lock:
             self._history.pop(engine_id,None); self._mission.pop(engine_id,None)
             self._active={k:v for k,v in self._active.items() if k[0]!=engine_id}
+            self._ml_results.pop(engine_id,None)
 
     @staticmethod
     def _clip(value): return max(0.0,min(1.0,value))
@@ -56,7 +61,7 @@ class HybridDiagnosticEngine:
         return score,{"signal":name,"robust_z_score":round(z,3),"baseline_median":round(median,3),"prior_samples":len(prior)}
 
     def evaluate(self,engine_id:str,mission_id:str,observed_at:datetime,parameters:dict[str,ParameterState],
-                 physics:PhysicsResult,fused:dict[str,SubsystemHealth])->list[FaultDiagnostic]:
+                 physics:PhysicsResult,fused:dict[str,SubsystemHealth],mission_phase:str="unknown")->list[FaultDiagnostic]:
         with self._lock:
             if self._mission.get(engine_id)!=mission_id:
                 self._history[engine_id].clear(); self._mission[engine_id]=mission_id
@@ -72,24 +77,40 @@ class HybridDiagnosticEngine:
             statistical={}
             for name in ("rpm","oil_pressure_kpa","oil_temperature_c","fuel_flow_lph","vibration_rms","battery_voltage","alternator_voltage","injection_timing_deg","cht_mean_c","egt_mean_c","egt_spread_c","thermal_stress_indicator"):
                 statistical[name]=self._statistical_score(name,row.get(name),history)
-            ml_scores=self.ml_provider.scores(valid) if self.ml_provider and not invalid_required else {}
-            ml_status=(f"blocked: invalid required telemetry: {invalid_required}" if invalid_required else
-                f"served model {self.ml_provider.version}; {'calibrated' if self.ml_provider.calibrated else 'uncalibrated'}" if self.ml_provider else
-                "unavailable: offline classifier has no deployable artifact")
+            if self.ml_provider is None:
+                ml_result={"status":"unavailable" if self.ml_enabled else "disabled"}
+                ml_status="unavailable: offline classifier has no deployable artifact" if self.ml_enabled else "disabled: offline classifier has no deployable artifact"
+            elif invalid_required:
+                ml_result={"status":"blocked", "reason":"invalid required telemetry"}
+                ml_status="blocked: invalid required telemetry"
+            else:
+                try:
+                    ml_result=self.ml_provider.predict({**valid,"mission_phase":mission_phase})
+                    ml_status=f"served model {self.ml_provider.version}; uncalibrated"
+                except Exception as exc:
+                    import logging
+                    logging.getLogger(__name__).warning("ML inference failed for model %s: %s",self.ml_provider.version,exc)
+                    ml_result={"status":"unavailable", "model_version":self.ml_provider.version,
+                               "reason":"inference failed or features unavailable"}
+                    ml_status="unavailable: model inference failed"
+            self._ml_results[engine_id]=ml_result
+            self._ml_results.move_to_end(engine_id)
+            if len(self._ml_results)>128: self._ml_results.popitem(last=False)
             candidates=[]
             def add(code,rule_score,evidence,subsystems,action,stat_names=()):
                 stats=[statistical[n][0] for n in stat_names if statistical[n][1] is not None]
-                stat=max(stats,default=0.0); ml=ml_scores.get(code)
-                # No source can dominate alone: the score visibly records each available component.
+                stat=max(stats,default=0.0)
+                # ML remains independent evidence; engineering scores retain their established meaning.
                 score=self._clip(self._a["rule_weight"]*self._clip(rule_score)+self._a["statistical_weight"]*stat)
-                if ml is not None: score=self._clip(.65*score+.35*self._clip(ml))
                 if score<self._a["activation_score"]: return
                 stat_evidence=[statistical[n][1] for n in stat_names if statistical[n][1] is not None and statistical[n][0]>0]
                 first=self._active.get((engine_id,code),observed_at); self._active[(engine_id,code)]=first
                 candidates.append(FaultDiagnostic(fault_code=code,fault_name=SUPPORTED_DIAGNOSTICS[code],severity=self._severity(score),
                     probability=None,engineering_score=round(score,4),score_kind="uncalibrated engineering score",
                     health_impact=self._impact(score),evidence={"rule_evidence":evidence,"statistical_evidence":stat_evidence,
-                    "contributions":{"engineering_rules":round(rule_score,4),"statistical_anomaly":round(stat,4),"ml_classifier":round(ml,4) if ml is not None else None},"ml_status":ml_status},
+                    "contributions":{"engineering_rules":round(rule_score,4),"statistical_anomaly":round(stat,4)},
+                    "ml_evidence":ml_result if ml_result.get("fault_class")==code else {"status":ml_result["status"]},
+                    "ml_status":ml_status},
                     affected_subsystems=subsystems,recommended_action=action,first_detected=first,last_detected=observed_at,
                     diagnostic_version=self.version,uncertainty="high" if len(evidence)<2 or not stat_evidence else "medium"))
             hs=lambda name:(100-fused[name].health_score)/100

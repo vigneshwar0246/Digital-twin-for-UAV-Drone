@@ -8,6 +8,8 @@ from .schemas import Alert, Telemetry, TwinAssessment
 from .physics import PhysicsInput, PhysicsModel, PrototypePhysicsModel
 from .sensor_fusion import FusionInput, SensorFusionEngine
 from .diagnostics import HybridDiagnosticEngine, SUPPORTED_DIAGNOSTICS
+from .ml_diagnostics import load_provider
+from .config import settings
 from .states import (DegradationState, EnginePerformanceState, EngineState, EnvironmentState,
     FaultHypothesis, FaultState, HealthState, MissionState, ParameterState, PhysicsState,
     PredictionState, QualityFlag, TelemetryState)
@@ -20,7 +22,10 @@ class DigitalTwinCore:
         self.thresholds = thresholds or ThresholdConfig()
         self.physics_model = physics_model or PrototypePhysicsModel()
         self.sensor_fusion = SensorFusionEngine()
-        self.diagnostics = HybridDiagnosticEngine()
+        provider=load_provider(str(settings.ml_artifact_path)) if settings.ml_enabled else None
+        if provider and not provider.release_gate_passed and not (settings.environment=="development" and settings.ml_allow_unvalidated):
+            provider=None
+        self.diagnostics = HybridDiagnosticEngine(ml_provider=provider,ml_enabled=settings.ml_enabled)
         self._states: dict[str, EngineState] = {}
         self._health_history = defaultdict(lambda: deque(maxlen=history_size))
         self._lock = RLock()
@@ -117,7 +122,8 @@ class DigitalTwinCore:
             fused=self.sensor_fusion.evaluate(FusionInput(engine_id=telemetry.engine_id,mission_id=telemetry.mission_id,
                 parameters=ts.parameters,physics=result))
             diagnostic_records=self.diagnostics.evaluate(telemetry.engine_id,telemetry.mission_id,telemetry.timestamp,
-                ts.parameters,result,fused)
+                ts.parameters,result,fused,telemetry.mission_phase)
+            ml_inference=self.diagnostics.ml_result(telemetry.engine_id)
             alerts=[]; hypotheses=[]
             def flag(score,fault,code,severity,message,evidence):
                 score=max(0,min(1,score))
@@ -198,12 +204,14 @@ class DigitalTwinCore:
                     ambient_pressure_kpa=values["ambient_pressure_kpa"],humidity_percent=values["humidity_percent"]),
                 physics=physics,performance=performance,health=health,degradation=degradation,
                 faults=FaultState(anomaly_score=round(score,4),primary_fault=fault,hypotheses=hypotheses,
-                    diagnostics=diagnostic_records,supported_diagnostic_categories=list(SUPPORTED_DIAGNOSTICS)),
+                    diagnostics=diagnostic_records,supported_diagnostic_categories=list(SUPPORTED_DIAGNOSTICS),
+                    ml_inference=ml_inference),
                 mission=MissionState(mission_id=telemetry.mission_id,phase=telemetry.mission_phase,sample_count=count,first_observed_at=first,last_observed_at=telemetry.timestamp),
                 prediction=prediction,alerts=[a.model_dump(mode="json") for a in alerts],threshold_config_version=self.thresholds.version)
             if synchronized: self._states[telemetry.engine_id]=state
             assessment=TwinAssessment(engine_id=telemetry.engine_id,mission_id=telemetry.mission_id,timestamp=telemetry.timestamp,
                 health_index=health.overall_index,rul_hours=prediction.rul_hours,anomaly_score=state.faults.anomaly_score,
                 predicted_fault=fault,confidence=round(.5+.45*score if fault!="Healthy" else .75,4),maintenance_advisory=advisory,alerts=alerts,
-                method="explainable physics-informed prototype rules; thresholds are engineering hypotheses")
+                method="explainable physics-informed prototype rules; thresholds are engineering hypotheses",
+                ml_inference=ml_inference)
             return assessment,state

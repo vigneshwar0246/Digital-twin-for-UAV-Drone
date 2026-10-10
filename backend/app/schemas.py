@@ -59,6 +59,7 @@ class TwinAssessment(BaseModel):
     maintenance_advisory: str
     alerts: list[Alert]
     method: str = "explainable physics-informed prototype rules"
+    ml_inference: dict = Field(default_factory=lambda: {"status": "disabled"})
 
 class MissionProfile(str, Enum):
     HIGH_ALTITUDE="HIGH_ALTITUDE"; ENDURANCE="ENDURANCE"; HOT_WEATHER="HOT_WEATHER"

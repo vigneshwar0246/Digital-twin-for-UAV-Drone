@@ -30,9 +30,13 @@ Fusion assumptions are versioned in `app/sensor_fusion_assumptions.json`.
 
 Hybrid diagnostics explicitly support eleven required fault categories and
 combine correlated engineering evidence with past/current statistical features.
-The offline classifier is not served because no deployable artifact exists.
-Diagnostic outputs therefore use an **uncalibrated engineering score**, never a
-fabricated probability, and expose rule/statistical/ML contributions separately.
+An optional ML provider loads the versioned, live-compatible candidate when
+enabled in development. The candidate failed its release gate, so serving is
+disabled by default and requires both `DIGITAL_TWIN_ML_ENABLED=true` and
+`DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true`. Inference is independent supporting
+evidence and never changes the engineering score or primary fault. Missing,
+invalid, stale, or incompatible input leaves the rule/statistical fallback
+active. ML scores are uncalibrated and are not failure probabilities.
 
 Telemetry transport is isolated behind adapters selected with
 `DIGITAL_TWIN_ADAPTER=SIMULATOR|CAN|SOCKETCAN|FADEC`. The default simulator needs
@@ -61,4 +65,5 @@ Run checks with:
 python -m pytest -q
 python -m backend.dataset.validate_dataset
 python -m backend.model_evaluation.evaluate_fault_classifier
+python -m backend.model_evaluation.live_candidate
 ```

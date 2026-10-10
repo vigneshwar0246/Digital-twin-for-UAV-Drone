@@ -22,6 +22,9 @@ class Settings:
     token_secret: str | None = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_TOKEN_SECRET"))
     demo_mode: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MODE", "false").lower() in {"1","true","yes"})
     demo_mission_id: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MISSION", "MISSION_0110"))
+    ml_enabled: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ML_ENABLED", "false").lower() in {"1", "true", "yes"})
+    ml_allow_unvalidated: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ML_ALLOW_UNVALIDATED", "false").lower() in {"1", "true", "yes"})
+    ml_artifact_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_ML_ARTIFACT", BACKEND_DIR / "model_evaluation" / "outputs" / "live_candidate" / "model.joblib")))
 
     def __post_init__(self):
         if self.environment not in {"development","production"}: raise ValueError("DIGITAL_TWIN_ENV must be development or production")
