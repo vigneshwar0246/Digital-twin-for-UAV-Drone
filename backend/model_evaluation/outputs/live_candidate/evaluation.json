@@ -1,0 +1,1282 @@
+{
+  "version": "live-telemetry-candidate-v1.0.0",
+  "selected": "hgb_regularized",
+  "feature_schema_version": "live-telemetry-v1",
+  "sklearn_version": "1.9.1",
+  "features": [
+    "mission_phase",
+    "altitude_m",
+    "ambient_temperature_c",
+    "throttle_percent",
+    "engine_load_percent",
+    "rpm",
+    "fuel_flow_lph",
+    "cylinder_head_temp_1_c",
+    "cylinder_head_temp_2_c",
+    "cylinder_head_temp_3_c",
+    "cylinder_head_temp_4_c",
+    "exhaust_gas_temp_1_c",
+    "exhaust_gas_temp_2_c",
+    "exhaust_gas_temp_3_c",
+    "exhaust_gas_temp_4_c",
+    "oil_temperature_c",
+    "oil_pressure_kpa",
+    "vibration_rms",
+    "alternator_voltage",
+    "battery_voltage",
+    "injection_timing_deg"
+  ],
+  "numeric_features": [
+    "altitude_m",
+    "ambient_temperature_c",
+    "throttle_percent",
+    "engine_load_percent",
+    "rpm",
+    "fuel_flow_lph",
+    "cylinder_head_temp_1_c",
+    "cylinder_head_temp_2_c",
+    "cylinder_head_temp_3_c",
+    "cylinder_head_temp_4_c",
+    "exhaust_gas_temp_1_c",
+    "exhaust_gas_temp_2_c",
+    "exhaust_gas_temp_3_c",
+    "exhaust_gas_temp_4_c",
+    "oil_temperature_c",
+    "oil_pressure_kpa",
+    "vibration_rms",
+    "alternator_voltage",
+    "battery_voltage",
+    "injection_timing_deg"
+  ],
+  "classes": [
+    "Alternator_Degradation",
+    "Bearing_Wear",
+    "Combustion_Instability",
+    "Cooling_System_Degradation",
+    "Fuel_Injector_Degradation",
+    "Healthy",
+    "Lubrication_System_Degradation",
+    "Sensor_Drift",
+    "Spark_Plug_Misfire"
+  ],
+  "dataset_sha256": "2b9a25ab4600bebb4d3d1d95504e22889ce86714bb680b7e68d524d3cb68041e",
+  "split_manifest": {
+    "strategy": "engine-disjoint validation/challenge plus time-forward audit within training engines",
+    "seed": 26054,
+    "engines": {
+      "fit": [
+        "ENGINE_001",
+        "ENGINE_002",
+        "ENGINE_004",
+        "ENGINE_006",
+        "ENGINE_007",
+        "ENGINE_008"
+      ],
+      "time_forward": [
+        "ENGINE_001",
+        "ENGINE_002",
+        "ENGINE_004",
+        "ENGINE_006",
+        "ENGINE_007",
+        "ENGINE_008"
+      ],
+      "validation": [
+        "ENGINE_005",
+        "ENGINE_009",
+        "ENGINE_012"
+      ],
+      "challenge": [
+        "ENGINE_003",
+        "ENGINE_010",
+        "ENGINE_011"
+      ]
+    },
+    "missions": {
+      "fit": 41,
+      "time_forward": 19,
+      "validation": 30,
+      "challenge": 30
+    },
+    "profile_definition": "hash of phase-duration fractions and altitude/temperature/throttle trajectory statistics; mission identity is excluded",
+    "challenge_profile_overlap_with_fit": [],
+    "engine_disjoint": {
+      "fit_vs_validation": true,
+      "fit_vs_challenge": true,
+      "validation_vs_challenge": true
+    },
+    "mission_disjoint": true,
+    "time_forward": true,
+    "time_forward_class_coverage": [
+      "Alternator_Degradation",
+      "Bearing_Wear",
+      "Combustion_Instability",
+      "Cooling_System_Degradation",
+      "Fuel_Injector_Degradation",
+      "Healthy",
+      "Lubrication_System_Degradation",
+      "Sensor_Drift",
+      "Spark_Plug_Misfire"
+    ]
+  },
+  "seed": 26054,
+  "minimum_important_fault_recall": 0.8,
+  "required_split_pass": {
+    "time_forward": false,
+    "validation": false,
+    "challenge": false
+  },
+  "release_gate_passed": false,
+  "status": "NOT_VALIDATED",
+  "probability_status": "NOT_CALIBRATED",
+  "evaluated_at": "2026-10-10T15:49:35.536280+00:00",
+  "selection_policy": "highest validation macro F1, then balanced accuracy",
+  "training_weighting": "balanced inverse frequency; cooling x5; sensor drift x1.6",
+  "candidates": {
+    "hgb_live": {
+      "parameters": {
+        "categorical_features": "from_dtype",
+        "class_weight": null,
+        "early_stopping": "auto",
+        "interaction_cst": null,
+        "l2_regularization": 0.5,
+        "learning_rate": 0.075,
+        "loss": "log_loss",
+        "max_bins": 255,
+        "max_depth": null,
+        "max_features": 1.0,
+        "max_iter": 220,
+        "max_leaf_nodes": 31,
+        "min_samples_leaf": 20,
+        "monotonic_cst": null,
+        "n_iter_no_change": 10,
+        "random_state": 26054,
+        "scoring": "loss",
+        "tol": 1e-07,
+        "validation_fraction": 0.1,
+        "verbose": 0,
+        "warm_start": false
+      },
+      "training_seconds": 22.637206100000185,
+      "validation": {
+        "samples": 24999,
+        "accuracy": 0.6615464618584743,
+        "balanced_accuracy": 0.4109654534459972,
+        "macro_precision": 0.43004175499411856,
+        "macro_recall": 0.4109654534459972,
+        "macro_f1": 0.3949247719696231,
+        "weighted_f1": 0.6516304027760114,
+        "inference_ms_per_sample": 0.04278714748587591,
+        "per_class": {
+          "Alternator_Degradation": {
+            "precision": 0.9531889994148625,
+            "recall": 0.9667655786350149,
+            "f1-score": 0.9599292869770183,
+            "support": 1685.0
+          },
+          "Bearing_Wear": {
+            "precision": 0.3577481840193705,
+            "recall": 0.3817829457364341,
+            "f1-score": 0.369375,
+            "support": 1548.0
+          },
+          "Combustion_Instability": {
+            "precision": 0.09749303621169916,
+            "recall": 0.10810810810810811,
+            "f1-score": 0.10252654705236178,
+            "support": 1295.0
+          },
+          "Cooling_System_Degradation": {
+            "precision": 0.09975369458128079,
+            "recall": 0.09278350515463918,
+            "f1-score": 0.09614243323442137,
+            "support": 873.0
+          },
+          "Fuel_Injector_Degradation": {
+            "precision": 0.3080357142857143,
+            "recall": 0.12522686025408347,
+            "f1-score": 0.17806451612903226,
+            "support": 1653.0
+          },
+          "Healthy": {
+            "precision": 0.8813033359193173,
+            "recall": 0.9022382671480145,
+            "f1-score": 0.8916479360662172,
+            "support": 13850.0
+          },
+          "Lubrication_System_Degradation": {
+            "precision": 0.45209580838323354,
+            "recall": 0.08940201302545885,
+            "f1-score": 0.14928324270884824,
+            "support": 1689.0
+          },
+          "Sensor_Drift": {
+            "precision": 0.52437106918239,
+            "recall": 0.5235478806907379,
+            "f1-score": 0.5239591516103692,
+            "support": 1274.0
+          },
+          "Spark_Plug_Misfire": {
+            "precision": 0.19638595294919878,
+            "recall": 0.508833922261484,
+            "f1-score": 0.2833948339483395,
+            "support": 1132.0
+          }
+        },
+        "confusion_matrix": [
+          [
+            1629,
+            0,
+            0,
+            20,
+            0,
+            34,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            591,
+            319,
+            3,
+            0,
+            64,
+            0,
+            35,
+            536
+          ],
+          [
+            0,
+            195,
+            140,
+            34,
+            11,
+            511,
+            50,
+            58,
+            296
+          ],
+          [
+            0,
+            0,
+            62,
+            81,
+            157,
+            160,
+            0,
+            271,
+            142
+          ],
+          [
+            0,
+            0,
+            132,
+            377,
+            207,
+            405,
+            0,
+            174,
+            358
+          ],
+          [
+            79,
+            51,
+            200,
+            221,
+            94,
+            12496,
+            6,
+            67,
+            636
+          ],
+          [
+            1,
+            627,
+            400,
+            2,
+            25,
+            242,
+            151,
+            0,
+            241
+          ],
+          [
+            0,
+            0,
+            165,
+            0,
+            170,
+            126,
+            0,
+            667,
+            146
+          ],
+          [
+            0,
+            188,
+            18,
+            74,
+            8,
+            141,
+            127,
+            0,
+            576
+          ]
+        ],
+        "labels": [
+          "Alternator_Degradation",
+          "Bearing_Wear",
+          "Combustion_Instability",
+          "Cooling_System_Degradation",
+          "Fuel_Injector_Degradation",
+          "Healthy",
+          "Lubrication_System_Degradation",
+          "Sensor_Drift",
+          "Spark_Plug_Misfire"
+        ]
+      }
+    },
+    "hgb_regularized": {
+      "parameters": {
+        "categorical_features": "from_dtype",
+        "class_weight": null,
+        "early_stopping": "auto",
+        "interaction_cst": null,
+        "l2_regularization": 2.0,
+        "learning_rate": 0.045,
+        "loss": "log_loss",
+        "max_bins": 255,
+        "max_depth": null,
+        "max_features": 1.0,
+        "max_iter": 300,
+        "max_leaf_nodes": 15,
+        "min_samples_leaf": 30,
+        "monotonic_cst": null,
+        "n_iter_no_change": 10,
+        "random_state": 26054,
+        "scoring": "loss",
+        "tol": 1e-07,
+        "validation_fraction": 0.1,
+        "verbose": 0,
+        "warm_start": false
+      },
+      "training_seconds": 36.858482300000105,
+      "validation": {
+        "samples": 24999,
+        "accuracy": 0.6705068202728109,
+        "balanced_accuracy": 0.4346850676946676,
+        "macro_precision": 0.4784735760233008,
+        "macro_recall": 0.4346850676946676,
+        "macro_f1": 0.43033074796768783,
+        "weighted_f1": 0.6730167727874705,
+        "inference_ms_per_sample": 0.13018467138684894,
+        "per_class": {
+          "Alternator_Degradation": {
+            "precision": 0.9593259732713538,
+            "recall": 0.9798219584569733,
+            "f1-score": 0.9694656488549618,
+            "support": 1685.0
+          },
+          "Bearing_Wear": {
+            "precision": 0.43813131313131315,
+            "recall": 0.4483204134366925,
+            "f1-score": 0.44316730523627074,
+            "support": 1548.0
+          },
+          "Combustion_Instability": {
+            "precision": 0.034992223950233284,
+            "recall": 0.03474903474903475,
+            "f1-score": 0.03487020534676482,
+            "support": 1295.0
+          },
+          "Cooling_System_Degradation": {
+            "precision": 0.02455661664392906,
+            "recall": 0.020618556701030927,
+            "f1-score": 0.0224159402241594,
+            "support": 873.0
+          },
+          "Fuel_Injector_Degradation": {
+            "precision": 0.47406340057636887,
+            "recall": 0.19903206291591047,
+            "f1-score": 0.2803579037068598,
+            "support": 1653.0
+          },
+          "Healthy": {
+            "precision": 0.8847986141186661,
+            "recall": 0.8850541516245487,
+            "f1-score": 0.8849263644239099,
+            "support": 13850.0
+          },
+          "Lubrication_System_Degradation": {
+            "precision": 0.7685459940652819,
+            "recall": 0.30669034931912376,
+            "f1-score": 0.4384257300042319,
+            "support": 1689.0
+          },
+          "Sensor_Drift": {
+            "precision": 0.540650406504065,
+            "recall": 0.521978021978022,
+            "f1-score": 0.5311501597444089,
+            "support": 1274.0
+          },
+          "Spark_Plug_Misfire": {
+            "precision": 0.1811976419484952,
+            "recall": 0.5159010600706714,
+            "f1-score": 0.2681974741676234,
+            "support": 1132.0
+          }
+        },
+        "confusion_matrix": [
+          [
+            1651,
+            0,
+            0,
+            16,
+            0,
+            15,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            694,
+            293,
+            7,
+            0,
+            75,
+            1,
+            15,
+            463
+          ],
+          [
+            0,
+            210,
+            45,
+            43,
+            7,
+            543,
+            30,
+            38,
+            379
+          ],
+          [
+            0,
+            0,
+            113,
+            18,
+            103,
+            168,
+            0,
+            330,
+            141
+          ],
+          [
+            0,
+            0,
+            95,
+            333,
+            329,
+            381,
+            0,
+            140,
+            375
+          ],
+          [
+            69,
+            40,
+            182,
+            249,
+            125,
+            12258,
+            2,
+            42,
+            883
+          ],
+          [
+            0,
+            412,
+            365,
+            4,
+            50,
+            150,
+            518,
+            0,
+            190
+          ],
+          [
+            1,
+            0,
+            187,
+            3,
+            79,
+            134,
+            0,
+            665,
+            205
+          ],
+          [
+            0,
+            228,
+            6,
+            60,
+            1,
+            130,
+            123,
+            0,
+            584
+          ]
+        ],
+        "labels": [
+          "Alternator_Degradation",
+          "Bearing_Wear",
+          "Combustion_Instability",
+          "Cooling_System_Degradation",
+          "Fuel_Injector_Degradation",
+          "Healthy",
+          "Lubrication_System_Degradation",
+          "Sensor_Drift",
+          "Spark_Plug_Misfire"
+        ]
+      }
+    },
+    "extra_trees": {
+      "parameters": {
+        "bootstrap": false,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": 0.8,
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 3,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 160,
+        "n_jobs": -1,
+        "oob_score": false,
+        "random_state": 26054,
+        "verbose": 0,
+        "warm_start": false
+      },
+      "training_seconds": 7.56455029999961,
+      "validation": {
+        "samples": 24999,
+        "accuracy": 0.6623464938597544,
+        "balanced_accuracy": 0.35071840284963857,
+        "macro_precision": 0.4432312718242369,
+        "macro_recall": 0.35071840284963857,
+        "macro_f1": 0.35133179334581593,
+        "weighted_f1": 0.6328558285436039,
+        "inference_ms_per_sample": 0.014369486779461994,
+        "per_class": {
+          "Alternator_Degradation": {
+            "precision": 0.9494949494949495,
+            "recall": 0.8367952522255193,
+            "f1-score": 0.889589905362776,
+            "support": 1685.0
+          },
+          "Bearing_Wear": {
+            "precision": 0.4095315024232633,
+            "recall": 0.32751937984496127,
+            "f1-score": 0.3639626704953338,
+            "support": 1548.0
+          },
+          "Combustion_Instability": {
+            "precision": 0.048206937095825984,
+            "recall": 0.06332046332046332,
+            "f1-score": 0.05473965287049399,
+            "support": 1295.0
+          },
+          "Cooling_System_Degradation": {
+            "precision": 0.04830917874396135,
+            "recall": 0.011454753722794959,
+            "f1-score": 0.018518518518518517,
+            "support": 873.0
+          },
+          "Fuel_Injector_Degradation": {
+            "precision": 0.4508670520231214,
+            "recall": 0.047186932849364795,
+            "f1-score": 0.08543263964950712,
+            "support": 1653.0
+          },
+          "Healthy": {
+            "precision": 0.8382251272704418,
+            "recall": 0.9629602888086642,
+            "f1-score": 0.8962736467188602,
+            "support": 13850.0
+          },
+          "Lubrication_System_Degradation": {
+            "precision": 0.5017667844522968,
+            "recall": 0.08407341622261694,
+            "f1-score": 0.1440162271805274,
+            "support": 1689.0
+          },
+          "Sensor_Drift": {
+            "precision": 0.5966850828729282,
+            "recall": 0.423861852433281,
+            "f1-score": 0.4956402019274897,
+            "support": 1274.0
+          },
+          "Spark_Plug_Misfire": {
+            "precision": 0.14599483204134367,
+            "recall": 0.3992932862190813,
+            "f1-score": 0.21381267738883633,
+            "support": 1132.0
+          }
+        },
+        "confusion_matrix": [
+          [
+            1410,
+            0,
+            0,
+            54,
+            0,
+            220,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            507,
+            189,
+            0,
+            0,
+            116,
+            0,
+            3,
+            733
+          ],
+          [
+            73,
+            128,
+            82,
+            49,
+            13,
+            514,
+            42,
+            65,
+            329
+          ],
+          [
+            0,
+            0,
+            359,
+            10,
+            26,
+            270,
+            0,
+            106,
+            102
+          ],
+          [
+            0,
+            0,
+            168,
+            51,
+            78,
+            738,
+            0,
+            188,
+            430
+          ],
+          [
+            2,
+            31,
+            165,
+            15,
+            23,
+            13337,
+            0,
+            3,
+            274
+          ],
+          [
+            0,
+            336,
+            436,
+            0,
+            21,
+            328,
+            142,
+            0,
+            426
+          ],
+          [
+            0,
+            0,
+            217,
+            0,
+            3,
+            165,
+            0,
+            540,
+            349
+          ],
+          [
+            0,
+            236,
+            85,
+            28,
+            9,
+            223,
+            99,
+            0,
+            452
+          ]
+        ],
+        "labels": [
+          "Alternator_Degradation",
+          "Bearing_Wear",
+          "Combustion_Instability",
+          "Cooling_System_Degradation",
+          "Fuel_Injector_Degradation",
+          "Healthy",
+          "Lubrication_System_Degradation",
+          "Sensor_Drift",
+          "Spark_Plug_Misfire"
+        ]
+      }
+    }
+  },
+  "selected_assessments": {
+    "time_forward": {
+      "samples": 15827,
+      "accuracy": 0.6162254375434384,
+      "balanced_accuracy": 0.3528895975342065,
+      "macro_precision": 0.43706136137532137,
+      "macro_recall": 0.3528895975342065,
+      "macro_f1": 0.37270279979533966,
+      "weighted_f1": 0.6317356485988282,
+      "inference_ms_per_sample": 0.1476087445504431,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9900497512437811,
+          "recall": 0.9802955665024631,
+          "f1-score": 0.9851485148514851,
+          "support": 406.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.3701149425287356,
+          "recall": 0.2795138888888889,
+          "f1-score": 0.31849653808110784,
+          "support": 1152.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.09044585987261146,
+          "recall": 0.14343434343434344,
+          "f1-score": 0.1109375,
+          "support": 495.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.28823529411764703,
+          "recall": 0.1774076755973932,
+          "f1-score": 0.21963245181532945,
+          "support": 1381.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.454320987654321,
+          "recall": 0.1492295214922952,
+          "f1-score": 0.22466422466422467,
+          "support": 1233.0
+        },
+        "Healthy": {
+          "precision": 0.8532797567332754,
+          "recall": 0.8756268806419257,
+          "f1-score": 0.8643088939002255,
+          "support": 8973.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.8506224066390041,
+          "recall": 0.43248945147679324,
+          "f1-score": 0.5734265734265734,
+          "support": 1422.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1-score": 0.0,
+          "support": 323.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.03648325358851675,
+          "recall": 0.13800904977375567,
+          "f1-score": 0.05771050141911069,
+          "support": 442.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          398,
+          0,
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          322,
+          80,
+          70,
+          0,
+          105,
+          70,
+          0,
+          505
+        ],
+        [
+          0,
+          175,
+          71,
+          0,
+          1,
+          183,
+          12,
+          1,
+          52
+        ],
+        [
+          0,
+          0,
+          0,
+          245,
+          0,
+          301,
+          0,
+          832,
+          3
+        ],
+        [
+          0,
+          0,
+          82,
+          446,
+          184,
+          373,
+          0,
+          0,
+          148
+        ],
+        [
+          3,
+          17,
+          409,
+          85,
+          220,
+          7857,
+          26,
+          41,
+          315
+        ],
+        [
+          0,
+          221,
+          35,
+          0,
+          0,
+          224,
+          615,
+          38,
+          289
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          22,
+          0,
+          0,
+          299
+        ],
+        [
+          1,
+          135,
+          106,
+          4,
+          0,
+          135,
+          0,
+          0,
+          61
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ]
+    },
+    "validation": {
+      "samples": 24999,
+      "accuracy": 0.6705068202728109,
+      "balanced_accuracy": 0.4346850676946676,
+      "macro_precision": 0.4784735760233008,
+      "macro_recall": 0.4346850676946676,
+      "macro_f1": 0.43033074796768783,
+      "weighted_f1": 0.6730167727874705,
+      "inference_ms_per_sample": 0.13581554462178408,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9593259732713538,
+          "recall": 0.9798219584569733,
+          "f1-score": 0.9694656488549618,
+          "support": 1685.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.43813131313131315,
+          "recall": 0.4483204134366925,
+          "f1-score": 0.44316730523627074,
+          "support": 1548.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.034992223950233284,
+          "recall": 0.03474903474903475,
+          "f1-score": 0.03487020534676482,
+          "support": 1295.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.02455661664392906,
+          "recall": 0.020618556701030927,
+          "f1-score": 0.0224159402241594,
+          "support": 873.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.47406340057636887,
+          "recall": 0.19903206291591047,
+          "f1-score": 0.2803579037068598,
+          "support": 1653.0
+        },
+        "Healthy": {
+          "precision": 0.8847986141186661,
+          "recall": 0.8850541516245487,
+          "f1-score": 0.8849263644239099,
+          "support": 13850.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.7685459940652819,
+          "recall": 0.30669034931912376,
+          "f1-score": 0.4384257300042319,
+          "support": 1689.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.540650406504065,
+          "recall": 0.521978021978022,
+          "f1-score": 0.5311501597444089,
+          "support": 1274.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.1811976419484952,
+          "recall": 0.5159010600706714,
+          "f1-score": 0.2681974741676234,
+          "support": 1132.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1651,
+          0,
+          0,
+          16,
+          0,
+          15,
+          0,
+          0,
+          3
+        ],
+        [
+          0,
+          694,
+          293,
+          7,
+          0,
+          75,
+          1,
+          15,
+          463
+        ],
+        [
+          0,
+          210,
+          45,
+          43,
+          7,
+          543,
+          30,
+          38,
+          379
+        ],
+        [
+          0,
+          0,
+          113,
+          18,
+          103,
+          168,
+          0,
+          330,
+          141
+        ],
+        [
+          0,
+          0,
+          95,
+          333,
+          329,
+          381,
+          0,
+          140,
+          375
+        ],
+        [
+          69,
+          40,
+          182,
+          249,
+          125,
+          12258,
+          2,
+          42,
+          883
+        ],
+        [
+          0,
+          412,
+          365,
+          4,
+          50,
+          150,
+          518,
+          0,
+          190
+        ],
+        [
+          1,
+          0,
+          187,
+          3,
+          79,
+          134,
+          0,
+          665,
+          205
+        ],
+        [
+          0,
+          228,
+          6,
+          60,
+          1,
+          130,
+          123,
+          0,
+          584
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ]
+    },
+    "challenge": {
+      "samples": 25000,
+      "accuracy": 0.69876,
+      "balanced_accuracy": 0.5157185922821194,
+      "macro_precision": 0.5830825418679684,
+      "macro_recall": 0.5157185922821194,
+      "macro_f1": 0.5089896867306056,
+      "weighted_f1": 0.7039276661046742,
+      "inference_ms_per_sample": 0.130360811999999,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9827490261547023,
+          "recall": 0.9660831509846827,
+          "f1-score": 0.9743448275862069,
+          "support": 1828.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.4476067270375162,
+          "recall": 0.4276885043263288,
+          "f1-score": 0.43742098609355246,
+          "support": 809.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.16383701188455008,
+          "recall": 0.11906230721776681,
+          "f1-score": 0.13790639514112182,
+          "support": 1621.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.709480122324159,
+          "recall": 0.15508021390374332,
+          "f1-score": 0.2545255074053758,
+          "support": 1496.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.3305489260143198,
+          "recall": 0.21161191749427044,
+          "f1-score": 0.25803446669771773,
+          "support": 1309.0
+        },
+        "Healthy": {
+          "precision": 0.9015446910617877,
+          "recall": 0.8654621364814281,
+          "f1-score": 0.8831350080799177,
+          "support": 13892.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.5497553017944535,
+          "recall": 0.2762295081967213,
+          "f1-score": 0.36770321876704853,
+          "support": 1220.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.9707724425887265,
+          "recall": 0.9741620111731844,
+          "f1-score": 0.9724642732659463,
+          "support": 1432.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.1914486279514997,
+          "recall": 0.6460875807609476,
+          "f1-score": 0.29537249753856254,
+          "support": 1393.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1766,
+          0,
+          0,
+          1,
+          0,
+          56,
+          0,
+          0,
+          5
+        ],
+        [
+          1,
+          346,
+          143,
+          0,
+          0,
+          74,
+          3,
+          0,
+          242
+        ],
+        [
+          3,
+          157,
+          193,
+          3,
+          30,
+          361,
+          73,
+          0,
+          801
+        ],
+        [
+          0,
+          0,
+          356,
+          232,
+          168,
+          304,
+          1,
+          1,
+          434
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          277,
+          210,
+          1,
+          0,
+          821
+        ],
+        [
+          25,
+          0,
+          235,
+          91,
+          356,
+          12023,
+          8,
+          41,
+          1113
+        ],
+        [
+          2,
+          115,
+          189,
+          0,
+          5,
+          187,
+          337,
+          0,
+          385
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          35,
+          0,
+          1395,
+          0
+        ],
+        [
+          0,
+          155,
+          62,
+          0,
+          0,
+          86,
+          190,
+          0,
+          900
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ]
+    }
+  }
+}
