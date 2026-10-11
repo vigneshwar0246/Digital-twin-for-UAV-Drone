@@ -1,0 +1,69 @@
+name: Software checks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip check
+      - name: Reject tracked bytecode and private key files
+        run: >-
+          python -c "import subprocess;
+          paths=subprocess.check_output(['git','ls-files'],text=True).splitlines();
+          forbidden=[p for p in paths if p.endswith(('.pyc','.pem','.key'))];
+          assert not forbidden, forbidden"
+      - name: Backend, API, dataset and evaluation contract tests
+        run: >-
+          python -m pytest backend/tests backend/model_evaluation/tests backend/dataset/tests -q
+          --deselect=backend/tests/test_experimental_live_features.py::test_offline_streaming_feature_parity
+          --deselect=backend/tests/test_experimental_live_features.py::test_bad_telemetry_and_mission_reset
+      - name: Validate historical datasets without rewriting reports
+        run: |
+          python -c "from backend.dataset.validate_dataset import validate; checks,_=validate(False); assert all(c['passed'] for c in checks)"
+          python -c "from backend.dataset.validate_dataset_v2 import validate_v2; checks,_=validate_v2(False); assert all(c['passed'] for c in checks)"
+      - name: Confirm research model has not been promoted by the software build
+        run: >-
+          python -c "import json; from pathlib import Path;
+          d=json.loads(Path('backend/model_evaluation/outputs/live_candidate/evaluation.json').read_text());
+          assert d['release_gate_passed'] is False"
+
+  experimental-features:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pip install scikit-learn==1.7.2
+      - name: Frozen 1.7.2 experimental feature checks
+        run: python -m pytest backend/tests/test_experimental_live_features.py -q
+
+  frontend:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npx playwright install chromium
+      - run: npm run test:e2e -- --reporter=list

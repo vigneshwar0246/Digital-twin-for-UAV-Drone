@@ -1,6 +1,6 @@
 param(
     [string]$Username = "admin",
-    [string]$Password = "AerionLocalDemo!2026"
+    [string]$Password = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -36,9 +36,12 @@ $env:DIGITAL_TWIN_ENV = "development"
 $env:DIGITAL_TWIN_DEMO_MODE = "true"
 $env:DIGITAL_TWIN_DEMO_MISSION = "MISSION_0110"
 $env:DIGITAL_TWIN_DB = Join-Path $projectRoot "backend\runtime\local-development.db"
-$env:DIGITAL_TWIN_TOKEN_SECRET = "local-development-secret-change-before-production"
-$env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_USERNAME = $Username
-$env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD = $Password
+if ($Password) {
+    $env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_USERNAME = $Username
+    $env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD = $Password
+} else {
+    Remove-Item Env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD -ErrorAction SilentlyContinue
+}
 
 Write-Host "[START] Backend: http://127.0.0.1:8000"
 $backend = Start-Process -FilePath $venvPython `
@@ -58,7 +61,7 @@ try {
     }
     if (-not $ready) { throw "The backend did not become ready at port 8000." }
 
-    Write-Host "[READY] Sign in at System Configuration with: $Username / $Password"
+    Write-Host "[READY] Local demo mode is active. Authenticated setup requires an explicitly supplied bootstrap password."
     Write-Host "[START] Frontend: http://127.0.0.1:5173"
     Write-Host "[STOP] Press Ctrl+C to stop both services."
     Set-Location $frontendDir

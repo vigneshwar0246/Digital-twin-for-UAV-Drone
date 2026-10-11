@@ -11,7 +11,7 @@ from .twin import TwinEngine
 from .adapters.base import TelemetryPacket
 from .adapters.factory import create_adapter
 from .adapters.base import TelemetryAdapter
-from .replay import (AdvanceRequest, MissionTelemetrySource, ReplayManager, ReplayRequest, SeekRequest, analyze_mission, csv_row_to_telemetry)
+from .replay import (AdvanceRequest, ComparisonRequest, MissionTelemetrySource, ReplayManager, ReplayRequest, SeekRequest, analyze_mission, csv_row_to_telemetry)
 from .auth import AuthRepository,AuthService,AuthenticationError,CreateUserRequest,LoginRequest,PasswordHasher,Role,TokenService
 from .security import RateLimiter,authorization_dependency,request_id_context
 
@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
     store=TelemetryStore(settings.database_path)
     telemetry_adapter=create_adapter(settings.adapter_mode,settings.can_mapping_path,settings.socketcan_channel)
     telemetry_adapter.start()
-    source=MissionTelemetrySource(settings.replay_data_path,store.simulation_config)
+    source=MissionTelemetrySource(settings.replay_data_path,store.simulation_config,store.simulation_snapshot)
     replay_manager=ReplayManager(source,lambda sample,session_twin:process_telemetry_state(sample,persist=False,twin_instance=session_twin))
     secret=settings.token_secret or secrets.token_urlsafe(48)
     auth_service=AuthService(AuthRepository(settings.database_path),TokenService(secret,settings.token_lifetime_minutes),PasswordHasher())
@@ -192,6 +192,15 @@ def history(engine_id: str,limit:int=Query(100,ge=1,le=settings.max_history_rows
 def run_simulation(request: SimulationRequest, persist:bool=False):
     assert store is not None
     mission=build_mission(request); assessments=[]; states=[]
+    resolved=request.model_copy(update={"mission_id":mission.mission_id,"start_time":mission.start_time})
+    configuration=resolved.model_dump(mode="json")
+    try: store.check_simulation_identity(mission.mission_id,configuration)
+    except ValueError as exc: raise HTTPException(409,str(exc)) from exc
+    recorded=store.simulation_snapshot(mission.mission_id)
+    if recorded is not None:
+        if persist and not recorded["persisted_telemetry"]:
+            raise HTTPException(409,"mission was already recorded without history persistence; use recorded replay for re-analysis")
+        return recorded
     assert twin is not None
     twin.reset_engine_state(mission.engine_id)
     # The exact same processor used by POST /telemetry is used here. Persist only
@@ -199,11 +208,17 @@ def run_simulation(request: SimulationRequest, persist:bool=False):
     for sample in mission.telemetry:
         assessment,state=process_telemetry_state(sample,persist=persist)
         assessments.append(assessment); states.append(state)
-    resolved=request.model_copy(update={"mission_id":mission.mission_id,"start_time":mission.start_time})
-    store.save_simulation(mission.mission_id,mission.engine_id,mission.start_time.isoformat(),mission.seed,resolved.model_dump(mode="json"))
-    return {**mission.model_dump(mode="json"),"sample_count":len(mission.telemetry),
+    result={**mission.model_dump(mode="json"),"sample_count":len(mission.telemetry),
         "assessments":[x.model_dump(mode="json") for x in assessments],
         "states":[x.model_dump(mode="json") for x in states],"persisted_telemetry":persist}
+    try: store.save_simulation(mission.mission_id,mission.engine_id,mission.start_time.isoformat(),mission.seed,configuration,result)
+    except ValueError as exc: raise HTTPException(409,str(exc)) from exc
+    return result
+
+@app.get("/api/v1/simulations",dependencies=[Depends(require(*ALL_ROLES))])
+def list_simulations(limit:int=Query(100,ge=1,le=500)):
+    assert store is not None
+    return store.simulations(limit)
 
 @app.get("/api/v1/simulations/{mission_id}/configuration",dependencies=[Depends(require(*ALL_ROLES))])
 def simulation_configuration(mission_id:str):
@@ -217,7 +232,17 @@ def replay_simulation(mission_id:str,persist:bool=False):
     assert store is not None
     config=store.simulation_config(mission_id)
     if config is None: raise HTTPException(404,"simulation mission configuration not found")
-    return run_simulation(SimulationRequest.model_validate(config),persist=persist)
+    snapshot=store.simulation_snapshot(mission_id)
+    if snapshot is None:
+        return {**run_simulation(SimulationRequest.model_validate(config),persist=persist),
+            "replay_source":"legacy_regenerated_simulation","replay_notice":"Original samples were not saved by the older schema."}
+    if persist:
+        assert twin is not None
+        twin.reset_engine_state(snapshot["engine_id"])
+        for item in snapshot["telemetry"]:
+            process_telemetry_state(Telemetry.model_validate(item),persist=True)
+    return {**snapshot,"replay_source":"recorded_simulation_snapshot","reanalysis_persisted":persist,
+        "replay_notice":"Recorded telemetry and original results; persisted replay, if requested, is a current-rule re-analysis."}
 
 @app.get("/api/v1/missions",dependencies=[Depends(require(*ALL_ROLES))])
 def missions(limit:int=Query(120,ge=1,le=500)):
@@ -226,10 +251,11 @@ def missions(limit:int=Query(120,ge=1,le=500)):
     with settings.replay_data_path.open(encoding="utf-8",newline="") as handle:
         for row in csv.DictReader(handle):
             mid=row["mission_id"]
-            if mid not in found: found[mid]={"mission_id":mid,"engine_id":row["engine_id"],"outcome":row["mission_outcome"],"faults":set(),"samples":0}
+            if mid not in found:
+                if len(found)>=limit: break
+                found[mid]={"mission_id":mid,"engine_id":row["engine_id"],"outcome":row["mission_outcome"],"faults":set(),"samples":0}
             found[mid]["samples"]+=1
             if row["fault_type"]!="Healthy": found[mid]["faults"].add(row["fault_type"])
-            if len(found)>=limit and mid not in found: break
     return [{**x,"faults":sorted(x["faults"])} for x in list(found.values())[:limit]]
 
 @app.get("/api/v1/missions/{mission_id}/replay",dependencies=[Depends(require(*ALL_ROLES))])
@@ -250,6 +276,7 @@ def create_replay(request:ReplayRequest):
     assert replay_manager is not None
     try: return replay_manager.create(request).status()
     except ValueError as exc: raise HTTPException(404,str(exc)) from exc
+    except RuntimeError as exc: raise HTTPException(429,str(exc)) from exc
 
 def _replay_session(replay_id:str):
     assert replay_manager is not None
@@ -281,9 +308,20 @@ def replay_report(replay_id:str): return analyze_mission(_replay_session(replay_
 @app.get("/api/v1/missions/{mission_id}/report",dependencies=[Depends(require(*ALL_ROLES))])
 def mission_report(mission_id:str,engine_id:str|None=None,start_time:datetime|None=None,end_time:datetime|None=None):
     assert replay_manager is not None
-    try: session=replay_manager.create(ReplayRequest(mission_id=mission_id,engine_id=engine_id,start_time=start_time,end_time=end_time,speed=100))
+    try: return replay_manager.report(ReplayRequest(mission_id=mission_id,engine_id=engine_id,start_time=start_time,end_time=end_time,speed=100))
     except ValueError as exc: raise HTTPException(404,str(exc)) from exc
-    return analyze_mission(session)
+
+@app.post("/api/v1/missions/compare",dependencies=[Depends(require(*ALL_ROLES))])
+def compare_missions(request:ComparisonRequest):
+    assert replay_manager is not None
+    try:
+        first=replay_manager.report(ReplayRequest(mission_id=request.first_mission_id,speed=100))
+        second=replay_manager.report(ReplayRequest(mission_id=request.second_mission_id,speed=100))
+    except ValueError as exc: raise HTTPException(404,str(exc)) from exc
+    comparable=("maximum_cht_c","maximum_egt_c","minimum_oil_pressure_kpa","maximum_vibration_rms","fuel_usage_liters","time_spent_abnormal_seconds")
+    return {"first":first,"second":second,
+        "second_minus_first":{key:round(second[key]-first[key],4) for key in comparable},
+        "analysis_semantics":"Both missions were re-analyzed with current prototype rules; differences are descriptive, not controlled causal effects."}
 
 @app.get("/api/v1/model/report",dependencies=[Depends(require(Role.ADMIN,Role.ANALYST,Role.MAINTENANCE_ENGINEER))])
 def model_report():

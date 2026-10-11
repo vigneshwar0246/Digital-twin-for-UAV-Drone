@@ -5,7 +5,7 @@ from .schemas import Telemetry, TwinAssessment
 from .states import EngineState
 
 class TelemetryStore:
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
 
     def __init__(self, path: Path):
         self.path = path; self._lock = RLock()
@@ -22,6 +22,7 @@ class TelemetryStore:
             db.execute("CREATE INDEX IF NOT EXISTS ix_telemetry_engine_time ON telemetry(engine_id, timestamp DESC)")
             db.execute("CREATE INDEX IF NOT EXISTS ix_telemetry_mission_time ON telemetry(mission_id, timestamp)")
             db.execute("CREATE TABLE IF NOT EXISTS simulation_missions (mission_id TEXT PRIMARY KEY, engine_id TEXT NOT NULL, start_time TEXT NOT NULL, seed INTEGER NOT NULL, configuration_json TEXT NOT NULL)")
+            db.execute("CREATE TABLE IF NOT EXISTS simulation_snapshots (mission_id TEXT PRIMARY KEY, snapshot_json TEXT NOT NULL, FOREIGN KEY(mission_id) REFERENCES simulation_missions(mission_id))")
             db.execute(f"PRAGMA user_version = {self.SCHEMA_VERSION}")
 
     def _connect(self):
@@ -52,12 +53,35 @@ class TelemetryStore:
         with self._lock, self._connect() as db:
             db.execute("DELETE FROM telemetry WHERE engine_id=?",(engine_id,))
 
-    def save_simulation(self,mission_id:str,engine_id:str,start_time:str,seed:int,configuration:dict):
+    def simulation_snapshot(self,mission_id:str):
+        with self._connect() as db:
+            row=db.execute("SELECT snapshot_json FROM simulation_snapshots WHERE mission_id=?",(mission_id,)).fetchone()
+        return json.loads(row["snapshot_json"]) if row else None
+
+    def check_simulation_identity(self,mission_id:str,configuration:dict):
+        existing=self.simulation_config(mission_id)
+        if existing is not None and existing!=configuration:
+            raise ValueError("mission ID already belongs to a different simulation configuration")
+
+    def save_simulation(self,mission_id:str,engine_id:str,start_time:str,seed:int,configuration:dict,snapshot:dict|None=None):
         with self._lock,self._connect() as db:
-            db.execute("INSERT OR REPLACE INTO simulation_missions(mission_id,engine_id,start_time,seed,configuration_json) VALUES(?,?,?,?,?)",
+            existing=db.execute("SELECT configuration_json FROM simulation_missions WHERE mission_id=?",(mission_id,)).fetchone()
+            if existing is not None and json.loads(existing["configuration_json"])!=configuration:
+                raise ValueError("mission ID already belongs to a different simulation configuration")
+            db.execute("INSERT OR IGNORE INTO simulation_missions(mission_id,engine_id,start_time,seed,configuration_json) VALUES(?,?,?,?,?)",
                 (mission_id,engine_id,start_time,seed,json.dumps(configuration)))
+            if snapshot is not None:
+                db.execute("INSERT OR IGNORE INTO simulation_snapshots(mission_id,snapshot_json) VALUES(?,?)",
+                    (mission_id,json.dumps(snapshot)))
 
     def simulation_config(self,mission_id:str):
         with self._connect() as db:
             row=db.execute("SELECT configuration_json FROM simulation_missions WHERE mission_id=?",(mission_id,)).fetchone()
         return json.loads(row["configuration_json"]) if row else None
+
+    def simulations(self,limit:int=100):
+        if not 1 <= limit <= 500: raise ValueError("simulation list limit must be between 1 and 500")
+        with self._connect() as db:
+            rows=db.execute("SELECT mission_id,engine_id,start_time,seed,configuration_json FROM simulation_missions ORDER BY start_time DESC,mission_id DESC LIMIT ?",(limit,)).fetchall()
+        return [{"mission_id":row["mission_id"],"engine_id":row["engine_id"],"start_time":row["start_time"],"seed":row["seed"],
+            "profile":json.loads(row["configuration_json"]).get("profile"),"source":"simulated_mission"} for row in rows]

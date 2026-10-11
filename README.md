@@ -2,6 +2,23 @@
 
 AERION is a local aircraft-engine digital-twin **research demonstrator**. It combines generated engine telemetry, validated FastAPI ingestion, prototype physics and engineering diagnostics, an optional scikit-learn fault classifier, SQLite history, and a React/Three.js dashboard. Its data and thresholds are simulated; it is not flight-certified or suitable for operational decisions.
 
+## Architecture
+
+```mermaid
+flowchart LR
+  S[Seeded mission simulator or validated telemetry] --> I[FastAPI ingestion]
+  I --> T[Twin state and sensor quality]
+  T --> P[Prototype physics and engineering diagnostics]
+  T --> M[Optional research ML classifier]
+  P --> D[(SQLite telemetry and mission snapshots)]
+  M --> D
+  D --> R[Recorded replay and mission reports]
+  I --> U[React dashboard]
+  D --> U
+```
+
+Python 3.13, Node.js 22, and npm are the supported development prerequisites. The Windows launcher installs Python and frontend dependencies when needed. For manual setup and environment variables, see the [backend](backend/README.md) and [frontend](frontend/README.md) guides. SQLite is initialized automatically at backend startup; no external database or hardware is required.
+
 ## Start the application on Windows
 
 From PowerShell in the repository root:
@@ -33,6 +50,10 @@ For a separate-terminal setup, custom database path, or direct telemetry POST, s
 
 The integrated model is the existing Dataset v1 `live-telemetry-v1` candidate, selected for its compatibility with live API fields. It **fails** the unchanged release gate of at least 0.80 recall for every required fault class on every required partition. The saved evaluation's lowest required-fault recalls are 0.021 on validation, 0.119 on challenge, and 0.000 on time-forward. A high displayed model score is not evidence of a safe engine or a calibrated probability. Stage 6 Candidate B remains blocked by the [independent audit](backend/model_evaluation/outputs_stage6/stage6_independent_audit.md) and is not connected to runtime diagnostics.
 
+An 85–95% accuracy target has not been demonstrated. The live candidate's held-out accuracies are 0.671 on validation, 0.699 on challenge, and 0.616 on time-forward data. These are synthetic-data results; the per-fault recall gate is the binding safety check. Do not advertise or deploy this classifier as a validated UAV diagnostic model. The application can still be run locally as a research demonstrator with engineering diagnostics.
+
+New simulated missions save their exact telemetry and results in SQLite schema v3. Replay sessions use recorded samples and clearly label current-rule diagnostics as re-analysis. For older configuration-only missions, the API labels replay as regenerated because the original samples were not saved. Mission IDs cannot be reassigned to a different configuration.
+
 ## Verify locally
 
 ```powershell
@@ -45,5 +66,9 @@ npm.cmd run build
 ```
 
 The full historical Python suite spans two scikit-learn environments: the live model requires 1.9.1, while two experimental feature tests assert 1.7.2. See the [implementation and test record](backend/PHASE2_IMPLEMENTATION_REPORT.md) for the matching-environment commands and measured outcomes. Dataset validation can be run read-only as described in the [dataset guide](backend/dataset/README.md). **Do not run dataset generation or offline evaluators against their default output directories merely to verify startup:** those commands can overwrite historical artifacts.
+
+The [software CI workflow](.github/workflows/ci.yml) runs backend, dataset, frontend, and separate scikit-learn 1.7.2 experimental checks. Its green status is a software correctness signal; it does not promote the failed ML release gate. The original dataset files and evaluation outputs remain historical evidence.
+
+The [engineering upgrade record](ENGINEERING_UPGRADE_REPORT_2026-10-11.md) lists the implementation, exact verification results, and important remaining limits.
 
 Useful endpoints: `http://127.0.0.1:8000/docs` for OpenAPI, `/api/v1/health` for liveness, `/api/v1/ready` for database/adapter/ML readiness, and `/api/v1/model/report` for stored evaluation results. The [demo guide](DEMO_GUIDE.md) walks through the application, including the distinction between engineering and research ML output.

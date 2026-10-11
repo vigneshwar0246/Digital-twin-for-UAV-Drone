@@ -36,11 +36,17 @@ def test_degradation_scenarios_change_relevant_terminal_signals():
     lubrication=build_mission(request(scenario=DegradationScenario.LUBRICATION_DEGRADATION)).telemetry[-1]
     drift=build_mission(request(scenario=DegradationScenario.SENSOR_DRIFT)).telemetry[-1]
     vibration=build_mission(request(scenario=DegradationScenario.VIBRATION_ANOMALY)).telemetry[-1]
+    misfire=build_mission(request(scenario=DegradationScenario.MISFIRE)).telemetry[-1]
+    alternator=build_mission(request(scenario=DegradationScenario.ALTERNATOR_DEGRADATION)).telemetry[-1]
+    frozen=build_mission(request(scenario=DegradationScenario.SENSOR_FREEZE)).telemetry
     assert cooling.cylinder_head_temp_2_c>healthy.cylinder_head_temp_2_c
     assert injector.fuel_flow_lph<healthy.fuel_flow_lph
     assert lubrication.oil_pressure_kpa<healthy.oil_pressure_kpa
     assert drift.cylinder_head_temp_1_c>healthy.cylinder_head_temp_1_c
     assert vibration.vibration_rms>healthy.vibration_rms
+    assert misfire.exhaust_gas_temp_1_c<healthy.exhaust_gas_temp_1_c
+    assert alternator.alternator_voltage<healthy.alternator_voltage
+    assert frozen[-1].cylinder_head_temp_1_c==frozen[-2].cylinder_head_temp_1_c
 
 def test_simulation_uses_shared_ingestion_and_stores_replay_configuration():
     payload=request(scenario=DegradationScenario.COOLING_DEGRADATION).model_dump(mode="json")
@@ -61,3 +67,17 @@ def test_simulation_uses_shared_ingestion_and_stores_replay_configuration():
 
 def test_legacy_lowercase_profile_input_remains_supported():
     assert SimulationRequest(profile="endurance").profile==MissionProfile.ENDURANCE
+
+def test_full_mission_has_phase_progression_and_explicit_synthetic_truth():
+    mission=build_mission(request(profile=MissionProfile.FULL_MISSION,scenario=DegradationScenario.COOLING_DEGRADATION))
+    phases=[item.mission_phase for item in mission.telemetry]
+    assert phases==[item.phase for item in mission.scenario_truth]
+    assert phases[0]=="ENGINE_START" and phases[-1]=="SHUTDOWN"
+    assert {"WARM_UP","GROUND","TAKEOFF","CLIMB","CRUISE","DESCENT","LANDING"}<=set(phases)
+    assert mission.generator_version=="mission-simulator-v2"
+    assert mission.fault_onset_seconds==next(x.time_seconds for x in mission.scenario_truth if x.fault_active)
+    assert all(not x.fault_active for x in mission.scenario_truth if x.time_seconds<mission.fault_onset_seconds)
+    assert mission.scenario_truth[-1].progression==.8
+    assert mission.telemetry[-1].throttle_percent==0
+    assert mission.telemetry[-1].fuel_flow_lph==0
+    assert build_mission(request(profile=MissionProfile.FULL_MISSION,scenario=DegradationScenario.COOLING_DEGRADATION)).model_dump(mode="json")==mission.model_dump(mode="json")

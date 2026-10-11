@@ -47,6 +47,7 @@ $env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD = "use-a-strong-unique-password"
 
 The bootstrap account is created only when the database has no users. Remove
 the bootstrap password from the environment immediately after provisioning.
+The Windows demo launcher no longer supplies a fixed bootstrap password or token secret, and the frontend no longer embeds development login credentials. A former fixed development password exists in Git history; rotate any account or secret that reused it. The demo launcher intentionally bypasses authorization on loopback and is unsuitable for network exposure.
 Production mode refuses startup without a persistent secret of at least 32
 characters:
 

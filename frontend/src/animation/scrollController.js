@@ -13,14 +13,14 @@ export function useScrollController(track, motion, selected, publish) {
   },[]);
   useLayoutEffect(()=>{
     const context=gsap.context(()=>{
-      gsap.to(motion,{flight:1,ease:'none',scrollTrigger:{trigger:track.current,start:'top top',end:()=>`+=${window.innerHeight*2.8}`,scrub:0.65,onUpdate:publish},onUpdate:publish});
+      gsap.to(motion,{flight:1,ease:'none',scrollTrigger:{trigger:track.current,start:'top top',end:()=>`+=${window.innerHeight*2.8}`,scrub:true,onUpdate:publish},onUpdate:publish});
     });
     return ()=>context.revert();
   },[motion,track,publish]);
   useLayoutEffect(()=>{
     if(!selected) return;
     const context=gsap.context(()=>{
-      gsap.to(motion,{zoom:1,ease:'none',scrollTrigger:{trigger:track.current,start:()=>`top+=${window.innerHeight*2.8} top`,end:()=>`+=${window.innerHeight*2.5}`,scrub:0.65},onUpdate:publish});
+      gsap.to(motion,{zoom:1,ease:'none',scrollTrigger:{trigger:track.current,start:()=>`top+=${window.innerHeight*2.8} top`,end:()=>`+=${window.innerHeight*2.5}`,scrub:true},onUpdate:publish});
     });
     ScrollTrigger.refresh();
     return ()=>context.revert();

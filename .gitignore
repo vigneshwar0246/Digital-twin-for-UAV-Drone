@@ -1,8 +1,12 @@
 __pycache__/
 *.py[cod]
+.pytest_cache/
 .venv/
 frontend/node_modules/
 frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+frontend/.verify-*-build/
 backend/runtime/
 .env
 .env.*

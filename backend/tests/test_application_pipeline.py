@@ -33,9 +33,10 @@ def test_store_migrates_legacy_without_losing_rows_and_rejects_future_schema(tmp
     store = TelemetryStore(path)
     assert store.ready()
     with sqlite3.connect(path) as db:
-        assert db.execute("PRAGMA user_version").fetchone()[0] == 2
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 3
         assert db.execute("SELECT count(*) FROM telemetry").fetchone()[0] == 1
         assert "state_json" in {row[1] for row in db.execute("PRAGMA table_info(telemetry)")}
+        assert "simulation_snapshots" in {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         db.execute("PRAGMA user_version = 99")
     with pytest.raises(RuntimeError, match="newer"):
         TelemetryStore(path)

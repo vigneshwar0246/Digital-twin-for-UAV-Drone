@@ -1,11 +1,11 @@
 """Deterministic mission replay sessions and post-flight analysis."""
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 import csv, math, uuid
 from pathlib import Path
 from threading import RLock
 from typing import Callable
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from .schemas import Telemetry, TwinAssessment
 from .states import EngineState
 from .twin import TwinEngine
@@ -29,6 +29,15 @@ class SeekRequest(BaseModel):
 class AdvanceRequest(BaseModel):
     virtual_seconds:float=Field(default=5,gt=0,le=3600)
 
+class ComparisonRequest(BaseModel):
+    first_mission_id:str=Field(min_length=1,max_length=64)
+    second_mission_id:str=Field(min_length=1,max_length=64)
+    @model_validator(mode="after")
+    def different_missions(self):
+        if self.first_mission_id==self.second_mission_id:
+            raise ValueError("comparison requires two distinct mission IDs")
+        return self
+
 def csv_row_to_telemetry(row:dict)->Telemetry:
     values={"engine_id":row["engine_id"],"mission_id":row["mission_id"],"timestamp":row["timestamp"],"mission_phase":row["mission_phase"]}
     names=("rpm","cylinder_head_temp_1_c","cylinder_head_temp_2_c","cylinder_head_temp_3_c","cylinder_head_temp_4_c",
@@ -41,14 +50,21 @@ def csv_row_to_telemetry(row:dict)->Telemetry:
     return Telemetry.model_validate(values)
 
 class MissionTelemetrySource:
-    def __init__(self,csv_path:Path,simulation_config_loader:Callable[[str],dict|None]):
+    def __init__(self,csv_path:Path,simulation_config_loader:Callable[[str],dict|None],simulation_snapshot_loader:Callable[[str],dict|None]|None=None):
         self.csv_path=csv_path; self.simulation_config_loader=simulation_config_loader
+        self.simulation_snapshot_loader=simulation_snapshot_loader
     def load(self,request:ReplayRequest)->tuple[list[Telemetry],dict]:
         config=self.simulation_config_loader(request.mission_id)
         if config:
-            from .simulation import build_mission
-            from .schemas import SimulationRequest
-            samples=build_mission(SimulationRequest.model_validate(config)).telemetry; source={"type":"stored_simulation","configuration":config}
+            snapshot=self.simulation_snapshot_loader(request.mission_id) if self.simulation_snapshot_loader else None
+            if snapshot:
+                samples=[Telemetry.model_validate(item) for item in snapshot["telemetry"]]
+                source={"type":"recorded_simulation_snapshot","configuration":config,"analysis":"current diagnostic rules re-analyze recorded telemetry"}
+            else:
+                from .simulation import build_mission
+                from .schemas import SimulationRequest
+                samples=build_mission(SimulationRequest.model_validate(config)).telemetry
+                source={"type":"legacy_regenerated_simulation","configuration":config,"analysis":"current diagnostic rules re-analyze regenerated telemetry; original samples were not saved"}
         else:
             samples=[]
             if self.csv_path.exists():
@@ -69,6 +85,7 @@ class ReplaySession:
     processor:Callable[[Telemetry,TwinEngine],tuple[TwinAssessment,EngineState]]
     twin:TwinEngine=field(default_factory=TwinEngine); position:int=0; paused:bool=False
     assessments:list[TwinAssessment]=field(default_factory=list); states:list[EngineState]=field(default_factory=list)
+    created_at:datetime=field(default_factory=lambda:datetime.now(timezone.utc))
     def status(self):
         current=self.samples[self.position-1].timestamp if self.position else self.samples[0].timestamp
         return {"replay_id":self.replay_id,"mission_id":self.request.mission_id,"engine_id":self.samples[0].engine_id,
@@ -94,16 +111,33 @@ class ReplaySession:
         self.position=index; return self.status()
 
 class ReplayManager:
+    MAX_SESSIONS=32
+    SESSION_TTL_SECONDS=1800
     def __init__(self,source:MissionTelemetrySource,processor): self.source=source; self.processor=processor; self.sessions={}; self._lock=RLock()
+    def _expire_locked(self):
+        now=datetime.now(timezone.utc)
+        for replay_id,session in list(self.sessions.items()):
+            if (now-session.created_at).total_seconds()>self.SESSION_TTL_SECONDS:
+                del self.sessions[replay_id]
     def create(self,request:ReplayRequest):
         samples,metadata=self.source.load(request); replay_id=str(uuid.uuid4())
         session=ReplaySession(replay_id,request,samples,metadata,self.processor)
-        with self._lock: self.sessions[replay_id]=session
+        with self._lock:
+            self._expire_locked()
+            if len(self.sessions)>=self.MAX_SESSIONS: raise RuntimeError("replay session capacity reached; retry after older sessions expire")
+            self.sessions[replay_id]=session
         return session
     def get(self,replay_id):
-        session=self.sessions.get(replay_id)
+        with self._lock:
+            self._expire_locked()
+            session=self.sessions.get(replay_id)
         if not session: raise KeyError(replay_id)
         return session
+    def report(self,request:ReplayRequest)->dict:
+        """Analyze one mission without retaining an interactive replay session."""
+        samples,metadata=self.source.load(request)
+        session=ReplaySession("report",request,samples,metadata,self.processor)
+        return analyze_mission(session)
 
 def analyze_mission(session:ReplaySession)->dict:
     if session.position<len(session.samples):
@@ -127,6 +161,17 @@ def analyze_mission(session:ReplaySession)->dict:
     health=[x.health.overall_index for x in states]; degradation=[x.degradation.cumulative_damage_index for x in states]
     elapsed=max((samples[-1].timestamp-samples[0].timestamp).total_seconds()/3600,1e-9)
     recommendations=list(dict.fromkeys(a.maintenance_advisory for a in assessments if a.predicted_fault!="Healthy"))
+    rejected_counts={}
+    for state in states:
+        for name in state.telemetry.rejected_parameters:
+            rejected_counts[name]=rejected_counts.get(name,0)+1
+    diagnostic_sources={}
+    model_versions=set()
+    for assessment in assessments:
+        result=assessment.diagnostic_result
+        if result:
+            diagnostic_sources[result.source]=diagnostic_sources.get(result.source,0)+1
+            if result.model_version: model_versions.add(result.model_version)
     return {"mission_summary":{"mission_id":samples[0].mission_id,"engine_id":samples[0].engine_id,"start_time":samples[0].timestamp,
         "end_time":samples[-1].timestamp,"duration_seconds":int((samples[-1].timestamp-samples[0].timestamp).total_seconds()),"samples":len(samples),"source":session.source},
         "maximum_cht_c":max(cht),"maximum_egt_c":max(egt),"minimum_oil_pressure_kpa":min(x.oil_pressure_kpa for x in samples),
@@ -139,4 +184,9 @@ def analyze_mission(session:ReplaySession)->dict:
             "ambient_pressure_kpa":{"minimum":min(x.ambient_pressure_kpa for x in samples if x.ambient_pressure_kpa is not None),"maximum":max(x.ambient_pressure_kpa for x in samples if x.ambient_pressure_kpa is not None)},
             "humidity_percent":{"minimum":min(x.humidity_percent for x in samples if x.humidity_percent is not None),"maximum":max(x.humidity_percent for x in samples if x.humidity_percent is not None)}},
         "rul_proxy":{"start_hours":states[0].prediction.rul_hours,"end_hours":states[-1].prediction.rul_hours,"method":states[-1].prediction.method},
-        "deterministic_replay":True,"notice":"Generated-data prototype analysis; not manufacturer-approved or flight-validation evidence."}
+        "data_quality":{"samples_with_rejected_parameters":sum(bool(x.telemetry.rejected_parameters) for x in states),
+            "unsynchronized_samples":sum(not x.synchronized for x in states),"rejected_parameter_counts":rejected_counts},
+        "diagnostic_methods":{"source_counts":diagnostic_sources,"model_versions":sorted(model_versions),
+            "semantics":"Current diagnostic rules re-analyze mission telemetry; these are not original recorded findings."},
+        "deterministic_replay":session.source.get("type")!="legacy_regenerated_simulation",
+        "notice":"Generated-data prototype analysis; not manufacturer-approved or flight-validation evidence."}

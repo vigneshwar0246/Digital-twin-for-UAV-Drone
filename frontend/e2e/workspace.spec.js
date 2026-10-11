@@ -20,8 +20,10 @@ test('workspace simulation, navigation, replay and report',async({page})=>{
  await page.getByRole('link',{name:'Mission Replay'}).click();
  await page.getByRole('button',{name:'Open current recording'}).click();
  const timeline=page.getByRole('slider',{name:'Replay timeline'});await expect(timeline).toBeEnabled();
- await timeline.fill('0');const first=await page.locator('.wt-metric').first().innerText();
- await timeline.fill(await timeline.getAttribute('max'));expect(await page.locator('.wt-metric').first().innerText()).not.toEqual(first);
+ await timeline.fill('0');const first=await page.locator('.wt-metric').allInnerTexts();
+ const lastFrame=await timeline.getAttribute('max');await timeline.fill(lastFrame);
+ await expect(timeline).toHaveValue(lastFrame);
+ expect(await page.locator('.wt-metric').allInnerTexts()).not.toEqual(first);
  await page.getByRole('link',{name:'Reports',exact:false}).click();
  const download=page.waitForEvent('download');await page.getByRole('button',{name:'Export JSON'}).click();expect((await download).suggestedFilename()).toBe('mission-report.json');
  await page.goto('/twin');await page.screenshot({path:'test-results/workspace-desktop.png',fullPage:true});
@@ -34,4 +36,12 @@ test('backend failure remains explicit and does not fall back to simulated live 
  await expect(page.getByRole('alert')).toContainText('Backend request failed');
  await expect(page.locator('.wt-statusbar')).toContainText('BACKEND DISCONNECTED');
  await expect(page.locator('.wt-metric').first()).toContainText('—');
+});
+test('backend sensor fault quality survives a missing numeric reading',async({page})=>{
+ await page.goto('/twin');
+ const signal=await page.evaluate(async()=>{
+  const {normalize}=await import('/src/workspace/api.ts');
+  return normalize({telemetry:{timestamp:new Date().toISOString(),engine_id:'E2E',mission_id:'M1'},state:{telemetry:{parameters:{rpm:{value:null,quality:'SENSOR_FAULT'}}}}},'TEST').signals.rpm;
+ });
+ expect(signal).toMatchObject({value:null,quality:'SENSOR_FAULT'});
 });
