@@ -14,6 +14,7 @@ from .adapters.base import TelemetryAdapter
 from .replay import (AdvanceRequest, ComparisonRequest, MissionTelemetrySource, ReplayManager, ReplayRequest, SeekRequest, analyze_mission, csv_row_to_telemetry)
 from .auth import AuthRepository,AuthService,AuthenticationError,CreateUserRequest,LoginRequest,PasswordHasher,Role,TokenService
 from .security import RateLimiter,authorization_dependency,request_id_context
+from .scenario_research import ScenarioModelError, predict_saved_synthetic_mission
 
 twin: TwinEngine | None=None; store: TelemetryStore | None=None; telemetry_adapter: TelemetryAdapter | None=None; replay_manager: ReplayManager | None=None
 auth_service:AuthService|None=None; rate_limiter:RateLimiter|None=None
@@ -226,6 +227,22 @@ def simulation_configuration(mission_id:str):
     config=store.simulation_config(mission_id)
     if config is None: raise HTTPException(404,"simulation mission configuration not found")
     return config
+
+@app.get("/api/v1/simulations/{mission_id}/research-scenario-diagnostics",
+         dependencies=[Depends(require(Role.ADMIN,Role.ANALYST,Role.MAINTENANCE_ENGINEER))])
+def research_scenario_diagnostics(mission_id:str):
+    """Opt-in synthetic classifier on an already saved simulator mission."""
+    if not settings.scenario_research_enabled:
+        raise HTTPException(503,"synthetic scenario research is disabled")
+    assert store is not None
+    snapshot=store.simulation_snapshot(mission_id)
+    if snapshot is None: raise HTTPException(404,"saved simulation mission not found")
+    try:
+        result = predict_saved_synthetic_mission(snapshot)
+        return store.save_scenario_predictions(mission_id, result["model_sha256"], result["input_sha256"], result)
+    except ScenarioModelError as exc: raise HTTPException(503,str(exc)) from exc
+    except (KeyError, ValueError, OSError) as exc:
+        raise HTTPException(503,"synthetic scenario prediction could not be persisted") from exc
 
 @app.post("/api/v1/simulations/{mission_id}/replay",dependencies=[Depends(require(Role.ADMIN,Role.OPERATOR,Role.ANALYST))])
 def replay_simulation(mission_id:str,persist:bool=False):

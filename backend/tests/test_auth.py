@@ -65,6 +65,14 @@ def test_production_configuration_requires_persistent_secret(monkeypatch):
         Settings()
 
 
+def test_production_configuration_rejects_demo_auth_bypass(monkeypatch):
+    monkeypatch.setenv("DIGITAL_TWIN_ENV", "production")
+    monkeypatch.setenv("DIGITAL_TWIN_TOKEN_SECRET", SECRET)
+    monkeypatch.setenv("DIGITAL_TWIN_DEMO_MODE", "true")
+    with pytest.raises(ValueError, match="demo mode cannot be enabled in production"):
+        Settings()
+
+
 def test_rbac_request_id_and_denial_audit():
     username = f"viewer_{uuid4().hex[:10]}"
     password = "ViewerPrototypePassword!123"

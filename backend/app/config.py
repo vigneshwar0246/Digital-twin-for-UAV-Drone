@@ -25,15 +25,18 @@ class Settings:
     ml_enabled: bool = field(default_factory=lambda: os.getenv("AERION_ENABLE_ML_DIAGNOSTICS", os.getenv("DIGITAL_TWIN_ML_ENABLED", "0")).lower() in {"1", "true", "yes"})
     ml_allow_unvalidated: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ML_ALLOW_UNVALIDATED", "false").lower() in {"1", "true", "yes"})
     ml_artifact_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_ML_ARTIFACT", BACKEND_DIR / "model_evaluation" / "outputs" / "live_candidate" / "model.joblib")))
+    scenario_research_enabled: bool = field(default_factory=lambda: os.getenv("AERION_ENABLE_SCENARIO_RESEARCH", "false").lower() in {"1", "true", "yes"})
 
     def __post_init__(self):
         if self.environment not in {"development","production"}: raise ValueError("DIGITAL_TWIN_ENV must be development or production")
         if self.environment=="production" and (not self.token_secret or len(self.token_secret)<32): raise ValueError("production requires DIGITAL_TWIN_TOKEN_SECRET with at least 32 characters")
+        if self.environment=="production" and self.demo_mode: raise ValueError("demo mode cannot be enabled in production")
         if self.token_lifetime_minutes < 1: raise ValueError("DIGITAL_TWIN_TOKEN_MINUTES must be positive")
         if self.requests_per_minute < 1: raise ValueError("DIGITAL_TWIN_RATE_LIMIT must be positive")
         if not 1 <= self.max_history_rows <= 10000: raise ValueError("DIGITAL_TWIN_HISTORY_LIMIT must be between 1 and 10000")
         if not self.database_path.name or self.database_path.exists() and self.database_path.is_dir(): raise ValueError("DIGITAL_TWIN_DB must name a database file")
         if self.demo_mode and not self.replay_data_path.is_file(): raise ValueError("DIGITAL_TWIN_DATA must be an existing file when demo mode is enabled")
         if self.ml_enabled and self.environment == "production" and self.ml_allow_unvalidated: raise ValueError("unvalidated ML cannot be enabled in production")
+        if self.environment == "production" and self.scenario_research_enabled: raise ValueError("synthetic scenario research cannot be enabled in production")
 
 settings = Settings()

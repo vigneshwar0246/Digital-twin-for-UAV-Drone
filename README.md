@@ -52,7 +52,7 @@ The integrated model is the existing Dataset v1 `live-telemetry-v1` candidate, s
 
 An 85–95% accuracy target has not been demonstrated. The live candidate's held-out accuracies are 0.671 on validation, 0.699 on challenge, and 0.616 on time-forward data. These are synthetic-data results; the per-fault recall gate is the binding safety check. Do not advertise or deploy this classifier as a validated UAV diagnostic model. The application can still be run locally as a research demonstrator with engineering diagnostics.
 
-New simulated missions save their exact telemetry and results in SQLite schema v3. Replay sessions use recorded samples and clearly label current-rule diagnostics as re-analysis. For older configuration-only missions, the API labels replay as regenerated because the original samples were not saved. Mission IDs cannot be reassigned to a different configuration.
+New simulated missions save their exact telemetry and results in SQLite schema v4. Replay sessions use recorded samples and clearly label current-rule diagnostics as re-analysis. For older configuration-only missions, the API labels replay as regenerated because the original samples were not saved. Mission IDs cannot be reassigned to a different configuration.
 
 ## Verify locally
 

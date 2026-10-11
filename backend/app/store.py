@@ -5,7 +5,7 @@ from .schemas import Telemetry, TwinAssessment
 from .states import EngineState
 
 class TelemetryStore:
-    SCHEMA_VERSION = 3
+    SCHEMA_VERSION = 4
 
     def __init__(self, path: Path):
         self.path = path; self._lock = RLock()
@@ -23,6 +23,7 @@ class TelemetryStore:
             db.execute("CREATE INDEX IF NOT EXISTS ix_telemetry_mission_time ON telemetry(mission_id, timestamp)")
             db.execute("CREATE TABLE IF NOT EXISTS simulation_missions (mission_id TEXT PRIMARY KEY, engine_id TEXT NOT NULL, start_time TEXT NOT NULL, seed INTEGER NOT NULL, configuration_json TEXT NOT NULL)")
             db.execute("CREATE TABLE IF NOT EXISTS simulation_snapshots (mission_id TEXT PRIMARY KEY, snapshot_json TEXT NOT NULL, FOREIGN KEY(mission_id) REFERENCES simulation_missions(mission_id))")
+            db.execute("CREATE TABLE IF NOT EXISTS scenario_predictions (mission_id TEXT NOT NULL, model_sha256 TEXT NOT NULL, input_sha256 TEXT NOT NULL, result_json TEXT NOT NULL, PRIMARY KEY(mission_id, model_sha256, input_sha256), FOREIGN KEY(mission_id) REFERENCES simulation_missions(mission_id))")
             db.execute(f"PRAGMA user_version = {self.SCHEMA_VERSION}")
 
     def _connect(self):
@@ -57,6 +58,18 @@ class TelemetryStore:
         with self._connect() as db:
             row=db.execute("SELECT snapshot_json FROM simulation_snapshots WHERE mission_id=?",(mission_id,)).fetchone()
         return json.loads(row["snapshot_json"]) if row else None
+
+    def save_scenario_predictions(self, mission_id: str, model_sha256: str, input_sha256: str, result: dict):
+        """Commit a complete prediction response atomically; preserve prior versions."""
+        payload = json.dumps(result, allow_nan=False)
+        with self._lock, self._connect() as db:
+            if db.execute("SELECT 1 FROM simulation_snapshots WHERE mission_id=?", (mission_id,)).fetchone() is None:
+                raise ValueError("saved simulation mission not found")
+            db.execute("INSERT OR IGNORE INTO scenario_predictions(mission_id,model_sha256,input_sha256,result_json) VALUES(?,?,?,?)",
+                       (mission_id, model_sha256, input_sha256, payload))
+            row = db.execute("SELECT result_json FROM scenario_predictions WHERE mission_id=? AND model_sha256=? AND input_sha256=?",
+                             (mission_id, model_sha256, input_sha256)).fetchone()
+        return json.loads(row["result_json"])
 
     def check_simulation_identity(self,mission_id:str,configuration:dict):
         existing=self.simulation_config(mission_id)
