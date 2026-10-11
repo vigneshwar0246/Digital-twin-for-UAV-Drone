@@ -50,8 +50,8 @@ try {
     for ($attempt = 0; $attempt -lt 30; $attempt++) {
         if ($backend.HasExited) { throw "The backend stopped during startup." }
         try {
-            $health = Invoke-RestMethod "http://127.0.0.1:8000/api/v1/health" -TimeoutSec 1
-            if ($health.status -eq "ok") { $ready = $true; break }
+            $readiness = Invoke-RestMethod "http://127.0.0.1:8000/api/v1/ready" -TimeoutSec 1
+            if ($readiness.status -eq "ready") { $ready = $true; break }
         } catch {
             Start-Sleep -Milliseconds 500
         }

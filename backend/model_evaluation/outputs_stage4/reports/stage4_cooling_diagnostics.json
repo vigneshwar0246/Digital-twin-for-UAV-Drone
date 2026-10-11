@@ -1,0 +1,892 @@
+{
+  "Candidate_A": {
+    "validation": {
+      "partition": "validation",
+      "total_cooling_samples": 1700,
+      "overall_recall": 0.5682352941176471,
+      "by_severity": {
+        "Low": {
+          "support": 1015,
+          "recall": 0.2768472906403941,
+          "predicted_counts": {
+            "Healthy": 717,
+            "Cooling_System_Degradation": 281,
+            "Fuel_Injector_Degradation": 17
+          }
+        },
+        "Medium": {
+          "support": 568,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 568
+          }
+        },
+        "High": {
+          "support": 117,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 117
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 975,
+          "recall": 0.3764102564102564,
+          "predicted_counts": {
+            "Healthy": 593,
+            "Cooling_System_Degradation": 367,
+            "Fuel_Injector_Degradation": 15
+          }
+        },
+        "Cylinder_2": {
+          "support": 374,
+          "recall": 0.7245989304812834,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 271,
+            "Healthy": 103
+          }
+        },
+        "Cylinder_3": {
+          "support": 351,
+          "recall": 0.9344729344729344,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 328,
+            "Healthy": 21,
+            "Fuel_Injector_Degradation": 2
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 717,
+        "Fuel_Injector_Degradation": 17
+      }
+    },
+    "challenge": {
+      "partition": "challenge",
+      "total_cooling_samples": 1670,
+      "overall_recall": 0.6179640718562874,
+      "by_severity": {
+        "Low": {
+          "support": 749,
+          "recall": 0.2082777036048064,
+          "predicted_counts": {
+            "Healthy": 590,
+            "Cooling_System_Degradation": 156,
+            "Sensor_Drift": 1,
+            "Spark_Plug_Misfire": 1,
+            "Lubrication_System_Degradation": 1
+          }
+        },
+        "Medium": {
+          "support": 489,
+          "recall": 0.9079754601226994,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 444,
+            "Healthy": 43,
+            "Sensor_Drift": 2
+          }
+        },
+        "High": {
+          "support": 432,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 432
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 424,
+          "recall": 0.8514150943396226,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 361,
+            "Healthy": 62,
+            "Lubrication_System_Degradation": 1
+          }
+        },
+        "Cylinder_3": {
+          "support": 740,
+          "recall": 0.4756756756756757,
+          "predicted_counts": {
+            "Healthy": 386,
+            "Cooling_System_Degradation": 352,
+            "Sensor_Drift": 2
+          }
+        },
+        "Cylinder_4": {
+          "support": 506,
+          "recall": 0.6304347826086957,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 319,
+            "Healthy": 185,
+            "Sensor_Drift": 1,
+            "Spark_Plug_Misfire": 1
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 633,
+        "Sensor_Drift": 3,
+        "Spark_Plug_Misfire": 1,
+        "Lubrication_System_Degradation": 1
+      }
+    },
+    "time_forward": {
+      "partition": "time_forward",
+      "total_cooling_samples": 2502,
+      "overall_recall": 0.5135891286970423,
+      "by_severity": {
+        "Low": {
+          "support": 1318,
+          "recall": 0.17223065250379363,
+          "predicted_counts": {
+            "Healthy": 824,
+            "Sensor_Drift": 249,
+            "Cooling_System_Degradation": 227,
+            "Fuel_Injector_Degradation": 18
+          }
+        },
+        "Medium": {
+          "support": 928,
+          "recall": 0.8642241379310345,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 802,
+            "Sensor_Drift": 102,
+            "Healthy": 22,
+            "Fuel_Injector_Degradation": 1,
+            "Spark_Plug_Misfire": 1
+          }
+        },
+        "High": {
+          "support": 256,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 256
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 418,
+          "recall": 0.6435406698564593,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 269,
+            "Healthy": 142,
+            "Sensor_Drift": 7
+          }
+        },
+        "Cylinder_2": {
+          "support": 717,
+          "recall": 0.45885634588563456,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 329,
+            "Sensor_Drift": 209,
+            "Healthy": 165,
+            "Fuel_Injector_Degradation": 13,
+            "Spark_Plug_Misfire": 1
+          }
+        },
+        "Cylinder_3": {
+          "support": 500,
+          "recall": 0.84,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 420,
+            "Healthy": 77,
+            "Sensor_Drift": 3
+          }
+        },
+        "Cylinder_4": {
+          "support": 867,
+          "recall": 0.3079584775086505,
+          "predicted_counts": {
+            "Healthy": 462,
+            "Cooling_System_Degradation": 267,
+            "Sensor_Drift": 132,
+            "Fuel_Injector_Degradation": 6
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 846,
+        "Sensor_Drift": 351,
+        "Fuel_Injector_Degradation": 19,
+        "Spark_Plug_Misfire": 1
+      }
+    },
+    "known_engine_val": {
+      "partition": "known_engine_val",
+      "total_cooling_samples": 1317,
+      "overall_recall": 0.39939255884586183,
+      "by_severity": {
+        "Low": {
+          "support": 804,
+          "recall": 0.13059701492537312,
+          "predicted_counts": {
+            "Healthy": 449,
+            "Sensor_Drift": 244,
+            "Cooling_System_Degradation": 105,
+            "Fuel_Injector_Degradation": 6
+          }
+        },
+        "Medium": {
+          "support": 429,
+          "recall": 0.7855477855477856,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 337,
+            "Sensor_Drift": 92
+          }
+        },
+        "High": {
+          "support": 84,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 84
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 526,
+          "recall": 0.688212927756654,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 362,
+            "Healthy": 164
+          }
+        },
+        "Cylinder_2": {
+          "support": 366,
+          "recall": 0.43169398907103823,
+          "predicted_counts": {
+            "Sensor_Drift": 208,
+            "Cooling_System_Degradation": 158
+          }
+        },
+        "Cylinder_4": {
+          "support": 425,
+          "recall": 0.01411764705882353,
+          "predicted_counts": {
+            "Healthy": 285,
+            "Sensor_Drift": 128,
+            "Fuel_Injector_Degradation": 6,
+            "Cooling_System_Degradation": 6
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 449,
+        "Sensor_Drift": 336,
+        "Fuel_Injector_Degradation": 6
+      }
+    }
+  },
+  "Candidate_B": {
+    "validation": {
+      "partition": "validation",
+      "total_cooling_samples": 1700,
+      "overall_recall": 0.5652941176470588,
+      "by_severity": {
+        "Low": {
+          "support": 1015,
+          "recall": 0.2729064039408867,
+          "predicted_counts": {
+            "Healthy": 717,
+            "Cooling_System_Degradation": 277,
+            "Fuel_Injector_Degradation": 20,
+            "Combustion_Instability": 1
+          }
+        },
+        "Medium": {
+          "support": 568,
+          "recall": 0.9982394366197183,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 567,
+            "Sensor_Drift": 1
+          }
+        },
+        "High": {
+          "support": 117,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 117
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 975,
+          "recall": 0.37846153846153846,
+          "predicted_counts": {
+            "Healthy": 587,
+            "Cooling_System_Degradation": 369,
+            "Fuel_Injector_Degradation": 17,
+            "Sensor_Drift": 1,
+            "Combustion_Instability": 1
+          }
+        },
+        "Cylinder_2": {
+          "support": 374,
+          "recall": 0.7272727272727273,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 272,
+            "Healthy": 102
+          }
+        },
+        "Cylinder_3": {
+          "support": 351,
+          "recall": 0.9116809116809117,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 320,
+            "Healthy": 28,
+            "Fuel_Injector_Degradation": 3
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 717,
+        "Fuel_Injector_Degradation": 20,
+        "Sensor_Drift": 1,
+        "Combustion_Instability": 1
+      }
+    },
+    "challenge": {
+      "partition": "challenge",
+      "total_cooling_samples": 1670,
+      "overall_recall": 0.6131736526946108,
+      "by_severity": {
+        "Low": {
+          "support": 749,
+          "recall": 0.20293724966622162,
+          "predicted_counts": {
+            "Healthy": 584,
+            "Cooling_System_Degradation": 152,
+            "Sensor_Drift": 8,
+            "Spark_Plug_Misfire": 2,
+            "Combustion_Instability": 2,
+            "Lubrication_System_Degradation": 1
+          }
+        },
+        "Medium": {
+          "support": 489,
+          "recall": 0.8997955010224948,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 440,
+            "Healthy": 47,
+            "Sensor_Drift": 2
+          }
+        },
+        "High": {
+          "support": 432,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 432
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 424,
+          "recall": 0.8537735849056604,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 362,
+            "Healthy": 51,
+            "Sensor_Drift": 10,
+            "Lubrication_System_Degradation": 1
+          }
+        },
+        "Cylinder_3": {
+          "support": 740,
+          "recall": 0.4689189189189189,
+          "predicted_counts": {
+            "Healthy": 391,
+            "Cooling_System_Degradation": 347,
+            "Combustion_Instability": 2
+          }
+        },
+        "Cylinder_4": {
+          "support": 506,
+          "recall": 0.6225296442687747,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 315,
+            "Healthy": 189,
+            "Spark_Plug_Misfire": 2
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 631,
+        "Sensor_Drift": 10,
+        "Spark_Plug_Misfire": 2,
+        "Combustion_Instability": 2,
+        "Lubrication_System_Degradation": 1
+      }
+    },
+    "time_forward": {
+      "partition": "time_forward",
+      "total_cooling_samples": 2502,
+      "overall_recall": 0.5471622701838529,
+      "by_severity": {
+        "Low": {
+          "support": 1318,
+          "recall": 0.22230652503793627,
+          "predicted_counts": {
+            "Healthy": 762,
+            "Cooling_System_Degradation": 293,
+            "Sensor_Drift": 239,
+            "Fuel_Injector_Degradation": 24
+          }
+        },
+        "Medium": {
+          "support": 928,
+          "recall": 0.8836206896551724,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 820,
+            "Sensor_Drift": 89,
+            "Healthy": 19
+          }
+        },
+        "High": {
+          "support": 256,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 256
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 418,
+          "recall": 0.6220095693779905,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 260,
+            "Healthy": 157,
+            "Sensor_Drift": 1
+          }
+        },
+        "Cylinder_2": {
+          "support": 717,
+          "recall": 0.5592747559274756,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 401,
+            "Sensor_Drift": 162,
+            "Healthy": 145,
+            "Fuel_Injector_Degradation": 9
+          }
+        },
+        "Cylinder_3": {
+          "support": 500,
+          "recall": 0.842,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 421,
+            "Healthy": 77,
+            "Sensor_Drift": 2
+          }
+        },
+        "Cylinder_4": {
+          "support": 867,
+          "recall": 0.33102652825836215,
+          "predicted_counts": {
+            "Healthy": 402,
+            "Cooling_System_Degradation": 287,
+            "Sensor_Drift": 163,
+            "Fuel_Injector_Degradation": 15
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 781,
+        "Sensor_Drift": 328,
+        "Fuel_Injector_Degradation": 24
+      }
+    },
+    "known_engine_val": {
+      "partition": "known_engine_val",
+      "total_cooling_samples": 1317,
+      "overall_recall": 0.4403948367501898,
+      "by_severity": {
+        "Low": {
+          "support": 804,
+          "recall": 0.19154228855721392,
+          "predicted_counts": {
+            "Healthy": 400,
+            "Sensor_Drift": 235,
+            "Cooling_System_Degradation": 154,
+            "Fuel_Injector_Degradation": 15
+          }
+        },
+        "Medium": {
+          "support": 429,
+          "recall": 0.7972027972027972,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 342,
+            "Sensor_Drift": 87
+          }
+        },
+        "High": {
+          "support": 84,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 84
+          }
+        }
+      },
+      "by_cylinder": {
+        "Cylinder_1": {
+          "support": 526,
+          "recall": 0.6996197718631179,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 368,
+            "Healthy": 157,
+            "Sensor_Drift": 1
+          }
+        },
+        "Cylinder_2": {
+          "support": 366,
+          "recall": 0.5601092896174863,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 205,
+            "Sensor_Drift": 161
+          }
+        },
+        "Cylinder_4": {
+          "support": 425,
+          "recall": 0.01647058823529412,
+          "predicted_counts": {
+            "Healthy": 243,
+            "Sensor_Drift": 160,
+            "Fuel_Injector_Degradation": 15,
+            "Cooling_System_Degradation": 7
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 400,
+        "Sensor_Drift": 322,
+        "Fuel_Injector_Degradation": 15
+      }
+    }
+  },
+  "Candidate_C": {
+    "validation": {
+      "partition": "validation",
+      "total_cooling_samples": 1700,
+      "overall_recall": 0.5547058823529412,
+      "by_severity": {
+        "Low": {
+          "support": 1015,
+          "recall": 0.2935960591133005,
+          "predicted_counts": {
+            "Healthy": 629,
+            "Cooling_System_Degradation": 298,
+            "Fuel_Injector_Degradation": 81,
+            "Sensor_Drift": 5,
+            "Bearing_Wear": 2
+          }
+        },
+        "Medium": {
+          "support": 568,
+          "recall": 0.9295774647887324,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 528,
+            "Fuel_Injector_Degradation": 39,
+            "Sensor_Drift": 1
+          }
+        },
+        "High": {
+          "support": 117,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 117
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 629,
+        "Fuel_Injector_Degradation": 120,
+        "Sensor_Drift": 6,
+        "Bearing_Wear": 2
+      }
+    },
+    "challenge": {
+      "partition": "challenge",
+      "total_cooling_samples": 1670,
+      "overall_recall": 0.6736526946107785,
+      "by_severity": {
+        "Low": {
+          "support": 749,
+          "recall": 0.2937249666221629,
+          "predicted_counts": {
+            "Healthy": 462,
+            "Cooling_System_Degradation": 220,
+            "Fuel_Injector_Degradation": 34,
+            "Bearing_Wear": 15,
+            "Combustion_Instability": 8,
+            "Spark_Plug_Misfire": 6,
+            "Lubrication_System_Degradation": 3,
+            "Alternator_Degradation": 1
+          }
+        },
+        "Medium": {
+          "support": 489,
+          "recall": 0.967280163599182,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 473,
+            "Healthy": 10,
+            "Fuel_Injector_Degradation": 3,
+            "Sensor_Drift": 3
+          }
+        },
+        "High": {
+          "support": 432,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 432
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 472,
+        "Fuel_Injector_Degradation": 37,
+        "Bearing_Wear": 15,
+        "Combustion_Instability": 8,
+        "Spark_Plug_Misfire": 6,
+        "Lubrication_System_Degradation": 3,
+        "Sensor_Drift": 3,
+        "Alternator_Degradation": 1
+      }
+    },
+    "time_forward": {
+      "partition": "time_forward",
+      "total_cooling_samples": 2502,
+      "overall_recall": 0.5471622701838529,
+      "by_severity": {
+        "Low": {
+          "support": 1318,
+          "recall": 0.2321699544764795,
+          "predicted_counts": {
+            "Healthy": 523,
+            "Sensor_Drift": 409,
+            "Cooling_System_Degradation": 306,
+            "Fuel_Injector_Degradation": 71,
+            "Combustion_Instability": 6,
+            "Bearing_Wear": 2,
+            "Alternator_Degradation": 1
+          }
+        },
+        "Medium": {
+          "support": 928,
+          "recall": 0.8696120689655172,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 807,
+            "Sensor_Drift": 101,
+            "Healthy": 15,
+            "Fuel_Injector_Degradation": 3,
+            "Spark_Plug_Misfire": 2
+          }
+        },
+        "High": {
+          "support": 256,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 256
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 538,
+        "Sensor_Drift": 510,
+        "Fuel_Injector_Degradation": 74,
+        "Combustion_Instability": 6,
+        "Spark_Plug_Misfire": 2,
+        "Bearing_Wear": 2,
+        "Alternator_Degradation": 1
+      }
+    },
+    "known_engine_val": {
+      "partition": "known_engine_val",
+      "total_cooling_samples": 1317,
+      "overall_recall": 0.43887623386484437,
+      "by_severity": {
+        "Low": {
+          "support": 804,
+          "recall": 0.19402985074626866,
+          "predicted_counts": {
+            "Sensor_Drift": 359,
+            "Healthy": 265,
+            "Cooling_System_Degradation": 156,
+            "Fuel_Injector_Degradation": 20,
+            "Combustion_Instability": 3,
+            "Bearing_Wear": 1
+          }
+        },
+        "Medium": {
+          "support": 429,
+          "recall": 0.7878787878787878,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 338,
+            "Sensor_Drift": 91
+          }
+        },
+        "High": {
+          "support": 84,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 84
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Sensor_Drift": 450,
+        "Healthy": 265,
+        "Fuel_Injector_Degradation": 20,
+        "Combustion_Instability": 3,
+        "Bearing_Wear": 1
+      }
+    }
+  },
+  "Candidate_D": {
+    "validation": {
+      "partition": "validation",
+      "total_cooling_samples": 1700,
+      "overall_recall": 0.55,
+      "by_severity": {
+        "Low": {
+          "support": 1015,
+          "recall": 0.24630541871921183,
+          "predicted_counts": {
+            "Healthy": 759,
+            "Cooling_System_Degradation": 250,
+            "Fuel_Injector_Degradation": 6
+          }
+        },
+        "Medium": {
+          "support": 568,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 568
+          }
+        },
+        "High": {
+          "support": 117,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 117
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 759,
+        "Fuel_Injector_Degradation": 6
+      }
+    },
+    "challenge": {
+      "partition": "challenge",
+      "total_cooling_samples": 1670,
+      "overall_recall": 0.6,
+      "by_severity": {
+        "Low": {
+          "support": 749,
+          "recall": 0.18157543391188252,
+          "predicted_counts": {
+            "Healthy": 613,
+            "Cooling_System_Degradation": 136
+          }
+        },
+        "Medium": {
+          "support": 489,
+          "recall": 0.8875255623721882,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 434,
+            "Healthy": 55
+          }
+        },
+        "High": {
+          "support": 432,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 432
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 668
+      }
+    },
+    "time_forward": {
+      "partition": "time_forward",
+      "total_cooling_samples": 2502,
+      "overall_recall": 0.49000799360511593,
+      "by_severity": {
+        "Low": {
+          "support": 1318,
+          "recall": 0.14036418816388468,
+          "predicted_counts": {
+            "Healthy": 869,
+            "Sensor_Drift": 246,
+            "Cooling_System_Degradation": 185,
+            "Fuel_Injector_Degradation": 18
+          }
+        },
+        "Medium": {
+          "support": 928,
+          "recall": 0.8459051724137931,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 785,
+            "Sensor_Drift": 100,
+            "Healthy": 43
+          }
+        },
+        "High": {
+          "support": 256,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 256
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 912,
+        "Sensor_Drift": 346,
+        "Fuel_Injector_Degradation": 18
+      }
+    },
+    "known_engine_val": {
+      "partition": "known_engine_val",
+      "total_cooling_samples": 1317,
+      "overall_recall": 0.3735763097949886,
+      "by_severity": {
+        "Low": {
+          "support": 804,
+          "recall": 0.10074626865671642,
+          "predicted_counts": {
+            "Healthy": 467,
+            "Sensor_Drift": 246,
+            "Cooling_System_Degradation": 81,
+            "Fuel_Injector_Degradation": 10
+          }
+        },
+        "Medium": {
+          "support": 429,
+          "recall": 0.7622377622377622,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 327,
+            "Sensor_Drift": 100,
+            "Healthy": 2
+          }
+        },
+        "High": {
+          "support": 84,
+          "recall": 1.0,
+          "predicted_counts": {
+            "Cooling_System_Degradation": 84
+          }
+        }
+      },
+      "false_negative_destinations": {
+        "Healthy": 469,
+        "Sensor_Drift": 346,
+        "Fuel_Injector_Degradation": 10
+      }
+    }
+  }
+}

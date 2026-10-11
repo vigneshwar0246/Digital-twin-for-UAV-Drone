@@ -9,20 +9,20 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 class Settings:
     title: str = "MALE UAV Aero-Engine Digital Twin"
     version: str = "1.0.0"
-    database_path: Path = Path(os.getenv("DIGITAL_TWIN_DB", BACKEND_DIR / "runtime" / "digital_twin.db"))
-    replay_data_path: Path = Path(os.getenv("DIGITAL_TWIN_DATA", BACKEND_DIR / "dataset" / "data" / "aero_engine_full.csv"))
+    database_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_DB", BACKEND_DIR / "runtime" / "digital_twin.db")))
+    replay_data_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_DATA", BACKEND_DIR / "dataset" / "data" / "aero_engine_full.csv")))
     metrics_path: Path = BACKEND_DIR / "model_evaluation" / "outputs" / "reports" / "metrics_summary.json"
-    max_history_rows: int = int(os.getenv("DIGITAL_TWIN_HISTORY_LIMIT", "1000"))
-    adapter_mode: AdapterMode = AdapterMode(os.getenv("DIGITAL_TWIN_ADAPTER", "SIMULATOR").upper())
-    can_mapping_path: Path = Path(os.getenv("DIGITAL_TWIN_CAN_MAPPING", BACKEND_DIR / "app" / "adapters" / "sample_data_can.json"))
-    socketcan_channel: str = os.getenv("DIGITAL_TWIN_SOCKETCAN_CHANNEL", "can0")
+    max_history_rows: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_HISTORY_LIMIT", "1000")))
+    adapter_mode: AdapterMode = field(default_factory=lambda: AdapterMode(os.getenv("DIGITAL_TWIN_ADAPTER", "SIMULATOR").upper()))
+    can_mapping_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_CAN_MAPPING", BACKEND_DIR / "app" / "adapters" / "sample_data_can.json")))
+    socketcan_channel: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_SOCKETCAN_CHANNEL", "can0"))
     environment: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ENV", "development").lower())
     token_lifetime_minutes: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_TOKEN_MINUTES", "30")))
     requests_per_minute: int = field(default_factory=lambda: int(os.getenv("DIGITAL_TWIN_RATE_LIMIT", "120")))
     token_secret: str | None = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_TOKEN_SECRET"))
     demo_mode: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MODE", "false").lower() in {"1","true","yes"})
     demo_mission_id: str = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_DEMO_MISSION", "MISSION_0110"))
-    ml_enabled: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ML_ENABLED", "false").lower() in {"1", "true", "yes"})
+    ml_enabled: bool = field(default_factory=lambda: os.getenv("AERION_ENABLE_ML_DIAGNOSTICS", os.getenv("DIGITAL_TWIN_ML_ENABLED", "0")).lower() in {"1", "true", "yes"})
     ml_allow_unvalidated: bool = field(default_factory=lambda: os.getenv("DIGITAL_TWIN_ML_ALLOW_UNVALIDATED", "false").lower() in {"1", "true", "yes"})
     ml_artifact_path: Path = field(default_factory=lambda: Path(os.getenv("DIGITAL_TWIN_ML_ARTIFACT", BACKEND_DIR / "model_evaluation" / "outputs" / "live_candidate" / "model.joblib")))
 
@@ -31,5 +31,9 @@ class Settings:
         if self.environment=="production" and (not self.token_secret or len(self.token_secret)<32): raise ValueError("production requires DIGITAL_TWIN_TOKEN_SECRET with at least 32 characters")
         if self.token_lifetime_minutes < 1: raise ValueError("DIGITAL_TWIN_TOKEN_MINUTES must be positive")
         if self.requests_per_minute < 1: raise ValueError("DIGITAL_TWIN_RATE_LIMIT must be positive")
+        if not 1 <= self.max_history_rows <= 10000: raise ValueError("DIGITAL_TWIN_HISTORY_LIMIT must be between 1 and 10000")
+        if not self.database_path.name or self.database_path.exists() and self.database_path.is_dir(): raise ValueError("DIGITAL_TWIN_DB must name a database file")
+        if self.demo_mode and not self.replay_data_path.is_file(): raise ValueError("DIGITAL_TWIN_DATA must be an existing file when demo mode is enabled")
+        if self.ml_enabled and self.environment == "production" and self.ml_allow_unvalidated: raise ValueError("unvalidated ML cannot be enabled in production")
 
 settings = Settings()

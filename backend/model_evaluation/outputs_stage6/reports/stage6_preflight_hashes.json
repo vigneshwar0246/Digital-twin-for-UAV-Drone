@@ -1,0 +1,27 @@
+{
+  "dataset_v2_full": {
+    "sha256": "da689787e456cb6bb330a2ec3ead17a5763cf514c8fea58a7d5c7ce86c2d6f41",
+    "size_bytes": 72881990,
+    "path": "D:\\projects D\\aircraft\\backend\\dataset\\dataset_v2\\data\\aero_engine_full.csv"
+  },
+  "dataset_v1_full": {
+    "sha256": "2b9a25ab4600bebb4d3d1d95504e22889ce86714bb680b7e68d524d3cb68041e",
+    "size_bytes": 35843266,
+    "path": "D:\\projects D\\aircraft\\backend\\dataset\\data\\aero_engine_full.csv"
+  },
+  "manifest_v2": {
+    "sha256": "c2a7c484ca7fd9bd0b4127f9f43433ab9698d9519c95ae24adf9975e047cb301",
+    "size_bytes": 82425,
+    "path": "D:\\projects D\\aircraft\\backend\\dataset\\dataset_v2\\data\\mission_manifest.json"
+  },
+  "cand_a_stage4": {
+    "sha256": "1e8a2c7f62e0355b1ff9eb7e1e5c2f2281b281b735cc011af2eaf83ac0789590",
+    "size_bytes": 7270321,
+    "path": "D:\\projects D\\aircraft\\backend\\model_evaluation\\outputs_stage4\\models\\cand_a_reference.joblib"
+  },
+  "c4_safety_weighted_v2": {
+    "sha256": "1e8a2c7f62e0355b1ff9eb7e1e5c2f2281b281b735cc011af2eaf83ac0789590",
+    "size_bytes": 7270321,
+    "path": "D:\\projects D\\aircraft\\backend\\model_evaluation\\outputs_v2\\models\\c4_full_causal_safety_weighted.joblib"
+  }
+}

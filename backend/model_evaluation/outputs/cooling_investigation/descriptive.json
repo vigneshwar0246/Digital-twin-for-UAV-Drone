@@ -1,0 +1,442 @@
+{
+  "dataset_sha256": "2b9a25ab4600bebb4d3d1d95504e22889ce86714bb680b7e68d524d3cb68041e",
+  "model": "previous frozen research candidate",
+  "audit_previously_inspected": true,
+  "splits": {
+    "validation": {
+      "by_engine": [
+        {
+          "engine_id": "ENGINE_005",
+          "support": 341,
+          "recall": 0.005865102639296188,
+          "predicted_as": {
+            "Healthy": 196,
+            "Fuel_Injector_Degradation": 122,
+            "Spark_Plug_Misfire": 11,
+            "Combustion_Instability": 8,
+            "Cooling_System_Degradation": 2,
+            "Lubrication_System_Degradation": 1,
+            "Alternator_Degradation": 1
+          }
+        },
+        {
+          "engine_id": "ENGINE_009",
+          "support": 532,
+          "recall": 0.009398496240601503,
+          "predicted_as": {
+            "Sensor_Drift": 245,
+            "Healthy": 150,
+            "Fuel_Injector_Degradation": 131,
+            "Cooling_System_Degradation": 5,
+            "Spark_Plug_Misfire": 1
+          }
+        }
+      ],
+      "by_mission": [
+        {
+          "mission_id": "MISSION_0057",
+          "support": 532,
+          "recall": 0.009398496240601503,
+          "predicted_as": {
+            "Sensor_Drift": 245,
+            "Healthy": 150,
+            "Fuel_Injector_Degradation": 131,
+            "Cooling_System_Degradation": 5,
+            "Spark_Plug_Misfire": 1
+          }
+        },
+        {
+          "mission_id": "MISSION_0113",
+          "support": 341,
+          "recall": 0.005865102639296188,
+          "predicted_as": {
+            "Healthy": 196,
+            "Fuel_Injector_Degradation": 122,
+            "Spark_Plug_Misfire": 11,
+            "Combustion_Instability": 8,
+            "Cooling_System_Degradation": 2,
+            "Lubrication_System_Degradation": 1,
+            "Alternator_Degradation": 1
+          }
+        }
+      ],
+      "by_severity": [
+        {
+          "fault_severity": "High",
+          "support": 137,
+          "recall": 0.0,
+          "predicted_as": {
+            "Sensor_Drift": 131,
+            "Fuel_Injector_Degradation": 5,
+            "Spark_Plug_Misfire": 1
+          }
+        },
+        {
+          "fault_severity": "Low",
+          "support": 518,
+          "recall": 0.009652509652509652,
+          "predicted_as": {
+            "Healthy": 346,
+            "Fuel_Injector_Degradation": 122,
+            "Sensor_Drift": 24,
+            "Spark_Plug_Misfire": 11,
+            "Combustion_Instability": 8,
+            "Cooling_System_Degradation": 5,
+            "Lubrication_System_Degradation": 1,
+            "Alternator_Degradation": 1
+          }
+        },
+        {
+          "fault_severity": "Medium",
+          "support": 218,
+          "recall": 0.009174311926605505,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 126,
+            "Sensor_Drift": 90,
+            "Cooling_System_Degradation": 2
+          }
+        }
+      ],
+      "by_engine_severity": [
+        {
+          "engine_id": "ENGINE_005",
+          "fault_severity": "Low",
+          "support": 341,
+          "recall": 0.005865102639296188,
+          "predicted_as": {
+            "Healthy": 196,
+            "Fuel_Injector_Degradation": 122,
+            "Spark_Plug_Misfire": 11,
+            "Combustion_Instability": 8,
+            "Cooling_System_Degradation": 2,
+            "Lubrication_System_Degradation": 1,
+            "Alternator_Degradation": 1
+          }
+        },
+        {
+          "engine_id": "ENGINE_009",
+          "fault_severity": "High",
+          "support": 137,
+          "recall": 0.0,
+          "predicted_as": {
+            "Sensor_Drift": 131,
+            "Fuel_Injector_Degradation": 5,
+            "Spark_Plug_Misfire": 1
+          }
+        },
+        {
+          "engine_id": "ENGINE_009",
+          "fault_severity": "Low",
+          "support": 177,
+          "recall": 0.01694915254237288,
+          "predicted_as": {
+            "Healthy": 150,
+            "Sensor_Drift": 24,
+            "Cooling_System_Degradation": 3
+          }
+        },
+        {
+          "engine_id": "ENGINE_009",
+          "fault_severity": "Medium",
+          "support": 218,
+          "recall": 0.009174311926605505,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 126,
+            "Sensor_Drift": 90,
+            "Cooling_System_Degradation": 2
+          }
+        }
+      ]
+    },
+    "challenge": {
+      "by_engine": [
+        {
+          "engine_id": "ENGINE_003",
+          "support": 354,
+          "recall": 0.2740112994350282,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 125,
+            "Cooling_System_Degradation": 97,
+            "Healthy": 62,
+            "Sensor_Drift": 54,
+            "Spark_Plug_Misfire": 9,
+            "Combustion_Instability": 7
+          }
+        },
+        {
+          "engine_id": "ENGINE_010",
+          "support": 459,
+          "recall": 0.6535947712418301,
+          "predicted_as": {
+            "Cooling_System_Degradation": 300,
+            "Healthy": 60,
+            "Fuel_Injector_Degradation": 58,
+            "Spark_Plug_Misfire": 23,
+            "Lubrication_System_Degradation": 9,
+            "Combustion_Instability": 9
+          }
+        },
+        {
+          "engine_id": "ENGINE_011",
+          "support": 683,
+          "recall": 0.32650073206442165,
+          "predicted_as": {
+            "Healthy": 258,
+            "Cooling_System_Degradation": 223,
+            "Fuel_Injector_Degradation": 188,
+            "Spark_Plug_Misfire": 14
+          }
+        }
+      ],
+      "by_mission": [
+        {
+          "mission_id": "MISSION_0011",
+          "support": 328,
+          "recall": 0.06402439024390244,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 173,
+            "Healthy": 120,
+            "Cooling_System_Degradation": 21,
+            "Spark_Plug_Misfire": 14
+          }
+        },
+        {
+          "mission_id": "MISSION_0051",
+          "support": 354,
+          "recall": 0.2740112994350282,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 125,
+            "Cooling_System_Degradation": 97,
+            "Healthy": 62,
+            "Sensor_Drift": 54,
+            "Spark_Plug_Misfire": 9,
+            "Combustion_Instability": 7
+          }
+        },
+        {
+          "mission_id": "MISSION_0083",
+          "support": 355,
+          "recall": 0.5690140845070423,
+          "predicted_as": {
+            "Cooling_System_Degradation": 202,
+            "Healthy": 138,
+            "Fuel_Injector_Degradation": 15
+          }
+        },
+        {
+          "mission_id": "MISSION_0094",
+          "support": 459,
+          "recall": 0.6535947712418301,
+          "predicted_as": {
+            "Cooling_System_Degradation": 300,
+            "Healthy": 60,
+            "Fuel_Injector_Degradation": 58,
+            "Spark_Plug_Misfire": 23,
+            "Lubrication_System_Degradation": 9,
+            "Combustion_Instability": 9
+          }
+        }
+      ],
+      "by_severity": [
+        {
+          "fault_severity": "Low",
+          "support": 1121,
+          "recall": 0.2970561998215879,
+          "predicted_as": {
+            "Healthy": 379,
+            "Fuel_Injector_Degradation": 352,
+            "Cooling_System_Degradation": 333,
+            "Spark_Plug_Misfire": 37,
+            "Combustion_Instability": 11,
+            "Lubrication_System_Degradation": 9
+          }
+        },
+        {
+          "fault_severity": "Medium",
+          "support": 375,
+          "recall": 0.7653333333333333,
+          "predicted_as": {
+            "Cooling_System_Degradation": 287,
+            "Sensor_Drift": 54,
+            "Fuel_Injector_Degradation": 19,
+            "Spark_Plug_Misfire": 9,
+            "Combustion_Instability": 5,
+            "Healthy": 1
+          }
+        }
+      ],
+      "by_engine_severity": [
+        {
+          "engine_id": "ENGINE_003",
+          "fault_severity": "Low",
+          "support": 169,
+          "recall": 0.0,
+          "predicted_as": {
+            "Fuel_Injector_Degradation": 106,
+            "Healthy": 61,
+            "Combustion_Instability": 2
+          }
+        },
+        {
+          "engine_id": "ENGINE_003",
+          "fault_severity": "Medium",
+          "support": 185,
+          "recall": 0.5243243243243243,
+          "predicted_as": {
+            "Cooling_System_Degradation": 97,
+            "Sensor_Drift": 54,
+            "Fuel_Injector_Degradation": 19,
+            "Spark_Plug_Misfire": 9,
+            "Combustion_Instability": 5,
+            "Healthy": 1
+          }
+        },
+        {
+          "engine_id": "ENGINE_010",
+          "fault_severity": "Low",
+          "support": 459,
+          "recall": 0.6535947712418301,
+          "predicted_as": {
+            "Cooling_System_Degradation": 300,
+            "Healthy": 60,
+            "Fuel_Injector_Degradation": 58,
+            "Spark_Plug_Misfire": 23,
+            "Lubrication_System_Degradation": 9,
+            "Combustion_Instability": 9
+          }
+        },
+        {
+          "engine_id": "ENGINE_011",
+          "fault_severity": "Low",
+          "support": 493,
+          "recall": 0.06693711967545639,
+          "predicted_as": {
+            "Healthy": 258,
+            "Fuel_Injector_Degradation": 188,
+            "Cooling_System_Degradation": 33,
+            "Spark_Plug_Misfire": 14
+          }
+        },
+        {
+          "engine_id": "ENGINE_011",
+          "fault_severity": "Medium",
+          "support": 190,
+          "recall": 1.0,
+          "predicted_as": {
+            "Cooling_System_Degradation": 190
+          }
+        }
+      ]
+    },
+    "time_forward": {
+      "by_engine": [
+        {
+          "engine_id": "ENGINE_001",
+          "support": 1381,
+          "recall": 0.18030412744388125,
+          "predicted_as": {
+            "Sensor_Drift": 783,
+            "Healthy": 349,
+            "Cooling_System_Degradation": 249
+          }
+        }
+      ],
+      "by_mission": [
+        {
+          "mission_id": "MISSION_0085",
+          "support": 381,
+          "recall": 0.27296587926509186,
+          "predicted_as": {
+            "Sensor_Drift": 260,
+            "Cooling_System_Degradation": 104,
+            "Healthy": 17
+          }
+        },
+        {
+          "mission_id": "MISSION_0097",
+          "support": 511,
+          "recall": 0.2837573385518591,
+          "predicted_as": {
+            "Sensor_Drift": 191,
+            "Healthy": 175,
+            "Cooling_System_Degradation": 145
+          }
+        },
+        {
+          "mission_id": "MISSION_0109",
+          "support": 489,
+          "recall": 0.0,
+          "predicted_as": {
+            "Sensor_Drift": 332,
+            "Healthy": 157
+          }
+        }
+      ],
+      "by_severity": [
+        {
+          "fault_severity": "High",
+          "support": 269,
+          "recall": 0.03717472118959108,
+          "predicted_as": {
+            "Sensor_Drift": 259,
+            "Cooling_System_Degradation": 10
+          }
+        },
+        {
+          "fault_severity": "Low",
+          "support": 524,
+          "recall": 0.21755725190839695,
+          "predicted_as": {
+            "Healthy": 329,
+            "Cooling_System_Degradation": 114,
+            "Sensor_Drift": 81
+          }
+        },
+        {
+          "fault_severity": "Medium",
+          "support": 588,
+          "recall": 0.21258503401360543,
+          "predicted_as": {
+            "Sensor_Drift": 443,
+            "Cooling_System_Degradation": 125,
+            "Healthy": 20
+          }
+        }
+      ],
+      "by_engine_severity": [
+        {
+          "engine_id": "ENGINE_001",
+          "fault_severity": "High",
+          "support": 269,
+          "recall": 0.03717472118959108,
+          "predicted_as": {
+            "Sensor_Drift": 259,
+            "Cooling_System_Degradation": 10
+          }
+        },
+        {
+          "engine_id": "ENGINE_001",
+          "fault_severity": "Low",
+          "support": 524,
+          "recall": 0.21755725190839695,
+          "predicted_as": {
+            "Healthy": 329,
+            "Cooling_System_Degradation": 114,
+            "Sensor_Drift": 81
+          }
+        },
+        {
+          "engine_id": "ENGINE_001",
+          "fault_severity": "Medium",
+          "support": 588,
+          "recall": 0.21258503401360543,
+          "predicted_as": {
+            "Sensor_Drift": 443,
+            "Cooling_System_Degradation": 125,
+            "Healthy": 20
+          }
+        }
+      ]
+    }
+  }
+}

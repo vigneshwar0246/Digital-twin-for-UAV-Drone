@@ -1,10 +1,10 @@
 import asyncio, csv, json, os, re, secrets, uuid
 from datetime import datetime, timedelta, timezone
 from contextlib import asynccontextmanager
-from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
-from .schemas import SimulationRequest, Telemetry, TwinAssessment
+from .schemas import Readiness, SimulationRequest, Telemetry, TwinAssessment
 from .simulation import build_mission
 from .store import TelemetryStore
 from .twin import TwinEngine
@@ -104,6 +104,24 @@ async def request_identity_and_audit(request:Request,call_next):
 
 @app.get("/api/v1/health")
 def health(): return {"status":"ok","version":settings.version,"mode":"dataset_demo" if settings.demo_mode else "prototype","flight_certified":False}
+
+@app.get("/api/v1/ready", response_model=Readiness, responses={503: {"model": Readiness}})
+def readiness(response: Response):
+    try:
+        database_ok = store is not None and store.ready()
+    except Exception:
+        database_ok = False
+    adapter_ok = telemetry_adapter is not None and telemetry_adapter.adapter_health().connected
+    provider = twin.diagnostics.ml_provider if twin is not None else None
+    ml_status = "disabled" if not settings.ml_enabled else "ready" if provider is not None else "unavailable"
+    ready = database_ok and adapter_ok and twin is not None
+    if not ready:
+        response.status_code = 503
+    return Readiness(status="ready" if ready else "unavailable",
+        database="ready" if database_ok else "unavailable",
+        telemetry_adapter="ready" if adapter_ok else "unavailable",
+        diagnostic_mode="ml_research" if provider is not None else "engineering_fallback" if settings.ml_enabled else "engineering_rules",
+        ml_status=ml_status)
 
 @app.get("/api/v1/demo/status")
 def dataset_demo_status(): return demo_status

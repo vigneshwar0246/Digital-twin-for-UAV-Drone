@@ -1,0 +1,566 @@
+{
+  "selection_sha256": "b3baee7d8165e343c3c17044145ede785df0235f3c51403eaa0356be681b21fa",
+  "selected": "reference",
+  "audit_previously_inspected": true,
+  "assessments": {
+    "validation": {
+      "samples": 24999,
+      "accuracy": 0.8097523900956038,
+      "balanced_accuracy": 0.6612241838957092,
+      "macro_f1": 0.6558205834862155,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9380979178390546,
+          "recall": 0.9893175074183976,
+          "f1-score": 0.9630271519352975,
+          "support": 1685.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.5481400437636762,
+          "recall": 0.6472868217054264,
+          "f1-score": 0.5936018957345972,
+          "support": 1548.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.9120065789473685,
+          "recall": 0.8563706563706563,
+          "f1-score": 0.8833134209478295,
+          "support": 1295.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.02456140350877193,
+          "recall": 0.008018327605956471,
+          "f1-score": 0.012089810017271158,
+          "support": 873.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.5481846705513223,
+          "recall": 0.7398669086509377,
+          "f1-score": 0.629763130792997,
+          "support": 1653.0
+        },
+        "Healthy": {
+          "precision": 0.8833299298890477,
+          "recall": 0.9369675090252707,
+          "f1-score": 0.909358466767107,
+          "support": 13850.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.7340569877883311,
+          "recall": 0.320307874481942,
+          "f1-score": 0.4460016488046167,
+          "support": 1689.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.7023809523809523,
+          "recall": 0.5094191522762951,
+          "f1-score": 0.5905368516833485,
+          "support": 1274.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.815267175572519,
+          "recall": 0.9434628975265018,
+          "f1-score": 0.8746928746928747,
+          "support": 1132.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1667,
+          0,
+          0,
+          2,
+          0,
+          16,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1002,
+          32,
+          10,
+          19,
+          236,
+          187,
+          4,
+          57
+        ],
+        [
+          1,
+          3,
+          1109,
+          0,
+          0,
+          178,
+          0,
+          0,
+          4
+        ],
+        [
+          1,
+          0,
+          8,
+          7,
+          253,
+          346,
+          1,
+          245,
+          12
+        ],
+        [
+          0,
+          0,
+          0,
+          10,
+          1223,
+          415,
+          0,
+          0,
+          5
+        ],
+        [
+          107,
+          65,
+          35,
+          248,
+          348,
+          12977,
+          8,
+          16,
+          46
+        ],
+        [
+          0,
+          758,
+          21,
+          3,
+          143,
+          213,
+          541,
+          10,
+          0
+        ],
+        [
+          0,
+          0,
+          11,
+          0,
+          202,
+          294,
+          0,
+          649,
+          118
+        ],
+        [
+          0,
+          0,
+          0,
+          5,
+          43,
+          16,
+          0,
+          0,
+          1068
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ],
+      "false_positives": {
+        "Alternator_Degradation": 110,
+        "Bearing_Wear": 826,
+        "Combustion_Instability": 107,
+        "Cooling_System_Degradation": 278,
+        "Fuel_Injector_Degradation": 1008,
+        "Healthy": 1714,
+        "Lubrication_System_Degradation": 196,
+        "Sensor_Drift": 275,
+        "Spark_Plug_Misfire": 242
+      },
+      "recall_gate": false
+    },
+    "challenge": {
+      "samples": 25000,
+      "accuracy": 0.85068,
+      "balanced_accuracy": 0.7580785830746444,
+      "macro_f1": 0.7525835789988427,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9704301075268817,
+          "recall": 0.987417943107221,
+          "f1-score": 0.9788503253796096,
+          "support": 1828.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.5714285714285714,
+          "recall": 0.5982694684796045,
+          "f1-score": 0.5845410628019324,
+          "support": 809.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.9448456992777413,
+          "recall": 0.8877236273904997,
+          "f1-score": 0.9153944020356234,
+          "support": 1621.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.793854033290653,
+          "recall": 0.4144385026737968,
+          "f1-score": 0.5445761967501098,
+          "support": 1496.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.4675795408779702,
+          "recall": 0.8869365928189458,
+          "f1-score": 0.6123417721518988,
+          "support": 1309.0
+        },
+        "Healthy": {
+          "precision": 0.9018599408200648,
+          "recall": 0.9214655917074576,
+          "f1-score": 0.9115573595385601,
+          "support": 13892.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.6592427616926503,
+          "recall": 0.24262295081967214,
+          "f1-score": 0.3547034152186938,
+          "support": 1220.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.9561527581329562,
+          "recall": 0.9441340782122905,
+          "f1-score": 0.9501054111033029,
+          "support": 1432.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.9033816425120773,
+          "recall": 0.9396984924623115,
+          "f1-score": 0.9211822660098522,
+          "support": 1393.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          1805,
+          0,
+          0,
+          0,
+          0,
+          23,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          484,
+          14,
+          0,
+          0,
+          199,
+          108,
+          0,
+          3
+        ],
+        [
+          0,
+          0,
+          1439,
+          0,
+          15,
+          145,
+          0,
+          0,
+          22
+        ],
+        [
+          0,
+          0,
+          16,
+          620,
+          371,
+          380,
+          9,
+          54,
+          46
+        ],
+        [
+          0,
+          0,
+          10,
+          0,
+          1161,
+          133,
+          0,
+          0,
+          5
+        ],
+        [
+          54,
+          0,
+          22,
+          161,
+          782,
+          12801,
+          35,
+          8,
+          29
+        ],
+        [
+          0,
+          363,
+          22,
+          0,
+          153,
+          351,
+          296,
+          0,
+          35
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          80,
+          0,
+          1352,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          82,
+          1,
+          0,
+          1309
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ],
+      "false_positives": {
+        "Alternator_Degradation": 55,
+        "Bearing_Wear": 363,
+        "Combustion_Instability": 84,
+        "Cooling_System_Degradation": 161,
+        "Fuel_Injector_Degradation": 1322,
+        "Healthy": 1393,
+        "Lubrication_System_Degradation": 153,
+        "Sensor_Drift": 62,
+        "Spark_Plug_Misfire": 140
+      },
+      "recall_gate": false
+    },
+    "time_forward": {
+      "samples": 15827,
+      "accuracy": 0.7483414418398938,
+      "balanced_accuracy": 0.5955389667732164,
+      "macro_f1": 0.612418443456481,
+      "per_class": {
+        "Alternator_Degradation": {
+          "precision": 0.9825870646766169,
+          "recall": 0.9729064039408867,
+          "f1-score": 0.9777227722772277,
+          "support": 406.0
+        },
+        "Bearing_Wear": {
+          "precision": 0.455005055611729,
+          "recall": 0.390625,
+          "f1-score": 0.42036431574030825,
+          "support": 1152.0
+        },
+        "Combustion_Instability": {
+          "precision": 0.8814968814968815,
+          "recall": 0.8565656565656565,
+          "f1-score": 0.8688524590163934,
+          "support": 495.0
+        },
+        "Cooling_System_Degradation": {
+          "precision": 0.41225165562913907,
+          "recall": 0.18030412744388125,
+          "f1-score": 0.2508816120906801,
+          "support": 1381.0
+        },
+        "Fuel_Injector_Degradation": {
+          "precision": 0.7047619047619048,
+          "recall": 0.6001622060016221,
+          "f1-score": 0.648269820411739,
+          "support": 1233.0
+        },
+        "Healthy": {
+          "precision": 0.8524231266792716,
+          "recall": 0.9546417028864371,
+          "f1-score": 0.9006413626327411,
+          "support": 8973.0
+        },
+        "Lubrication_System_Degradation": {
+          "precision": 0.6238145416227608,
+          "recall": 0.41631504922644164,
+          "f1-score": 0.49936735554618306,
+          "support": 1422.0
+        },
+        "Sensor_Drift": {
+          "precision": 0.028169014084507043,
+          "recall": 0.07430340557275542,
+          "f1-score": 0.04085106382978723,
+          "support": 323.0
+        },
+        "Spark_Plug_Misfire": {
+          "precision": 0.8957871396895787,
+          "recall": 0.9140271493212669,
+          "f1-score": 0.9048152295632699,
+          "support": 442.0
+        }
+      },
+      "confusion_matrix": [
+        [
+          395,
+          0,
+          0,
+          0,
+          0,
+          11,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          450,
+          3,
+          128,
+          1,
+          200,
+          352,
+          0,
+          18
+        ],
+        [
+          1,
+          9,
+          424,
+          0,
+          0,
+          61,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          249,
+          0,
+          349,
+          0,
+          783,
+          0
+        ],
+        [
+          0,
+          0,
+          14,
+          152,
+          740,
+          327,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          27,
+          40,
+          75,
+          211,
+          8566,
+          5,
+          17,
+          26
+        ],
+        [
+          0,
+          503,
+          0,
+          0,
+          0,
+          296,
+          592,
+          28,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          98,
+          201,
+          0,
+          24,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          38,
+          0,
+          0,
+          404
+        ]
+      ],
+      "labels": [
+        "Alternator_Degradation",
+        "Bearing_Wear",
+        "Combustion_Instability",
+        "Cooling_System_Degradation",
+        "Fuel_Injector_Degradation",
+        "Healthy",
+        "Lubrication_System_Degradation",
+        "Sensor_Drift",
+        "Spark_Plug_Misfire"
+      ],
+      "false_positives": {
+        "Alternator_Degradation": 7,
+        "Bearing_Wear": 539,
+        "Combustion_Instability": 57,
+        "Cooling_System_Degradation": 355,
+        "Fuel_Injector_Degradation": 310,
+        "Healthy": 1483,
+        "Lubrication_System_Degradation": 357,
+        "Sensor_Drift": 828,
+        "Spark_Plug_Misfire": 47
+      },
+      "recall_gate": false
+    }
+  },
+  "release_gate_passed": false
+}

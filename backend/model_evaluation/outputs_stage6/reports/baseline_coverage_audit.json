@@ -1,0 +1,26 @@
+{
+  "fit": {
+    "total_missions": 134,
+    "missions_locked": 134,
+    "mission_coverage_pct": 100.0,
+    "frame_coverage_pct": 66.61025145067698
+  },
+  "validation": {
+    "total_missions": 36,
+    "missions_locked": 36,
+    "mission_coverage_pct": 100.0,
+    "frame_coverage_pct": 66.4789014065729
+  },
+  "challenge": {
+    "total_missions": 36,
+    "missions_locked": 36,
+    "mission_coverage_pct": 100.0,
+    "frame_coverage_pct": 66.94107452339688
+  },
+  "time_forward": {
+    "total_missions": 34,
+    "missions_locked": 33,
+    "mission_coverage_pct": 97.05882352941177,
+    "frame_coverage_pct": 64.25746769295954
+  }
+}

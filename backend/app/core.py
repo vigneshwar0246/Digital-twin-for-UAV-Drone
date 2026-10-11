@@ -4,7 +4,7 @@ from datetime import datetime
 import math
 from threading import RLock
 from .dataset_bridge import TELEMETRY_BOUNDS, TELEMETRY_UNITS
-from .schemas import Alert, Telemetry, TwinAssessment
+from .schemas import Alert, DiagnosticResult, Telemetry, TwinAssessment
 from .physics import PhysicsInput, PhysicsModel, PrototypePhysicsModel
 from .sensor_fusion import FusionInput, SensorFusionEngine
 from .diagnostics import HybridDiagnosticEngine, SUPPORTED_DIAGNOSTICS
@@ -209,9 +209,22 @@ class DigitalTwinCore:
                 mission=MissionState(mission_id=telemetry.mission_id,phase=telemetry.mission_phase,sample_count=count,first_observed_at=first,last_observed_at=telemetry.timestamp),
                 prediction=prediction,alerts=[a.model_dump(mode="json") for a in alerts],threshold_config_version=self.thresholds.version)
             if synchronized: self._states[telemetry.engine_id]=state
+            sensor_quality="degraded" if ts.rejected_parameters else "valid"
+            if not synchronized:
+                diagnostic_result=DiagnosticResult(source="unavailable",sensor_quality="degraded",
+                    warning="Required telemetry is invalid or stale; no current diagnosis is available")
+            elif ml_inference.get("status")=="available":
+                diagnostic_result=DiagnosticResult(source="ml_research",fault_class=ml_inference["fault_class"],
+                    score=ml_inference["model_score"],score_kind=ml_inference["score_kind"],
+                    model_version=ml_inference["model_version"],release_gate_passed=False,sensor_quality=sensor_quality,
+                    warning="Synthetic-data research model; release gate failed. Score is uncalibrated, not a fault probability")
+            else:
+                diagnostic_result=DiagnosticResult(source="engineering_rules",fault_class=fault,
+                    score=round(score,4),score_kind="uncalibrated engineering score",sensor_quality=sensor_quality,
+                    warning="ML unavailable; engineering fallback active" if settings.ml_enabled else "ML disabled; engineering rules active")
             assessment=TwinAssessment(engine_id=telemetry.engine_id,mission_id=telemetry.mission_id,timestamp=telemetry.timestamp,
                 health_index=health.overall_index,rul_hours=prediction.rul_hours,anomaly_score=state.faults.anomaly_score,
-                predicted_fault=fault,confidence=round(.5+.45*score if fault!="Healthy" else .75,4),maintenance_advisory=advisory,alerts=alerts,
+                predicted_fault=fault,confidence=None,maintenance_advisory=advisory,alerts=alerts,
                 method="explainable physics-informed prototype rules; thresholds are engineering hypotheses",
-                ml_inference=ml_inference)
+                ml_inference=ml_inference,diagnostic_result=diagnostic_result)
             return assessment,state

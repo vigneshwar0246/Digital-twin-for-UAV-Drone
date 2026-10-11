@@ -1,5 +1,7 @@
 """Optional, version-checked inference for the synthetic live-compatible candidate."""
 from functools import lru_cache
+import hashlib
+import json
 import logging
 import math
 from pathlib import Path
@@ -7,6 +9,8 @@ from pathlib import Path
 from .ml_features import FEATURES, NUMERIC_FEATURES, SCHEMA_VERSION
 
 logger = logging.getLogger(__name__)
+TRUSTED_MODEL_PATH = Path(__file__).resolve().parents[1] / "model_evaluation" / "outputs" / "live_candidate" / "model.joblib"
+TRUSTED_MODEL_SHA256 = "e8c637760bb2a4154af4042258e1bbc7956056514cd5ef9100829cf3787049b3"
 
 
 class ModelCompatibilityError(ValueError):
@@ -32,18 +36,29 @@ class ArtifactMLProvider:
         self.release_gate_passed = metadata.get("release_gate_passed") is True
 
     @classmethod
-    def load(cls, path: Path):
+    def load(cls, path: Path, expected_sha256: str | None = None):
         import joblib
-        import json
         import sklearn
+        if expected_sha256 is not None:
+            with path.open("rb") as handle:
+                actual = hashlib.file_digest(handle, "sha256").hexdigest()
+            if actual != expected_sha256:
+                raise ModelCompatibilityError("model artifact checksum does not match trusted record")
         sidecar = path.with_name("evaluation.json")
+        if expected_sha256 is not None and not sidecar.is_file():
+            raise ModelCompatibilityError("trusted model evaluation record is missing")
         if sidecar.exists():
-            declared = json.loads(sidecar.read_text(encoding="utf-8")).get("sklearn_version")
+            report = json.loads(sidecar.read_text(encoding="utf-8"))
+            declared = report.get("sklearn_version")
             if declared is not None and declared != sklearn.__version__:
                 raise ModelCompatibilityError("model scikit-learn version does not match runtime")
         artifact = joblib.load(path)
         if not isinstance(artifact, dict) or "model" not in artifact or "metadata" not in artifact:
             raise ModelCompatibilityError("invalid model artifact")
+        if sidecar.exists():
+            for key in ("version", "feature_schema_version", "dataset_sha256", "release_gate_passed", "probability_status"):
+                if report.get(key) != artifact["metadata"].get(key):
+                    raise ModelCompatibilityError(f"model metadata differs from evaluation record: {key}")
         return cls(artifact["model"], artifact["metadata"])
 
     def predict(self, features: dict):
@@ -56,7 +71,10 @@ class ArtifactMLProvider:
             if not isinstance(value, (int, float)) or not math.isfinite(value):
                 raise ValueError(f"invalid or missing feature: {name}")
         frame = pd.DataFrame([{name: features[name] for name in FEATURES}], columns=FEATURES)
-        scores = self.model.predict_proba(frame)[0]
+        matrix = self.model.predict_proba(frame)
+        if getattr(matrix, "shape", None) != (1, len(self.model.named_steps["classifier"].classes_)):
+            raise ValueError("model returned an incompatible class-score shape")
+        scores = matrix[0]
         if not all(math.isfinite(float(value)) and 0 <= float(value) <= 1 for value in scores) or abs(float(sum(scores))-1) > .01:
             raise ValueError("model returned invalid class scores")
         index = int(scores.argmax())
@@ -68,7 +86,10 @@ class ArtifactMLProvider:
 @lru_cache(maxsize=2)
 def load_provider(path: str):
     try:
-        return ArtifactMLProvider.load(Path(path))
+        target = Path(path).resolve()
+        if target != TRUSTED_MODEL_PATH.resolve():
+            raise ModelCompatibilityError("runtime model path is not a trusted repository artifact")
+        return ArtifactMLProvider.load(target, TRUSTED_MODEL_SHA256)
     except Exception as exc:
         logger.warning("ML model unavailable: %s", exc)
         return None

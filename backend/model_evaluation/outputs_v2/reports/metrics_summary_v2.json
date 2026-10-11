@@ -1,0 +1,2711 @@
+{
+  "environment": {
+    "python": "1.9.1",
+    "sklearn": "1.9.1",
+    "numpy": "2.5.3",
+    "pandas": "2.3.3"
+  },
+  "datasets": {
+    "v1_sha256": "2b9a25ab4600bebb4d3d1d95504e22889ce86714bb680b7e68d524d3cb68041e",
+    "v2_sha256": "da689787e456cb6bb330a2ec3ead17a5763cf514c8fea58a7d5c7ce86c2d6f41",
+    "manifest_sha256": "c2a7c484ca7fd9bd0b4127f9f43433ab9698d9519c95ae24adf9975e047cb301"
+  },
+  "splits_manifest": {
+    "strategy": "engine-disjoint validation/challenge plus time-forward audit within training engines",
+    "seed": 26054,
+    "engines": {
+      "fit": [
+        "ENGINE_V2_002",
+        "ENGINE_V2_003",
+        "ENGINE_V2_004",
+        "ENGINE_V2_005",
+        "ENGINE_V2_006",
+        "ENGINE_V2_009",
+        "ENGINE_V2_010",
+        "ENGINE_V2_012",
+        "ENGINE_V2_014",
+        "ENGINE_V2_015",
+        "ENGINE_V2_016",
+        "ENGINE_V2_017",
+        "ENGINE_V2_018",
+        "ENGINE_V2_020"
+      ],
+      "time_forward": [
+        "ENGINE_V2_002",
+        "ENGINE_V2_003",
+        "ENGINE_V2_004",
+        "ENGINE_V2_005",
+        "ENGINE_V2_006",
+        "ENGINE_V2_009",
+        "ENGINE_V2_010",
+        "ENGINE_V2_012",
+        "ENGINE_V2_014",
+        "ENGINE_V2_015",
+        "ENGINE_V2_016",
+        "ENGINE_V2_017",
+        "ENGINE_V2_020"
+      ],
+      "validation": [
+        "ENGINE_V2_001",
+        "ENGINE_V2_007",
+        "ENGINE_V2_011"
+      ],
+      "challenge": [
+        "ENGINE_V2_008",
+        "ENGINE_V2_013",
+        "ENGINE_V2_019"
+      ]
+    },
+    "missions": {
+      "fit": 134,
+      "time_forward": 34,
+      "validation": 36,
+      "challenge": 36
+    },
+    "profile_definition": "hash of phase-duration fractions and altitude/temperature/throttle trajectory statistics; mission identity is excluded",
+    "challenge_profile_overlap_with_fit": [],
+    "engine_disjoint": {
+      "fit_vs_validation": true,
+      "fit_vs_challenge": true,
+      "validation_vs_challenge": true
+    },
+    "mission_disjoint": true,
+    "time_forward": true,
+    "time_forward_class_coverage": [
+      "Alternator_Degradation",
+      "Bearing_Wear",
+      "Combustion_Instability",
+      "Cooling_System_Degradation",
+      "Fuel_Injector_Degradation",
+      "Healthy",
+      "Lubrication_System_Degradation",
+      "Sensor_Drift",
+      "Spark_Plug_Misfire"
+    ]
+  },
+  "candidate_results": {
+    "c1_raw_telemetry": {
+      "candidate": "c1_raw_telemetry",
+      "features": [
+        "mission_phase",
+        "altitude_m",
+        "ambient_temperature_c",
+        "throttle_percent",
+        "engine_load_percent",
+        "rpm",
+        "fuel_flow_lph",
+        "cylinder_head_temp_1_c",
+        "cylinder_head_temp_2_c",
+        "cylinder_head_temp_3_c",
+        "cylinder_head_temp_4_c",
+        "exhaust_gas_temp_1_c",
+        "exhaust_gas_temp_2_c",
+        "exhaust_gas_temp_3_c",
+        "exhaust_gas_temp_4_c",
+        "oil_temperature_c",
+        "oil_pressure_kpa",
+        "vibration_rms",
+        "alternator_voltage",
+        "battery_voltage",
+        "injection_timing_deg"
+      ],
+      "feature_count": 21,
+      "use_safety_weights": false,
+      "train_time_seconds": 24.86960790000012,
+      "partitions": {
+        "validation": {
+          "samples": 30002,
+          "accuracy": 0.7562829144723685,
+          "balanced_accuracy": 0.6251191703011512,
+          "macro_precision": 0.6783116646965187,
+          "macro_recall": 0.6251191703011512,
+          "macro_f1": 0.6403711650173624,
+          "weighted_f1": 0.7550247528056935,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9562584118438762,
+              "recall": 0.9607843137254902,
+              "f1-score": 0.9585160202360877,
+              "support": 1479.0,
+              "average_precision": 0.9945288584327981
+            },
+            "Bearing_Wear": {
+              "precision": 0.5626520681265207,
+              "recall": 0.5633373934226553,
+              "f1-score": 0.5629945222154595,
+              "support": 1642.0,
+              "average_precision": 0.590790560278058
+            },
+            "Combustion_Instability": {
+              "precision": 0.3199853049228508,
+              "recall": 0.5117508813160987,
+              "f1-score": 0.3937613019891501,
+              "support": 1702.0,
+              "average_precision": 0.4140342592369866
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.4601190476190476,
+              "recall": 0.4547058823529412,
+              "f1-score": 0.457396449704142,
+              "support": 1700.0,
+              "average_precision": 0.49709598316838804
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.7842639593908629,
+              "recall": 0.5204941044357103,
+              "f1-score": 0.6257171785352683,
+              "support": 1781.0,
+              "average_precision": 0.6852064434082686
+            },
+            "Healthy": {
+              "precision": 0.8591264101822389,
+              "recall": 0.8976063829787234,
+              "f1-score": 0.877944958467587,
+              "support": 16544.0,
+              "average_precision": 0.9667757127443961
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9588377723970944,
+              "recall": 0.9582577132486388,
+              "f1-score": 0.9585476550680787,
+              "support": 1653.0,
+              "average_precision": 0.9946520080750636
+            },
+            "Sensor_Drift": {
+              "precision": 0.9136622390891841,
+              "recall": 0.5404040404040404,
+              "f1-score": 0.6791255289139634,
+              "support": 1782.0,
+              "average_precision": 0.8147821756645123
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.2898997686969931,
+              "recall": 0.21873182082606166,
+              "f1-score": 0.2493368700265252,
+              "support": 1719.0,
+              "average_precision": 0.29336398957104115
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.1488528954892967,
+            "multiclass_log_loss": 1.0201658998653913,
+            "multiclass_brier_score": 0.3749669387124845,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 24,
+                "accuracy": 0.2916666666666667,
+                "mean_confidence": 0.27920345510561034
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 302,
+                "accuracy": 0.24834437086092714,
+                "mean_confidence": 0.3616044729579336
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 866,
+                "accuracy": 0.2575057736720554,
+                "mean_confidence": 0.45820908696275503
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1523,
+                "accuracy": 0.3013788575180565,
+                "mean_confidence": 0.5502970660735823
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1481,
+                "accuracy": 0.3463875759621877,
+                "mean_confidence": 0.6497150173397743
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1650,
+                "accuracy": 0.3781818181818182,
+                "mean_confidence": 0.7513358494866309
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 2145,
+                "accuracy": 0.4745920745920746,
+                "mean_confidence": 0.8546634965821868
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 22011,
+                "accuracy": 0.8982327018309028,
+                "mean_confidence": 0.9890184048483653
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9371725611258016,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": false,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "challenge": {
+          "samples": 30004,
+          "accuracy": 0.764331422477003,
+          "balanced_accuracy": 0.6437918487271127,
+          "macro_precision": 0.6626188186165944,
+          "macro_recall": 0.6437918487271127,
+          "macro_f1": 0.6466565591222719,
+          "weighted_f1": 0.7625973898103761,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9871881321645314,
+              "recall": 0.9439071566731141,
+              "f1-score": 0.9650626235992089,
+              "support": 1551.0,
+              "average_precision": 0.9941020708901712
+            },
+            "Bearing_Wear": {
+              "precision": 0.5735882614495331,
+              "recall": 0.7371428571428571,
+              "f1-score": 0.6451612903225806,
+              "support": 1750.0,
+              "average_precision": 0.7395645546711828
+            },
+            "Combustion_Instability": {
+              "precision": 0.32255581216320245,
+              "recall": 0.47184684684684686,
+              "f1-score": 0.38317329675354367,
+              "support": 1776.0,
+              "average_precision": 0.3811767632529805
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.45780433159073936,
+              "recall": 0.36706586826347304,
+              "f1-score": 0.4074443336656697,
+              "support": 1670.0,
+              "average_precision": 0.4715902104894819
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.7136186770428016,
+              "recall": 0.5234018264840182,
+              "f1-score": 0.6038854132367468,
+              "support": 1752.0,
+              "average_precision": 0.6346578365200712
+            },
+            "Healthy": {
+              "precision": 0.8810801144492132,
+              "recall": 0.8920876335325004,
+              "f1-score": 0.8865497076023392,
+              "support": 16569.0,
+              "average_precision": 0.9701583348174958
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9606576629477392,
+              "recall": 0.9933211900425015,
+              "f1-score": 0.9767164179104477,
+              "support": 1647.0,
+              "average_precision": 0.9985446172913751
+            },
+            "Sensor_Drift": {
+              "precision": 0.6526468455402465,
+              "recall": 0.5817711700064642,
+              "f1-score": 0.6151742993848257,
+              "support": 1547.0,
+              "average_precision": 0.6325712831281383
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.41442953020134227,
+              "recall": 0.2835820895522388,
+              "f1-score": 0.3367416496250852,
+              "support": 1742.0,
+              "average_precision": 0.38686400898150136
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.14507665817764478,
+            "multiclass_log_loss": 1.0038632894731994,
+            "multiclass_brier_score": 0.36901696929261163,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 44,
+                "accuracy": 0.3181818181818182,
+                "mean_confidence": 0.2756008729790302
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 301,
+                "accuracy": 0.23920265780730898,
+                "mean_confidence": 0.3581420551370311
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 813,
+                "accuracy": 0.26814268142681424,
+                "mean_confidence": 0.4587368039016928
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1436,
+                "accuracy": 0.31963788300835655,
+                "mean_confidence": 0.5494040010336396
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1395,
+                "accuracy": 0.36129032258064514,
+                "mean_confidence": 0.6504401459826216
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1556,
+                "accuracy": 0.4241645244215938,
+                "mean_confidence": 0.752389295688275
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 2131,
+                "accuracy": 0.47254809948381044,
+                "mean_confidence": 0.8550547424473244
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 22328,
+                "accuracy": 0.8956915084199212,
+                "mean_confidence": 0.9897933160528727
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9378359102697185,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": false,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "time_forward": {
+          "samples": 28322,
+          "accuracy": 0.7334580891180001,
+          "balanced_accuracy": 0.5692457756794972,
+          "macro_precision": 0.5871011390107578,
+          "macro_recall": 0.5692457756794972,
+          "macro_f1": 0.569756483838235,
+          "weighted_f1": 0.7259330979648775,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9855072463768116,
+              "recall": 0.9333333333333333,
+              "f1-score": 0.9587109768378651,
+              "support": 510.0,
+              "average_precision": 0.9956234225363634
+            },
+            "Bearing_Wear": {
+              "precision": 0.5997706422018348,
+              "recall": 0.4776255707762557,
+              "f1-score": 0.5317742755465176,
+              "support": 1095.0,
+              "average_precision": 0.6636568589407605
+            },
+            "Combustion_Instability": {
+              "precision": 0.42125729099157483,
+              "recall": 0.6046511627906976,
+              "f1-score": 0.4965622612681436,
+              "support": 1075.0,
+              "average_precision": 0.5429961655553378
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.4791356184798808,
+              "recall": 0.25699440447641886,
+              "f1-score": 0.3345473465140479,
+              "support": 2502.0,
+              "average_precision": 0.4245085914560168
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.20665083135391923,
+              "recall": 0.3137019230769231,
+              "f1-score": 0.24916467780429594,
+              "support": 832.0,
+              "average_precision": 0.2678747914116787
+            },
+            "Healthy": {
+              "precision": 0.8628346366801758,
+              "recall": 0.9065611131102315,
+              "f1-score": 0.8841575761120697,
+              "support": 16674.0,
+              "average_precision": 0.964000484997465
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9831795984807379,
+              "recall": 0.9612732095490716,
+              "f1-score": 0.9721030042918455,
+              "support": 1885.0,
+              "average_precision": 0.9974460696135953
+            },
+            "Sensor_Drift": {
+              "precision": 0.36992221261884184,
+              "recall": 0.2788273615635179,
+              "f1-score": 0.3179791976225854,
+              "support": 1535.0,
+              "average_precision": 0.36195227607853225
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.37565217391304345,
+              "recall": 0.3902439024390244,
+              "f1-score": 0.3828090385467435,
+              "support": 2214.0,
+              "average_precision": 0.44140000115812045
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.15994107190064913,
+            "multiclass_log_loss": 1.0730453898916983,
+            "multiclass_brier_score": 0.4045255468614764,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 43,
+                "accuracy": 0.2558139534883721,
+                "mean_confidence": 0.2778230762991375
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 372,
+                "accuracy": 0.16666666666666666,
+                "mean_confidence": 0.36183342830558424
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 1009,
+                "accuracy": 0.24281466798810702,
+                "mean_confidence": 0.4567736286715015
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1526,
+                "accuracy": 0.31389252948885976,
+                "mean_confidence": 0.5489929541905845
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1508,
+                "accuracy": 0.3521220159151194,
+                "mean_confidence": 0.6516299255850082
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1728,
+                "accuracy": 0.4039351851851852,
+                "mean_confidence": 0.7521656743311753
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 2266,
+                "accuracy": 0.45410414827890555,
+                "mean_confidence": 0.8527813701805317
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 19870,
+                "accuracy": 0.8916960241570207,
+                "mean_confidence": 0.9885682925757282
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.929444741047099,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": false,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "known_engine_val": {
+          "samples": 23334,
+          "accuracy": 0.905974115025285,
+          "balanced_accuracy": 0.8345440004056263,
+          "macro_precision": 0.8646933849446118,
+          "macro_recall": 0.8345440004056263,
+          "macro_f1": 0.841693675666598,
+          "weighted_f1": 0.8989300075321339,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.996607294317218,
+              "recall": 0.9670781893004116,
+              "f1-score": 0.9816207184628237,
+              "support": 1215.0,
+              "average_precision": 0.9988414596496172
+            },
+            "Bearing_Wear": {
+              "precision": 0.8260038240917782,
+              "recall": 0.9992289899768697,
+              "f1-score": 0.9043963712491278,
+              "support": 1297.0,
+              "average_precision": 0.9750141405239818
+            },
+            "Combustion_Instability": {
+              "precision": 0.9477682811016145,
+              "recall": 0.7700617283950617,
+              "f1-score": 0.8497232865048957,
+              "support": 1296.0,
+              "average_precision": 0.8806970734139581
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.5518072289156627,
+              "recall": 0.3477600607441154,
+              "f1-score": 0.4266418258034467,
+              "support": 1317.0,
+              "average_precision": 0.5536581687108553
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.917558886509636,
+              "recall": 0.6711041503523885,
+              "f1-score": 0.7752148349163275,
+              "support": 1277.0,
+              "average_precision": 0.7975983341715612
+            },
+            "Healthy": {
+              "precision": 0.938687648456057,
+              "recall": 0.9806901899961226,
+              "f1-score": 0.9592293397049342,
+              "support": 12895.0,
+              "average_precision": 0.989908558320542
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.954858454475899,
+              "recall": 0.9912629070691025,
+              "f1-score": 0.9727201870615745,
+              "support": 1259.0,
+              "average_precision": 0.9980483018529553
+            },
+            "Sensor_Drift": {
+              "precision": 0.811960542540074,
+              "recall": 1.0,
+              "f1-score": 0.8962232051718272,
+              "support": 1317.0,
+              "average_precision": 0.9995285991534613
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.8369883040935673,
+              "recall": 0.783709787816564,
+              "f1-score": 0.8094733121244256,
+              "support": 1461.0,
+              "average_precision": 0.8938782157253851
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.06087227253951102,
+            "multiclass_log_loss": 0.480932020464407,
+            "multiclass_brier_score": 0.15495750914777842,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 10,
+                "accuracy": 0.3,
+                "mean_confidence": 0.2780092927251026
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 58,
+                "accuracy": 0.08620689655172414,
+                "mean_confidence": 0.36250474413619094
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 197,
+                "accuracy": 0.18274111675126903,
+                "mean_confidence": 0.4576420820023178
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 355,
+                "accuracy": 0.3126760563380282,
+                "mean_confidence": 0.5512530204957202
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 374,
+                "accuracy": 0.3850267379679144,
+                "mean_confidence": 0.651279069637734
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 402,
+                "accuracy": 0.43532338308457713,
+                "mean_confidence": 0.754201524737139
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 732,
+                "accuracy": 0.5218579234972678,
+                "mean_confidence": 0.8544664026278858
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 21206,
+                "accuracy": 0.9565217391304348,
+                "mean_confidence": 0.9939668641451198
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9812384386877735,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        }
+      }
+    },
+    "c2_raw_plus_derived": {
+      "candidate": "c2_raw_plus_derived",
+      "features": [
+        "mission_phase",
+        "altitude_m",
+        "ambient_temperature_c",
+        "throttle_percent",
+        "engine_load_percent",
+        "rpm",
+        "fuel_flow_lph",
+        "cylinder_head_temp_1_c",
+        "cylinder_head_temp_2_c",
+        "cylinder_head_temp_3_c",
+        "cylinder_head_temp_4_c",
+        "exhaust_gas_temp_1_c",
+        "exhaust_gas_temp_2_c",
+        "exhaust_gas_temp_3_c",
+        "exhaust_gas_temp_4_c",
+        "oil_temperature_c",
+        "oil_pressure_kpa",
+        "vibration_rms",
+        "alternator_voltage",
+        "battery_voltage",
+        "injection_timing_deg",
+        "cht_spread_c",
+        "egt_spread_c",
+        "cht_mean_c",
+        "egt_mean_c",
+        "cht_upper_pair_spread_c",
+        "cht_lower_pair_spread_c",
+        "cht_load_residual_c",
+        "cht_egt_gap_c",
+        "cht_peak_over_median_c"
+      ],
+      "feature_count": 30,
+      "use_safety_weights": false,
+      "train_time_seconds": 84.78912970000056,
+      "partitions": {
+        "validation": {
+          "samples": 30002,
+          "accuracy": 0.8170455302979801,
+          "balanced_accuracy": 0.7294127672650751,
+          "macro_precision": 0.7699365792538673,
+          "macro_recall": 0.7294127672650751,
+          "macro_f1": 0.743986152864046,
+          "weighted_f1": 0.8191023882658985,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9571045576407506,
+              "recall": 0.9655172413793104,
+              "f1-score": 0.9612924941097274,
+              "support": 1479.0,
+              "average_precision": 0.9912891626246472
+            },
+            "Bearing_Wear": {
+              "precision": 0.673616680032077,
+              "recall": 0.5115712545676004,
+              "f1-score": 0.5815160955347871,
+              "support": 1642.0,
+              "average_precision": 0.6932900661490782
+            },
+            "Combustion_Instability": {
+              "precision": 0.3760330578512397,
+              "recall": 0.5881316098707403,
+              "f1-score": 0.45875343721356554,
+              "support": 1702.0,
+              "average_precision": 0.4682057612527635
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6192468619246861,
+              "recall": 0.5223529411764706,
+              "f1-score": 0.5666879387364391,
+              "support": 1700.0,
+              "average_precision": 0.6064930157055662
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.8234912394548994,
+              "recall": 0.712521055586749,
+              "f1-score": 0.7639975918121613,
+              "support": 1781.0,
+              "average_precision": 0.8027715611797235
+            },
+            "Healthy": {
+              "precision": 0.8873297565002064,
+              "recall": 0.9096953578336557,
+              "f1-score": 0.8983733771078943,
+              "support": 16544.0,
+              "average_precision": 0.973426918692508
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9772307692307692,
+              "recall": 0.9606775559588627,
+              "f1-score": 0.9688834655277608,
+              "support": 1653.0,
+              "average_precision": 0.9966615098347819
+            },
+            "Sensor_Drift": {
+              "precision": 0.9846870838881492,
+              "recall": 0.82996632996633,
+              "f1-score": 0.9007308160779537,
+              "support": 1782.0,
+              "average_precision": 0.9238489281983671
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.6306892067620286,
+              "recall": 0.564281559045957,
+              "f1-score": 0.5956401596561253,
+              "support": 1719.0,
+              "average_precision": 0.6506102364952002
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.11450343435701511,
+            "multiclass_log_loss": 0.8233391152761089,
+            "multiclass_brier_score": 0.2913790715212213,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 20,
+                "accuracy": 0.25,
+                "mean_confidence": 0.28243560262835776
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 205,
+                "accuracy": 0.2731707317073171,
+                "mean_confidence": 0.3629125066137235
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 575,
+                "accuracy": 0.32,
+                "mean_confidence": 0.4587805362865878
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1055,
+                "accuracy": 0.35924170616113743,
+                "mean_confidence": 0.5502805530732836
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1103,
+                "accuracy": 0.39075249320036265,
+                "mean_confidence": 0.6502774999313374
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1154,
+                "accuracy": 0.43327556325823224,
+                "mean_confidence": 0.7515970656429158
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 1639,
+                "accuracy": 0.5064063453325198,
+                "mean_confidence": 0.8545734465747022
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 24251,
+                "accuracy": 0.9124572182590409,
+                "mean_confidence": 0.9912455772834753
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9574392067398247,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": false,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "challenge": {
+          "samples": 30004,
+          "accuracy": 0.8211571790427943,
+          "balanced_accuracy": 0.7394896080976784,
+          "macro_precision": 0.7680225537630451,
+          "macro_recall": 0.7394896080976784,
+          "macro_f1": 0.7494007111950339,
+          "weighted_f1": 0.8217662926380217,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9863387978142076,
+              "recall": 0.9310122501611864,
+              "f1-score": 0.9578772802653399,
+              "support": 1551.0,
+              "average_precision": 0.9941239984396221
+            },
+            "Bearing_Wear": {
+              "precision": 0.6765523632993512,
+              "recall": 0.8342857142857143,
+              "f1-score": 0.7471852610030706,
+              "support": 1750.0,
+              "average_precision": 0.7804440335048007
+            },
+            "Combustion_Instability": {
+              "precision": 0.39608913142337426,
+              "recall": 0.49042792792792794,
+              "f1-score": 0.4382389937106918,
+              "support": 1776.0,
+              "average_precision": 0.44695332732042636
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6715976331360947,
+              "recall": 0.5437125748502994,
+              "f1-score": 0.600926538716082,
+              "support": 1670.0,
+              "average_precision": 0.6520114185558561
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.8359477124183007,
+              "recall": 0.7300228310502284,
+              "f1-score": 0.7794028031687995,
+              "support": 1752.0,
+              "average_precision": 0.8397505084563242
+            },
+            "Healthy": {
+              "precision": 0.8929462059137869,
+              "recall": 0.9076588810429115,
+              "f1-score": 0.9002424351261561,
+              "support": 16569.0,
+              "average_precision": 0.9765673547425928
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9627879503839338,
+              "recall": 0.9896782027929569,
+              "f1-score": 0.9760479041916168,
+              "support": 1647.0,
+              "average_precision": 0.998346379721149
+            },
+            "Sensor_Drift": {
+              "precision": 0.8860016764459346,
+              "recall": 0.6832579185520362,
+              "f1-score": 0.7715328467153285,
+              "support": 1547.0,
+              "average_precision": 0.7900698783108063
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.6039415130324222,
+              "recall": 0.5453501722158438,
+              "f1-score": 0.5731523378582202,
+              "support": 1742.0,
+              "average_precision": 0.6465687449384241
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.10579636125115015,
+            "multiclass_log_loss": 0.8036104347521175,
+            "multiclass_brier_score": 0.2832230734823912,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 14,
+                "accuracy": 0.35714285714285715,
+                "mean_confidence": 0.28275549721484194
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 152,
+                "accuracy": 0.3157894736842105,
+                "mean_confidence": 0.36223526792993843
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 602,
+                "accuracy": 0.33554817275747506,
+                "mean_confidence": 0.45742198439208304
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1192,
+                "accuracy": 0.4052013422818792,
+                "mean_confidence": 0.5492976282009012
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1194,
+                "accuracy": 0.40619765494137355,
+                "mean_confidence": 0.6524524340568026
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1389,
+                "accuracy": 0.4614830813534917,
+                "mean_confidence": 0.7522026345755032
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 1838,
+                "accuracy": 0.5081610446137106,
+                "mean_confidence": 0.853070653387514
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 23623,
+                "accuracy": 0.9245227109173263,
+                "mean_confidence": 0.9918003854370829
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9567569887008612,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "time_forward": {
+          "samples": 28322,
+          "accuracy": 0.8020620012710967,
+          "balanced_accuracy": 0.6882805966465463,
+          "macro_precision": 0.7220752969667019,
+          "macro_recall": 0.6882805966465463,
+          "macro_f1": 0.6985048724480927,
+          "weighted_f1": 0.7967276211894264,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9874476987447699,
+              "recall": 0.9254901960784314,
+              "f1-score": 0.9554655870445344,
+              "support": 510.0,
+              "average_precision": 0.9963359346532734
+            },
+            "Bearing_Wear": {
+              "precision": 0.803921568627451,
+              "recall": 0.5616438356164384,
+              "f1-score": 0.6612903225806451,
+              "support": 1095.0,
+              "average_precision": 0.8096985242816068
+            },
+            "Combustion_Instability": {
+              "precision": 0.5390070921985816,
+              "recall": 0.5655813953488372,
+              "f1-score": 0.5519745801180209,
+              "support": 1075.0,
+              "average_precision": 0.5693799685046335
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6342620035566093,
+              "recall": 0.4276578737010392,
+              "f1-score": 0.5108617808546192,
+              "support": 2502.0,
+              "average_precision": 0.6013855598316495
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.4488392089423904,
+              "recall": 0.6274038461538461,
+              "f1-score": 0.5233082706766917,
+              "support": 832.0,
+              "average_precision": 0.6307730312260144
+            },
+            "Healthy": {
+              "precision": 0.8725568181818182,
+              "recall": 0.9210147535084563,
+              "f1-score": 0.8961311781525354,
+              "support": 16674.0,
+              "average_precision": 0.969285118789015
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9611600207146557,
+              "recall": 0.9846153846153847,
+              "f1-score": 0.9727463312368972,
+              "support": 1885.0,
+              "average_precision": 0.9976989326230118
+            },
+            "Sensor_Drift": {
+              "precision": 0.6484543493889289,
+              "recall": 0.5876221498371336,
+              "f1-score": 0.6165413533834586,
+              "support": 1535.0,
+              "average_precision": 0.6845980972298688
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.6030289123451125,
+              "recall": 0.5934959349593496,
+              "f1-score": 0.5982244479854314,
+              "support": 2214.0,
+              "average_precision": 0.6955963609863689
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.11636819351103675,
+            "multiclass_log_loss": 0.8647099217802808,
+            "multiclass_brier_score": 0.30583136150394047,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 19,
+                "accuracy": 0.10526315789473684,
+                "mean_confidence": 0.27812030404090166
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 225,
+                "accuracy": 0.21777777777777776,
+                "mean_confidence": 0.36268402714544196
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 692,
+                "accuracy": 0.27167630057803466,
+                "mean_confidence": 0.4571871603555095
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 1280,
+                "accuracy": 0.34375,
+                "mean_confidence": 0.5495855782687317
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 1194,
+                "accuracy": 0.39949748743718594,
+                "mean_confidence": 0.6507375443170702
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 1299,
+                "accuracy": 0.4426481909160893,
+                "mean_confidence": 0.7522892509707874
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 1722,
+                "accuracy": 0.521486643437863,
+                "mean_confidence": 0.8532834213186061
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 21891,
+                "accuracy": 0.9175917043533872,
+                "mean_confidence": 0.9904294145150435
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.953040305089414,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": false,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        },
+        "known_engine_val": {
+          "samples": 23334,
+          "accuracy": 0.920202279934859,
+          "balanced_accuracy": 0.8627582370752819,
+          "macro_precision": 0.9013395139431408,
+          "macro_recall": 0.8627582370752819,
+          "macro_f1": 0.8710681434872339,
+          "weighted_f1": 0.9137386036643783,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9974662162162162,
+              "recall": 0.9720164609053498,
+              "f1-score": 0.9845769070446019,
+              "support": 1215.0,
+              "average_precision": 0.9983814572354646
+            },
+            "Bearing_Wear": {
+              "precision": 0.85704831237591,
+              "recall": 0.9984579799537394,
+              "f1-score": 0.9223646723646723,
+              "support": 1297.0,
+              "average_precision": 0.9519273339352246
+            },
+            "Combustion_Instability": {
+              "precision": 0.9807877041306436,
+              "recall": 0.7878086419753086,
+              "f1-score": 0.8737697903294822,
+              "support": 1296.0,
+              "average_precision": 0.8856958389505807
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.7938461538461539,
+              "recall": 0.3917995444191344,
+              "f1-score": 0.5246568378240977,
+              "support": 1317.0,
+              "average_precision": 0.6705867188515697
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.9322469982847341,
+              "recall": 0.851213782302271,
+              "f1-score": 0.8898894801473598,
+              "support": 1277.0,
+              "average_precision": 0.921691011214936
+            },
+            "Healthy": {
+              "precision": 0.9385665529010239,
+              "recall": 0.9810003877471888,
+              "f1-score": 0.9593144503848633,
+              "support": 12895.0,
+              "average_precision": 0.9916112991153264
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9575944487278335,
+              "recall": 0.9864972200158856,
+              "f1-score": 0.971830985915493,
+              "support": 1259.0,
+              "average_precision": 0.9979918079184927
+            },
+            "Sensor_Drift": {
+              "precision": 0.8006079027355623,
+              "recall": 1.0,
+              "f1-score": 0.8892640108035111,
+              "support": 1317.0,
+              "average_precision": 0.9994950884994663
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.8538913362701909,
+              "recall": 0.7960301163586585,
+              "f1-score": 0.8239461565710238,
+              "support": 1461.0,
+              "average_precision": 0.8965017577490776
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.05215236500233916,
+            "multiclass_log_loss": 0.4199206366606118,
+            "multiclass_brier_score": 0.13059048822671773,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 1,
+                "accuracy": 0.0,
+                "mean_confidence": 0.2880925361519401
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 32,
+                "accuracy": 0.21875,
+                "mean_confidence": 0.3615318048635553
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 128,
+                "accuracy": 0.2734375,
+                "mean_confidence": 0.4620733263625345
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 339,
+                "accuracy": 0.2831858407079646,
+                "mean_confidence": 0.5477096526859843
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 345,
+                "accuracy": 0.34782608695652173,
+                "mean_confidence": 0.6541287894981513
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 390,
+                "accuracy": 0.382051282051282,
+                "mean_confidence": 0.751528420184046
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 584,
+                "accuracy": 0.5873287671232876,
+                "mean_confidence": 0.8566096745921176
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 21515,
+                "accuracy": 0.963141993957704,
+                "mean_confidence": 0.9952691912817758
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9857551408985051,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": false,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": true,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": false
+            },
+            "passed": false
+          }
+        }
+      }
+    },
+    "c3_full_causal_unweighted": {
+      "candidate": "c3_full_causal_unweighted",
+      "features": [
+        "mission_phase",
+        "altitude_m",
+        "ambient_temperature_c",
+        "throttle_percent",
+        "engine_load_percent",
+        "rpm",
+        "fuel_flow_lph",
+        "cylinder_head_temp_1_c",
+        "cylinder_head_temp_2_c",
+        "cylinder_head_temp_3_c",
+        "cylinder_head_temp_4_c",
+        "exhaust_gas_temp_1_c",
+        "exhaust_gas_temp_2_c",
+        "exhaust_gas_temp_3_c",
+        "exhaust_gas_temp_4_c",
+        "oil_temperature_c",
+        "oil_pressure_kpa",
+        "vibration_rms",
+        "alternator_voltage",
+        "battery_voltage",
+        "injection_timing_deg",
+        "cht_spread_c",
+        "egt_spread_c",
+        "cht_mean_c",
+        "egt_mean_c",
+        "cht_upper_pair_spread_c",
+        "cht_lower_pair_spread_c",
+        "cht_load_residual_c",
+        "cht_egt_gap_c",
+        "cht_peak_over_median_c",
+        "rpm_delta",
+        "rpm_rolling_std_7",
+        "rpm_rolling_std_21",
+        "vibration_rms_delta",
+        "vibration_rms_rolling_std_7",
+        "vibration_rms_rolling_std_21",
+        "cht_mean_c_delta",
+        "cht_mean_c_rolling_std_7",
+        "cht_mean_c_rolling_std_21",
+        "egt_mean_c_delta",
+        "egt_mean_c_rolling_std_7",
+        "egt_mean_c_rolling_std_21",
+        "cht_spread_c_rolling_mean_21",
+        "egt_spread_c_rolling_mean_21",
+        "cht_load_residual_c_delta",
+        "cht_load_residual_c_rolling_mean_21",
+        "oil_temperature_c_delta",
+        "oil_temperature_c_rolling_mean_21",
+        "cht_rise_rate_c_per_s"
+      ],
+      "feature_count": 49,
+      "use_safety_weights": false,
+      "train_time_seconds": 85.73647359999995,
+      "partitions": {
+        "validation": {
+          "samples": 30002,
+          "accuracy": 0.9170055329644691,
+          "balanced_accuracy": 0.8818559132744546,
+          "macro_precision": 0.9179686857494378,
+          "macro_recall": 0.8818559132744546,
+          "macro_f1": 0.8976062710458604,
+          "weighted_f1": 0.9147383426871055,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.956,
+              "recall": 0.9695740365111561,
+              "f1-score": 0.9627391742195368,
+              "support": 1479.0,
+              "average_precision": 0.9943655795831985
+            },
+            "Bearing_Wear": {
+              "precision": 0.9225551158846806,
+              "recall": 0.9939098660170523,
+              "f1-score": 0.9569041336851363,
+              "support": 1642.0,
+              "average_precision": 0.9957458104109603
+            },
+            "Combustion_Instability": {
+              "precision": 0.9614721104082806,
+              "recall": 0.982373678025852,
+              "f1-score": 0.9718105201976169,
+              "support": 1702.0,
+              "average_precision": 0.9969362389315308
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.676978417266187,
+              "recall": 0.5535294117647059,
+              "f1-score": 0.6090614886731391,
+              "support": 1700.0,
+              "average_precision": 0.6493983731416435
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.8804831532104259,
+              "recall": 0.7776530039303762,
+              "f1-score": 0.8258795468097794,
+              "support": 1781.0,
+              "average_precision": 0.8544634345815262
+            },
+            "Healthy": {
+              "precision": 0.9131439131439132,
+              "recall": 0.9557543520309478,
+              "f1-score": 0.9339633786178382,
+              "support": 16544.0,
+              "average_precision": 0.9807428192251912
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9695340501792115,
+              "recall": 0.9818511796733213,
+              "f1-score": 0.975653742110009,
+              "support": 1653.0,
+              "average_precision": 0.9973067243898606
+            },
+            "Sensor_Drift": {
+              "precision": 0.9880873593646592,
+              "recall": 0.8378226711560045,
+              "f1-score": 0.9067719404798057,
+              "support": 1782.0,
+              "average_precision": 0.9302580511965788
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9934640522875817,
+              "recall": 0.8842350203606748,
+              "f1-score": 0.935672514619883,
+              "support": 1719.0,
+              "average_precision": 0.9567070165314734
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.05579486345882176,
+            "multiclass_log_loss": 0.4531462874475897,
+            "multiclass_brier_score": 0.1424772254291713,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 2,
+                "accuracy": 0.0,
+                "mean_confidence": 0.27285868256948187
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 14,
+                "accuracy": 0.5,
+                "mean_confidence": 0.3688648668336868
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 125,
+                "accuracy": 0.448,
+                "mean_confidence": 0.46554356653284884
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 425,
+                "accuracy": 0.52,
+                "mean_confidence": 0.5500416071067936
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 450,
+                "accuracy": 0.5422222222222223,
+                "mean_confidence": 0.6506983640734274
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 575,
+                "accuracy": 0.6208695652173913,
+                "mean_confidence": 0.750646340124151
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 815,
+                "accuracy": 0.6245398773006134,
+                "mean_confidence": 0.8543879273521311
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 27596,
+                "accuracy": 0.9464415132627917,
+                "mean_confidence": 0.9952113779253766
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9814869880529875,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "challenge": {
+          "samples": 30004,
+          "accuracy": 0.908912145047327,
+          "balanced_accuracy": 0.8690359190886585,
+          "macro_precision": 0.9003415436249215,
+          "macro_recall": 0.8690359190886585,
+          "macro_f1": 0.8821647637962089,
+          "weighted_f1": 0.9074041637073098,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9863852961198094,
+              "recall": 0.9342359767891683,
+              "f1-score": 0.9596026490066225,
+              "support": 1551.0,
+              "average_precision": 0.9917957682929593
+            },
+            "Bearing_Wear": {
+              "precision": 0.8562189054726368,
+              "recall": 0.9834285714285714,
+              "f1-score": 0.9154255319148936,
+              "support": 1750.0,
+              "average_precision": 0.9919547635743189
+            },
+            "Combustion_Instability": {
+              "precision": 0.9707700955593029,
+              "recall": 0.9724099099099099,
+              "f1-score": 0.9715893108298171,
+              "support": 1776.0,
+              "average_precision": 0.9957821530552178
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6344564526382708,
+              "recall": 0.5976047904191617,
+              "f1-score": 0.6154794942954055,
+              "support": 1670.0,
+              "average_precision": 0.678316840522934
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.9143769968051119,
+              "recall": 0.8167808219178082,
+              "f1-score": 0.8628278564968345,
+              "support": 1752.0,
+              "average_precision": 0.904942696257429
+            },
+            "Healthy": {
+              "precision": 0.9169976635514019,
+              "recall": 0.9474923049067536,
+              "f1-score": 0.9319956068746476,
+              "support": 16569.0,
+              "average_precision": 0.9817433005415461
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9604952830188679,
+              "recall": 0.9890710382513661,
+              "f1-score": 0.9745737361651211,
+              "support": 1647.0,
+              "average_precision": 0.9974683652474137
+            },
+            "Sensor_Drift": {
+              "precision": 0.8887056883759274,
+              "recall": 0.6968325791855203,
+              "f1-score": 0.7811594202898551,
+              "support": 1547.0,
+              "average_precision": 0.8107565005969262
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9746675110829639,
+              "recall": 0.883467278989667,
+              "f1-score": 0.926829268292683,
+              "support": 1742.0,
+              "average_precision": 0.9654996125192665
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.057869084861587074,
+            "multiclass_log_loss": 0.4358629004265281,
+            "multiclass_brier_score": 0.15313632188687887,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 7,
+                "accuracy": 0.0,
+                "mean_confidence": 0.26991645625194616
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 44,
+                "accuracy": 0.38636363636363635,
+                "mean_confidence": 0.36604527277475507
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 203,
+                "accuracy": 0.4433497536945813,
+                "mean_confidence": 0.45958625964261723
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 493,
+                "accuracy": 0.5010141987829615,
+                "mean_confidence": 0.5498537568658063
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 535,
+                "accuracy": 0.5364485981308411,
+                "mean_confidence": 0.6490664195249592
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 672,
+                "accuracy": 0.5476190476190477,
+                "mean_confidence": 0.7529154213054875
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 993,
+                "accuracy": 0.6304128902316214,
+                "mean_confidence": 0.8563953008943992
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 27057,
+                "accuracy": 0.947481243301179,
+                "mean_confidence": 0.994919483120886
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9843987074698374,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": true,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "time_forward": {
+          "samples": 28322,
+          "accuracy": 0.8843655109102464,
+          "balanced_accuracy": 0.8326254610131925,
+          "macro_precision": 0.8615213001477336,
+          "macro_recall": 0.8326254610131925,
+          "macro_f1": 0.844862211614125,
+          "weighted_f1": 0.8795300559860423,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9894957983193278,
+              "recall": 0.9235294117647059,
+              "f1-score": 0.9553752535496958,
+              "support": 510.0,
+              "average_precision": 0.9916373059586492
+            },
+            "Bearing_Wear": {
+              "precision": 0.9530386740331491,
+              "recall": 0.9452054794520548,
+              "f1-score": 0.9491059147180193,
+              "support": 1095.0,
+              "average_precision": 0.9877427868385935
+            },
+            "Combustion_Instability": {
+              "precision": 0.9696682464454977,
+              "recall": 0.9516279069767442,
+              "f1-score": 0.9605633802816902,
+              "support": 1075.0,
+              "average_precision": 0.9915199816985275
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6395412342981978,
+              "recall": 0.4680255795363709,
+              "f1-score": 0.5405031156242788,
+              "support": 2502.0,
+              "average_precision": 0.6467644486252123
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.6443965517241379,
+              "recall": 0.71875,
+              "f1-score": 0.6795454545454546,
+              "support": 832.0,
+              "average_precision": 0.7585869840958746
+            },
+            "Healthy": {
+              "precision": 0.9038111490329921,
+              "recall": 0.9529207148854504,
+              "f1-score": 0.9277164710690722,
+              "support": 16674.0,
+              "average_precision": 0.9804616435910622
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9741288278775079,
+              "recall": 0.9787798408488063,
+              "f1-score": 0.9764487959777719,
+              "support": 1885.0,
+              "average_precision": 0.9981229898907902
+            },
+            "Sensor_Drift": {
+              "precision": 0.7020348837209303,
+              "recall": 0.6293159609120521,
+              "f1-score": 0.6636894537959465,
+              "support": 1535.0,
+              "average_precision": 0.7272806580849333
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9775763358778626,
+              "recall": 0.9254742547425474,
+              "f1-score": 0.9508120649651972,
+              "support": 2214.0,
+              "average_precision": 0.9745446538715945
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.0808806866397456,
+            "multiclass_log_loss": 0.5785778541986036,
+            "multiclass_brier_score": 0.19442764748976604,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 1,
+                "accuracy": 0.0,
+                "mean_confidence": 0.27601700163219695
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 62,
+                "accuracy": 0.24193548387096775,
+                "mean_confidence": 0.36641757113468876
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 193,
+                "accuracy": 0.32124352331606215,
+                "mean_confidence": 0.46274782013387405
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 526,
+                "accuracy": 0.37072243346007605,
+                "mean_confidence": 0.547811966195656
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 488,
+                "accuracy": 0.42827868852459017,
+                "mean_confidence": 0.6519682303374872
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 587,
+                "accuracy": 0.46337308347529815,
+                "mean_confidence": 0.7518113943800294
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 976,
+                "accuracy": 0.5266393442622951,
+                "mean_confidence": 0.8538182625320154
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 25489,
+                "accuracy": 0.9329514692612499,
+                "mean_confidence": 0.9943288896369854
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9761818471776488,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "known_engine_val": {
+          "samples": 23334,
+          "accuracy": 0.9487443215908117,
+          "balanced_accuracy": 0.91541637989135,
+          "macro_precision": 0.9438605818667047,
+          "macro_recall": 0.91541637989135,
+          "macro_f1": 0.9180361534840041,
+          "weighted_f1": 0.9426231061973928,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.994979079497908,
+              "recall": 0.9786008230452675,
+              "f1-score": 0.9867219917012449,
+              "support": 1215.0,
+              "average_precision": 0.9985363209440616
+            },
+            "Bearing_Wear": {
+              "precision": 0.9870525514089871,
+              "recall": 0.9992289899768697,
+              "f1-score": 0.993103448275862,
+              "support": 1297.0,
+              "average_precision": 0.9999608081383738
+            },
+            "Combustion_Instability": {
+              "precision": 0.9937888198757764,
+              "recall": 0.9876543209876543,
+              "f1-score": 0.9907120743034056,
+              "support": 1296.0,
+              "average_precision": 0.999136322451858
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.8641765704584041,
+              "recall": 0.38648443432042523,
+              "f1-score": 0.534102833158447,
+              "support": 1317.0,
+              "average_precision": 0.7488147585628201
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.967948717948718,
+              "recall": 0.9459671104150352,
+              "f1-score": 0.9568316831683168,
+              "support": 1277.0,
+              "average_precision": 0.9656550767142018
+            },
+            "Healthy": {
+              "precision": 0.9534481461983906,
+              "recall": 0.983171772004653,
+              "f1-score": 0.9680818570555895,
+              "support": 12895.0,
+              "average_precision": 0.9958239326342223
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9560862865947611,
+              "recall": 0.9857029388403494,
+              "f1-score": 0.9706687524442706,
+              "support": 1259.0,
+              "average_precision": 0.9976978083137955
+            },
+            "Sensor_Drift": {
+              "precision": 0.7890952666267226,
+              "recall": 1.0,
+              "f1-score": 0.8821165438713998,
+              "support": 1317.0,
+              "average_precision": 0.9994547053853826
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.988169798190675,
+              "recall": 0.971937029431896,
+              "f1-score": 0.9799861973775017,
+              "support": 1461.0,
+              "average_precision": 0.9920466833213106
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.0400733745010091,
+            "multiclass_log_loss": 0.263845348284549,
+            "multiclass_brier_score": 0.09006897870687655,
+            "calibration_bins": [
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 5,
+                "accuracy": 0.2,
+                "mean_confidence": 0.3469920585838395
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 40,
+                "accuracy": 0.35,
+                "mean_confidence": 0.4602719557727359
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 113,
+                "accuracy": 0.3008849557522124,
+                "mean_confidence": 0.5462619379072143
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 116,
+                "accuracy": 0.4224137931034483,
+                "mean_confidence": 0.6511628957203665
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 156,
+                "accuracy": 0.4166666666666667,
+                "mean_confidence": 0.75437837776771
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 294,
+                "accuracy": 0.45918367346938777,
+                "mean_confidence": 0.8573485131531478
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 22610,
+                "accuracy": 0.9659442724458205,
+                "mean_confidence": 0.9971658689693433
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9948625332131142,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": true,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        }
+      }
+    },
+    "c4_full_causal_safety_weighted": {
+      "candidate": "c4_full_causal_safety_weighted",
+      "features": [
+        "mission_phase",
+        "altitude_m",
+        "ambient_temperature_c",
+        "throttle_percent",
+        "engine_load_percent",
+        "rpm",
+        "fuel_flow_lph",
+        "cylinder_head_temp_1_c",
+        "cylinder_head_temp_2_c",
+        "cylinder_head_temp_3_c",
+        "cylinder_head_temp_4_c",
+        "exhaust_gas_temp_1_c",
+        "exhaust_gas_temp_2_c",
+        "exhaust_gas_temp_3_c",
+        "exhaust_gas_temp_4_c",
+        "oil_temperature_c",
+        "oil_pressure_kpa",
+        "vibration_rms",
+        "alternator_voltage",
+        "battery_voltage",
+        "injection_timing_deg",
+        "cht_spread_c",
+        "egt_spread_c",
+        "cht_mean_c",
+        "egt_mean_c",
+        "cht_upper_pair_spread_c",
+        "cht_lower_pair_spread_c",
+        "cht_load_residual_c",
+        "cht_egt_gap_c",
+        "cht_peak_over_median_c",
+        "rpm_delta",
+        "rpm_rolling_std_7",
+        "rpm_rolling_std_21",
+        "vibration_rms_delta",
+        "vibration_rms_rolling_std_7",
+        "vibration_rms_rolling_std_21",
+        "cht_mean_c_delta",
+        "cht_mean_c_rolling_std_7",
+        "cht_mean_c_rolling_std_21",
+        "egt_mean_c_delta",
+        "egt_mean_c_rolling_std_7",
+        "egt_mean_c_rolling_std_21",
+        "cht_spread_c_rolling_mean_21",
+        "egt_spread_c_rolling_mean_21",
+        "cht_load_residual_c_delta",
+        "cht_load_residual_c_rolling_mean_21",
+        "oil_temperature_c_delta",
+        "oil_temperature_c_rolling_mean_21",
+        "cht_rise_rate_c_per_s"
+      ],
+      "feature_count": 49,
+      "use_safety_weights": true,
+      "train_time_seconds": 60.8363231000003,
+      "partitions": {
+        "validation": {
+          "samples": 30002,
+          "accuracy": 0.9162055862942471,
+          "balanced_accuracy": 0.8821740884249561,
+          "macro_precision": 0.9174510227756552,
+          "macro_recall": 0.8821740884249561,
+          "macro_f1": 0.8980882359604068,
+          "weighted_f1": 0.9147216895682472,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9625668449197861,
+              "recall": 0.973630831643002,
+              "f1-score": 0.9680672268907563,
+              "support": 1479.0,
+              "average_precision": 0.9914668018716828
+            },
+            "Bearing_Wear": {
+              "precision": 0.9527466036621383,
+              "recall": 0.9823386114494519,
+              "f1-score": 0.9673163418290854,
+              "support": 1642.0,
+              "average_precision": 0.9965578933846387
+            },
+            "Combustion_Instability": {
+              "precision": 0.9670710571923743,
+              "recall": 0.9835487661574618,
+              "f1-score": 0.9752403145936499,
+              "support": 1702.0,
+              "average_precision": 0.9971379116041418
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6228239845261122,
+              "recall": 0.5682352941176471,
+              "f1-score": 0.5942786834820055,
+              "support": 1700.0,
+              "average_precision": 0.6469216051546093
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.8994778067885117,
+              "recall": 0.7737226277372263,
+              "f1-score": 0.8318744340476909,
+              "support": 1781.0,
+              "average_precision": 0.8583668936091311
+            },
+            "Healthy": {
+              "precision": 0.914098702502317,
+              "recall": 0.9538805609284333,
+              "f1-score": 0.9335660198769522,
+              "support": 16544.0,
+              "average_precision": 0.9810081838062358
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9684711481261155,
+              "recall": 0.984875983061101,
+              "f1-score": 0.9766046790641871,
+              "support": 1653.0,
+              "average_precision": 0.9976626494918149
+            },
+            "Sensor_Drift": {
+              "precision": 0.9756738987508218,
+              "recall": 0.8327721661054994,
+              "f1-score": 0.898577051165607,
+              "support": 1782.0,
+              "average_precision": 0.9224367516408056
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9941291585127201,
+              "recall": 0.8865619546247818,
+              "f1-score": 0.9372693726937269,
+              "support": 1719.0,
+              "average_precision": 0.9590647633142848
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.057254278976859536,
+            "multiclass_log_loss": 0.4594056846355589,
+            "multiclass_brier_score": 0.14322497805431286,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 1,
+                "accuracy": 0.0,
+                "mean_confidence": 0.29415119391862493
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 22,
+                "accuracy": 0.45454545454545453,
+                "mean_confidence": 0.3711758096373957
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 108,
+                "accuracy": 0.42592592592592593,
+                "mean_confidence": 0.4663007428059788
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 402,
+                "accuracy": 0.4925373134328358,
+                "mean_confidence": 0.5508545048262156
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 468,
+                "accuracy": 0.5213675213675214,
+                "mean_confidence": 0.6512207966420336
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 523,
+                "accuracy": 0.5755258126195029,
+                "mean_confidence": 0.7504451009323484
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 869,
+                "accuracy": 0.6432681242807825,
+                "mean_confidence": 0.8552562616008791
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 27609,
+                "accuracy": 0.9464305117896338,
+                "mean_confidence": 0.9953761016831977
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9819864197482584,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "challenge": {
+          "samples": 30004,
+          "accuracy": 0.9068457538994801,
+          "balanced_accuracy": 0.8704677425188844,
+          "macro_precision": 0.8996417340338074,
+          "macro_recall": 0.8704677425188844,
+          "macro_f1": 0.8821012321875018,
+          "weighted_f1": 0.906286258394395,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9848589125946318,
+              "recall": 0.9226305609284333,
+              "f1-score": 0.9527296937416777,
+              "support": 1551.0,
+              "average_precision": 0.98717850102017
+            },
+            "Bearing_Wear": {
+              "precision": 0.851465474416294,
+              "recall": 0.9794285714285714,
+              "f1-score": 0.9109752856763221,
+              "support": 1750.0,
+              "average_precision": 0.9908168727556613
+            },
+            "Combustion_Instability": {
+              "precision": 0.962116991643454,
+              "recall": 0.9724099099099099,
+              "f1-score": 0.9672360683281994,
+              "support": 1776.0,
+              "average_precision": 0.9951913563642314
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.591743119266055,
+              "recall": 0.6179640718562874,
+              "f1-score": 0.6045694200351494,
+              "support": 1670.0,
+              "average_precision": 0.7063194583739588
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.9328990228013029,
+              "recall": 0.817351598173516,
+              "f1-score": 0.8713112260419835,
+              "support": 1752.0,
+              "average_precision": 0.9034057710115998
+            },
+            "Healthy": {
+              "precision": 0.9182112385995881,
+              "recall": 0.9418190596897821,
+              "f1-score": 0.9298653319032296,
+              "support": 16569.0,
+              "average_precision": 0.9806619910135844
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9611307420494699,
+              "recall": 0.9908925318761385,
+              "f1-score": 0.9757847533632287,
+              "support": 1647.0,
+              "average_precision": 0.9979800397150204
+            },
+            "Sensor_Drift": {
+              "precision": 0.9194915254237288,
+              "recall": 0.7013574660633484,
+              "f1-score": 0.7957462412907957,
+              "support": 1547.0,
+              "average_precision": 0.8244248906524531
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9748585795097423,
+              "recall": 0.8903559127439724,
+              "f1-score": 0.9306930693069307,
+              "support": 1742.0,
+              "average_precision": 0.9637482597904158
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.05959723648402187,
+            "multiclass_log_loss": 0.4449642103929188,
+            "multiclass_brier_score": 0.15562940990515226,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 4,
+                "accuracy": 0.0,
+                "mean_confidence": 0.2774875443263214
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 68,
+                "accuracy": 0.3235294117647059,
+                "mean_confidence": 0.36800932378031503
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 219,
+                "accuracy": 0.4155251141552511,
+                "mean_confidence": 0.46216869164111224
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 542,
+                "accuracy": 0.5,
+                "mean_confidence": 0.550928695069583
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 550,
+                "accuracy": 0.5109090909090909,
+                "mean_confidence": 0.6498451619383946
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 608,
+                "accuracy": 0.5411184210526315,
+                "mean_confidence": 0.752173622619224
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 906,
+                "accuracy": 0.6379690949227373,
+                "mean_confidence": 0.8549485746855434
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 27107,
+                "accuracy": 0.9457704651934925,
+                "mean_confidence": 0.9953843211270669
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9847592818830476,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": true,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "time_forward": {
+          "samples": 28322,
+          "accuracy": 0.8858131487889274,
+          "balanced_accuracy": 0.8348858935050338,
+          "macro_precision": 0.8655158307311477,
+          "macro_recall": 0.8348858935050338,
+          "macro_f1": 0.8489944408035711,
+          "weighted_f1": 0.8823679106236287,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9978902953586498,
+              "recall": 0.9274509803921569,
+              "f1-score": 0.9613821138211383,
+              "support": 510.0,
+              "average_precision": 0.9923558301722653
+            },
+            "Bearing_Wear": {
+              "precision": 0.9681349578256795,
+              "recall": 0.94337899543379,
+              "f1-score": 0.9555966697502313,
+              "support": 1095.0,
+              "average_precision": 0.9884794125462437
+            },
+            "Combustion_Instability": {
+              "precision": 0.9724596391263058,
+              "recall": 0.9525581395348838,
+              "f1-score": 0.9624060150375939,
+              "support": 1075.0,
+              "average_precision": 0.9912266417799702
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.6107414448669202,
+              "recall": 0.5135891286970423,
+              "f1-score": 0.5579678679982631,
+              "support": 2502.0,
+              "average_precision": 0.6651383026315424
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.6739884393063584,
+              "recall": 0.7007211538461539,
+              "f1-score": 0.6870948733058339,
+              "support": 832.0,
+              "average_precision": 0.7538774873163345
+            },
+            "Healthy": {
+              "precision": 0.9093832548524176,
+              "recall": 0.9497421134700732,
+              "f1-score": 0.9291246186341234,
+              "support": 16674.0,
+              "average_precision": 0.9811088092242066
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9707112970711297,
+              "recall": 0.9846153846153847,
+              "f1-score": 0.9776139057150381,
+              "support": 1885.0,
+              "average_precision": 0.9977990497903504
+            },
+            "Sensor_Drift": {
+              "precision": 0.7137433561123766,
+              "recall": 0.6123778501628665,
+              "f1-score": 0.6591865357643759,
+              "support": 1535.0,
+              "average_precision": 0.7147671190555873
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9725897920604915,
+              "recall": 0.9295392953929539,
+              "f1-score": 0.9505773672055428,
+              "support": 2214.0,
+              "average_precision": 0.9766452052342733
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.07997232193687505,
+            "multiclass_log_loss": 0.5734073803595429,
+            "multiclass_brier_score": 0.192735277541928,
+            "calibration_bins": [
+              {
+                "lower": 0.2,
+                "upper": 0.30000000000000004,
+                "samples": 7,
+                "accuracy": 0.14285714285714285,
+                "mean_confidence": 0.2838558425744869
+              },
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 57,
+                "accuracy": 0.2631578947368421,
+                "mean_confidence": 0.3678673337170355
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 196,
+                "accuracy": 0.33163265306122447,
+                "mean_confidence": 0.4591440233374605
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 513,
+                "accuracy": 0.4093567251461988,
+                "mean_confidence": 0.5497987031463754
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 482,
+                "accuracy": 0.4336099585062241,
+                "mean_confidence": 0.6511881115263124
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 598,
+                "accuracy": 0.4866220735785953,
+                "mean_confidence": 0.7520867291327368
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 952,
+                "accuracy": 0.5367647058823529,
+                "mean_confidence": 0.8554738473236679
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 25517,
+                "accuracy": 0.9321628718109496,
+                "mean_confidence": 0.9946290736865172
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9762449858711832,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": false,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": false,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        },
+        "known_engine_val": {
+          "samples": 23334,
+          "accuracy": 0.949687151795663,
+          "balanced_accuracy": 0.9171989618169807,
+          "macro_precision": 0.9433366189806018,
+          "macro_recall": 0.9171989618169807,
+          "macro_f1": 0.919576389876069,
+          "weighted_f1": 0.9439685664357882,
+          "per_class": {
+            "Alternator_Degradation": {
+              "precision": 0.9974726200505476,
+              "recall": 0.974485596707819,
+              "f1-score": 0.9858451290591174,
+              "support": 1215.0,
+              "average_precision": 0.9987515399673802
+            },
+            "Bearing_Wear": {
+              "precision": 0.9862909367859863,
+              "recall": 0.9984579799537394,
+              "f1-score": 0.9923371647509579,
+              "support": 1297.0,
+              "average_precision": 0.9999346721581535
+            },
+            "Combustion_Instability": {
+              "precision": 0.991499227202473,
+              "recall": 0.9899691358024691,
+              "f1-score": 0.9907335907335907,
+              "support": 1296.0,
+              "average_precision": 0.9989017884026664
+            },
+            "Cooling_System_Degradation": {
+              "precision": 0.8552845528455284,
+              "recall": 0.39939255884586183,
+              "f1-score": 0.5445134575569358,
+              "support": 1317.0,
+              "average_precision": 0.7515570730566575
+            },
+            "Fuel_Injector_Degradation": {
+              "precision": 0.9671474358974359,
+              "recall": 0.9451840250587314,
+              "f1-score": 0.956039603960396,
+              "support": 1277.0,
+              "average_precision": 0.9657783750936555
+            },
+            "Healthy": {
+              "precision": 0.9556041305494837,
+              "recall": 0.983171772004653,
+              "f1-score": 0.9691919578013913,
+              "support": 12895.0,
+              "average_precision": 0.9955869845641592
+            },
+            "Lubrication_System_Degradation": {
+              "precision": 0.9606177606177606,
+              "recall": 0.9880857823669579,
+              "f1-score": 0.9741581832419733,
+              "support": 1259.0,
+              "average_precision": 0.9982515972596195
+            },
+            "Sensor_Drift": {
+              "precision": 0.7872086072922893,
+              "recall": 1.0,
+              "f1-score": 0.8809364548494983,
+              "support": 1317.0,
+              "average_precision": 0.999448990512875
+            },
+            "Spark_Plug_Misfire": {
+              "precision": 0.9889042995839112,
+              "recall": 0.9760438056125941,
+              "f1-score": 0.9824319669307613,
+              "support": 1461.0,
+              "average_precision": 0.9933532549567821
+            }
+          },
+          "calibration": {
+            "expected_calibration_error_10_bins": 0.038380370218959146,
+            "multiclass_log_loss": 0.2557054240612802,
+            "multiclass_brier_score": 0.08700174379371436,
+            "calibration_bins": [
+              {
+                "lower": 0.30000000000000004,
+                "upper": 0.4,
+                "samples": 6,
+                "accuracy": 0.5,
+                "mean_confidence": 0.37010010195654414
+              },
+              {
+                "lower": 0.4,
+                "upper": 0.5,
+                "samples": 27,
+                "accuracy": 0.4444444444444444,
+                "mean_confidence": 0.4617632455026897
+              },
+              {
+                "lower": 0.5,
+                "upper": 0.6000000000000001,
+                "samples": 127,
+                "accuracy": 0.4330708661417323,
+                "mean_confidence": 0.5503186774811215
+              },
+              {
+                "lower": 0.6000000000000001,
+                "upper": 0.7000000000000001,
+                "samples": 151,
+                "accuracy": 0.37748344370860926,
+                "mean_confidence": 0.6521376639397758
+              },
+              {
+                "lower": 0.7000000000000001,
+                "upper": 0.8,
+                "samples": 179,
+                "accuracy": 0.3743016759776536,
+                "mean_confidence": 0.7534485301287674
+              },
+              {
+                "lower": 0.8,
+                "upper": 0.9,
+                "samples": 336,
+                "accuracy": 0.44642857142857145,
+                "mean_confidence": 0.8551505089233338
+              },
+              {
+                "lower": 0.9,
+                "upper": 1.0,
+                "samples": 22508,
+                "accuracy": 0.9692553758663587,
+                "mean_confidence": 0.9973680217916324
+              }
+            ],
+            "probabilities_calibrated": false
+          },
+          "macro_roc_auc_ovr": 0.9947757486637676,
+          "recall_requirement": {
+            "threshold": 0.8,
+            "per_class_pass": {
+              "Alternator_Degradation": true,
+              "Bearing_Wear": true,
+              "Combustion_Instability": true,
+              "Cooling_System_Degradation": false,
+              "Fuel_Injector_Degradation": true,
+              "Lubrication_System_Degradation": true,
+              "Sensor_Drift": true,
+              "Spark_Plug_Misfire": true
+            },
+            "passed": false
+          }
+        }
+      }
+    }
+  }
+}

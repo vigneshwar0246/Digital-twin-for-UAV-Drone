@@ -1,0 +1,73 @@
+{
+  "strategy": "engine-disjoint validation/challenge plus time-forward audit within training engines",
+  "seed": 26054,
+  "engines": {
+    "fit": [
+      "ENGINE_V2_002",
+      "ENGINE_V2_003",
+      "ENGINE_V2_004",
+      "ENGINE_V2_005",
+      "ENGINE_V2_006",
+      "ENGINE_V2_009",
+      "ENGINE_V2_010",
+      "ENGINE_V2_012",
+      "ENGINE_V2_014",
+      "ENGINE_V2_015",
+      "ENGINE_V2_016",
+      "ENGINE_V2_017",
+      "ENGINE_V2_018",
+      "ENGINE_V2_020"
+    ],
+    "time_forward": [
+      "ENGINE_V2_002",
+      "ENGINE_V2_003",
+      "ENGINE_V2_004",
+      "ENGINE_V2_005",
+      "ENGINE_V2_006",
+      "ENGINE_V2_009",
+      "ENGINE_V2_010",
+      "ENGINE_V2_012",
+      "ENGINE_V2_014",
+      "ENGINE_V2_015",
+      "ENGINE_V2_016",
+      "ENGINE_V2_017",
+      "ENGINE_V2_020"
+    ],
+    "validation": [
+      "ENGINE_V2_001",
+      "ENGINE_V2_007",
+      "ENGINE_V2_011"
+    ],
+    "challenge": [
+      "ENGINE_V2_008",
+      "ENGINE_V2_013",
+      "ENGINE_V2_019"
+    ]
+  },
+  "missions": {
+    "fit": 134,
+    "time_forward": 34,
+    "validation": 36,
+    "challenge": 36
+  },
+  "profile_definition": "hash of phase-duration fractions and altitude/temperature/throttle trajectory statistics; mission identity is excluded",
+  "challenge_profile_overlap_with_fit": [],
+  "engine_disjoint": {
+    "fit_vs_validation": true,
+    "fit_vs_challenge": true,
+    "validation_vs_challenge": true
+  },
+  "mission_disjoint": true,
+  "time_forward": true,
+  "time_forward_class_coverage": [
+    "Alternator_Degradation",
+    "Bearing_Wear",
+    "Combustion_Instability",
+    "Cooling_System_Degradation",
+    "Fuel_Injector_Degradation",
+    "Healthy",
+    "Lubrication_System_Degradation",
+    "Sensor_Drift",
+    "Spark_Plug_Misfire"
+  ]
+}

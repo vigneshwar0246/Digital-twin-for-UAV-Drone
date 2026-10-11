@@ -1,0 +1,10 @@
+,Alternator_Degradation,Bearing_Wear,Combustion_Instability,Cooling_System_Degradation,Fuel_Injector_Degradation,Healthy,Lubrication_System_Degradation,Sensor_Drift,Spark_Plug_Misfire
+Alternator_Degradation,1434,0,0,2,2,41,0,0,0
+Bearing_Wear,0,1632,1,0,2,3,3,1,0
+Combustion_Instability,0,6,1672,1,0,23,0,0,0
+Cooling_System_Degradation,1,0,0,941,31,724,0,3,0
+Fuel_Injector_Degradation,0,0,2,68,1385,326,0,0,0
+Healthy,65,112,63,306,114,15812,48,14,10
+Lubrication_System_Degradation,0,14,0,0,0,16,1623,0,0
+Sensor_Drift,0,1,0,67,32,189,0,1493,0
+Spark_Plug_Misfire,0,4,1,5,7,182,0,0,1520

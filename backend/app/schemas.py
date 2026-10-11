@@ -47,6 +47,16 @@ class Alert(BaseModel):
     message: str
     evidence: dict[str, float | str]
 
+class DiagnosticResult(BaseModel):
+    source: Literal["ml_research", "engineering_rules", "unavailable"]
+    fault_class: str | None = None
+    score: float | None = None
+    score_kind: str | None = None
+    model_version: str | None = None
+    release_gate_passed: bool | None = None
+    sensor_quality: Literal["valid", "degraded"]
+    warning: str | None = None
+
 class TwinAssessment(BaseModel):
     engine_id: str
     mission_id: str
@@ -55,11 +65,19 @@ class TwinAssessment(BaseModel):
     rul_hours: float
     anomaly_score: float
     predicted_fault: str
-    confidence: float
+    confidence: float | None = None
     maintenance_advisory: str
     alerts: list[Alert]
     method: str = "explainable physics-informed prototype rules"
     ml_inference: dict = Field(default_factory=lambda: {"status": "disabled"})
+    diagnostic_result: DiagnosticResult | None = None
+
+class Readiness(BaseModel):
+    status: Literal["ready", "unavailable"]
+    database: Literal["ready", "unavailable"]
+    telemetry_adapter: Literal["ready", "unavailable"]
+    diagnostic_mode: Literal["engineering_rules", "ml_research", "engineering_fallback"]
+    ml_status: Literal["disabled", "ready", "unavailable"]
 
 class MissionProfile(str, Enum):
     HIGH_ALTITUDE="HIGH_ALTITUDE"; ENDURANCE="ENDURANCE"; HOT_WEATHER="HOT_WEATHER"

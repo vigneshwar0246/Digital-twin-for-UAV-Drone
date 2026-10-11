@@ -1,0 +1,119 @@
+{
+  "all_critical_passed": true,
+  "checks": [
+    {
+      "check": "required_files",
+      "passed": true,
+      "critical": true,
+      "detail": "All 4 CSVs and manifest exist"
+    },
+    {
+      "check": "expected_columns",
+      "passed": true,
+      "critical": true,
+      "detail": "40 columns present"
+    },
+    {
+      "check": "no_missing_values",
+      "passed": true,
+      "critical": true,
+      "detail": "missing=0"
+    },
+    {
+      "check": "no_duplicate_rows",
+      "passed": true,
+      "critical": true,
+      "detail": "duplicates=0"
+    },
+    {
+      "check": "timestamps_increasing",
+      "passed": true,
+      "critical": true,
+      "detail": "Monotonic by mission"
+    },
+    {
+      "check": "continuous_time_seconds",
+      "passed": true,
+      "critical": true,
+      "detail": "interval=5.0s"
+    },
+    {
+      "check": "physical_bounds",
+      "passed": true,
+      "critical": true,
+      "detail": "all within bounds"
+    },
+    {
+      "check": "valid_categories",
+      "passed": true,
+      "critical": true,
+      "detail": "All fault types and severities match allowed domain"
+    },
+    {
+      "check": "fault_class_coverage",
+      "passed": true,
+      "critical": true,
+      "detail": "min=10592, req=400"
+    },
+    {
+      "check": "engine_pool_size",
+      "passed": true,
+      "critical": true,
+      "detail": "found 20 engines, expected 20"
+    },
+    {
+      "check": "mission_split_no_overlap",
+      "passed": true,
+      "critical": true,
+      "detail": "overlap=0"
+    },
+    {
+      "check": "engine_decoupled_from_index",
+      "passed": true,
+      "critical": true,
+      "detail": "correlation_rate=0.067 (expected ~0.05)"
+    },
+    {
+      "check": "cylinder_decoupled_from_index",
+      "passed": true,
+      "critical": true,
+      "detail": "correlation_rate=0.280 (expected ~0.25)"
+    },
+    {
+      "check": "all_cylinders_represented_cooling",
+      "passed": true,
+      "critical": true,
+      "detail": "cooling cylinders=[0, 1, 2, 3]"
+    },
+    {
+      "check": "all_cylinders_represented_drift",
+      "passed": true,
+      "critical": true,
+      "detail": "drift cylinders=[0, 1, 2, 3]"
+    },
+    {
+      "check": "expected_sensor_directions",
+      "passed": true,
+      "critical": true,
+      "detail": "{'throttle_rpm': 0.978751623637297, 'load_fuel': 0.9687478316694225, 'altitude_pressure': -0.9972803679041212}"
+    },
+    {
+      "check": "observable_fault_effects",
+      "passed": true,
+      "critical": true,
+      "detail": "{'misfire_vibration': True, 'lubrication_pressure': True, 'bearing_vibration': True, 'alternator_voltage': True, 'cooling_cht_residual': True}"
+    },
+    {
+      "check": "valid_phase_order",
+      "passed": true,
+      "critical": true,
+      "detail": "Monotonic flight phase progression"
+    },
+    {
+      "check": "severity_progression",
+      "passed": true,
+      "critical": true,
+      "detail": "Non-decreasing fault severity"
+    }
+  ]
+}
