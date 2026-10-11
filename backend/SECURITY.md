@@ -22,9 +22,7 @@ Roles have the following access:
 | `ANALYST` | Engine/report reads, simulation/replay, model report |
 | `VIEWER` | Read-only engine, mission, replay, and report access |
 
-The health endpoint and token endpoint are intentionally public. All other
-routes require a bearer token. Authorization remains server-side; UI controls
-must not be treated as an access boundary.
+Health, readiness, demo status, and token acquisition are intentionally public. Other routes require a bearer token when `DIGITAL_TWIN_DEMO_MODE=false`. Demo mode deliberately bypasses route authorization for a local presentation; do not enable it on a network-accessible or production service. Authorization remains server-side outside demo mode; UI controls must not be treated as an access boundary.
 
 Every response has `X-Request-ID`. A valid caller-supplied ID is preserved;
 otherwise a UUID is generated. Request audits include timestamp, request ID,
@@ -59,6 +57,8 @@ $env:DIGITAL_TWIN_TOKEN_SECRET = "a-high-entropy-secret-from-a-secret-manager"
 
 The in-process rate limiter is a replaceable hook, not a distributed control.
 Multiple workers require a shared, atomic rate-limit store.
+
+Research ML is disabled by default with `AERION_ENABLE_ML_DIAGNOSTICS=0`. Development use of the release-failing candidate also requires `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true`; production rejects that override. The runtime loader accepts only the known repository artifact after checksum and metadata checks. Its uncalibrated output is identified as research evidence, not a safety-approved probability or diagnosis. See the [backend guide](README.md) for the diagnostic contract.
 
 ## Required future security work
 

@@ -1,69 +1,49 @@
-# AERION digital twin
+# AERION / AERO-TWIN
 
-## Run frontend and backend together (Windows)
+AERION is a local aircraft-engine digital-twin **research demonstrator**. It combines generated engine telemetry, validated FastAPI ingestion, prototype physics and engineering diagnostics, an optional scikit-learn fault classifier, SQLite history, and a React/Three.js dashboard. Its data and thresholds are simulated; it is not flight-certified or suitable for operational decisions.
 
-From the repository root:
+## Start the application on Windows
+
+From PowerShell in the repository root:
 
 ```powershell
+cd 'D:\projects D\aircraft'
 .\run_project.bat
 ```
 
-Open `http://127.0.0.1:5173`, enter the digital-twin workspace, then open
-the digital-twin workspace. Local judge-demo mode requires no sign-in and feeds
-the bundled mission dataset automatically. See [`DEMO_GUIDE.md`](DEMO_GUIDE.md)
-for the presentation walkthrough.
+The launcher uses `.venv` (creating and installing dependencies if needed), starts FastAPI at `http://127.0.0.1:8000`, waits for `/api/v1/ready`, and starts Vite at `http://127.0.0.1:5173`. Open `/twin` for the digital twin or `/diagnostics` for fault results and saved history. The local launcher enables a bundled dataset feed; demo mode does not require sign-in. Press Ctrl+C in its terminal to stop the services. Existing accounts in `backend/runtime/local-development.db` are preserved.
 
-The launcher creates `.venv`, installs missing dependencies, starts FastAPI on
-port 8000, waits for its health endpoint, and starts Vite on port 5173. Vite
-proxies `/api` to the backend. Press Ctrl+C in the terminal to stop both.
-
-To choose local development credentials on the first run:
+The default is **engineering-rule fallback**, with `AERION_ENABLE_ML_DIAGNOSTICS=0`. To inspect the existing model in an explicitly labelled **research-only** mode, set both flags before starting the launcher:
 
 ```powershell
-.\run_project.ps1 -Username "admin" -Password "YourStrongLocalPassword"
+$env:AERION_ENABLE_ML_DIAGNOSTICS='1'
+$env:DIGITAL_TWIN_ML_ALLOW_UNVALIDATED='true'
+.\run_project.bat
 ```
 
-The combined launcher uses `backend/runtime/local-development.db`. The bootstrap
-user is only created when that database has no users. Changing these arguments
-later does not reset an existing account.
+The model must load in the repository `.venv`, which has the artifact's recorded scikit-learn 1.9.1. If loading or compatibility checks fail, `/api/v1/ready` reports ML unavailable while the engineering fallback remains usable. Research mode is refused in production. To return to fallback mode, set `AERION_ENABLE_ML_DIAGNOSTICS='0'` and restart.
 
-## Run in separate terminals
+For a separate-terminal setup, custom database path, or direct telemetry POST, see the [backend guide](backend/README.md). For the current dashboard and build instructions, see the [frontend guide](frontend/README.md).
 
-Backend terminal (repository root):
+## What the dashboard reports
+
+- **Engineering result:** the legacy `predicted_fault`, health, RUL proxy, and fault cards come from prototype rules, physics, and sensor fusion.
+- **Research ML result:** when explicitly enabled and ready, `diagnostic_result` gives the trained model's class, version, and *uncalibrated model score*. The UI labels its source `ml_research`. It does not turn the engineering score or RUL into a model probability.
+- **Fallback or unavailable result:** the same field identifies engineering rules when ML is off or cannot load, and marks a diagnosis unavailable for stale or invalid required telemetry. The dashboard can fetch bounded diagnostic history from SQLite.
+
+The integrated model is the existing Dataset v1 `live-telemetry-v1` candidate, selected for its compatibility with live API fields. It **fails** the unchanged release gate of at least 0.80 recall for every required fault class on every required partition. The saved evaluation's lowest required-fault recalls are 0.021 on validation, 0.119 on challenge, and 0.000 on time-forward. A high displayed model score is not evidence of a safe engine or a calibrated probability. Stage 6 Candidate B remains blocked by the [independent audit](backend/model_evaluation/outputs_stage6/stage6_independent_audit.md) and is not connected to runtime diagnostics.
+
+## Verify locally
 
 ```powershell
-$env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_USERNAME = "admin"
-$env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD = "AerionLocalDemo!2026"
-.\run_backend.bat
+cd 'D:\projects D\aircraft'
+.\.venv\Scripts\python.exe -m pytest backend/tests/test_application_pipeline.py backend/tests/test_api.py backend/tests/test_ml_diagnostics.py -q
+cd frontend
+npm.cmd test
+npx.cmd tsc --noEmit
+npm.cmd run build
 ```
 
-Frontend terminal:
+The full historical Python suite spans two scikit-learn environments: the live model requires 1.9.1, while two experimental feature tests assert 1.7.2. See the [implementation and test record](backend/PHASE2_IMPLEMENTATION_REPORT.md) for the matching-environment commands and measured outcomes. Dataset validation can be run read-only as described in the [dataset guide](backend/dataset/README.md). **Do not run dataset generation or offline evaluators against their default output directories merely to verify startup:** those commands can overwrite historical artifacts.
 
-```powershell
-cd .\frontend
-npm.cmd install
-npm.cmd run dev
-```
-
-Useful URLs:
-
-- Frontend: `http://127.0.0.1:5173`
-- Backend API docs: `http://127.0.0.1:8000/docs`
-- Backend health: `http://127.0.0.1:8000/api/v1/health`
-
-## ML diagnostics status
-
-The dataset is synthetic. The existing offline histogram-gradient-boosting classifier remains the benchmark and **fails** the project's 0.80 per-fault recall gate. A bounded search over two histogram-boosting settings and Extra Trees using only live API telemetry fields also failed. Its best validation model performs worse than the benchmark, so no ML classifier is approved for operational use.
-
-The backend has an optional, version-checked ML provider. It loads the exploratory artifact once per process and reports its prediction separately from engineering rules and statistical diagnostics. It does not change the engineering fault assessment, and its output is an uncalibrated model score, not a failure probability. Live ML is disabled by default. To inspect the candidate in a **development** environment only, set both `DIGITAL_TWIN_ML_ENABLED=true` and `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true` before starting the backend. Leave either unset to keep the rule/statistical fallback. Missing or incompatible artifacts and invalid or stale telemetry produce an unavailable or blocked ML status.
-
-Reproduce the evaluations from the repository root:
-
-```powershell
-.\.venv\Scripts\python.exe -m backend.dataset.validate_dataset
-.\.venv\Scripts\python.exe -m backend.model_evaluation.evaluate_fault_classifier
-.\.venv\Scripts\python.exe -m backend.model_evaluation.live_candidate
-.\.venv\Scripts\python.exe -m backend.model_evaluation.render_live_candidate
-```
-
-The original evaluator exits nonzero when its release gate fails. See [the evaluation guide](backend/model_evaluation/README.md) for measured results, split policy, and artifact details.
+Useful endpoints: `http://127.0.0.1:8000/docs` for OpenAPI, `/api/v1/health` for liveness, `/api/v1/ready` for database/adapter/ML readiness, and `/api/v1/model/report` for stored evaluation results. The [demo guide](DEMO_GUIDE.md) walks through the application, including the distinction between engineering and research ML output.

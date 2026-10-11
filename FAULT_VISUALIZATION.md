@@ -10,6 +10,8 @@ Live history and mission replay already contain `state.faults.diagnostics`. Back
 
 `api.ts` preserves `fault_code`, `fault_name`, `severity`, `engineering_score`, `affected_subsystems`, `evidence`, and `uncertainty`. Only faults tagged `BACKEND_DIAGNOSTIC` enter the visualization controller. Legacy assessment alerts and locally scripted faults cannot activate physical effects. Scores are displayed as engineering scores.
 
+The diagnostics panel also displays the separate typed `diagnostic_result`: its source is `engineering_rules`, `ml_research`, or `unavailable`. When the optional research classifier is enabled, its class and uncalibrated score appear in that panel. Component highlights continue to follow the backend engineering fault cards; an ML class alone does not localize a fault on the engine drawing.
+
 `FaultVisualizationController.ts` maps these results into semantic regions, colors, intensity, pulse behavior, and vibration amplitude. `EngineFaultScene.jsx` adapts those regions to the existing mesh names and drives emissive materials and the camera. `useFaultSurfaces.ts` applies the same mapping to the SVG component groups.
 
 ## Fault mapping

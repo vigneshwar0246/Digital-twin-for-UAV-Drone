@@ -1,9 +1,31 @@
+# AERION frontend — current application
+
+The React/Vite workspace at `/twin` consumes the FastAPI backend through `src/workspace/api.ts`. It displays telemetry, engineering diagnostics, an explicitly labelled research ML prediction when enabled, backend readiness, and bounded SQLite diagnostic history. The cinematic Three.js aircraft introduction remains at `/`; the 2D cutaway and optional 3D engine views are conceptual visualizations.
+
+Start the backend first using the [root README](../README.md), then from the repository root:
+
+```powershell
+cd 'D:\projects D\aircraft\frontend'
+npm.cmd install
+npm.cmd run dev
+```
+
+Open `http://127.0.0.1:5173/diagnostics`. Vite proxies `/api` to `http://127.0.0.1:8000` by default; `DIGITAL_TWIN_API_TARGET` changes that development proxy target. `VITE_API_BASE_URL` defaults to `/api/v1`. `VITE_WS_URL` should remain empty until an actual WebSocket backend is supplied.
+
+The Diagnostics page keeps engineering fault cards separate from `diagnostic_result`, which identifies `engineering_rules`, `ml_research`, or `unavailable`. Research ML scores are uncalibrated and the model failed its release gate. The **Load saved diagnostic history** control reads persisted, bounded backend history. The browser's local simulation controls and visual models are still demonstrators; they do not establish aircraft performance.
+
+Verify from `frontend/` with `npm.cmd test`, `npx.cmd tsc --noEmit`, and `npm.cmd run build`. `npx.cmd playwright test e2e/workspace.spec.js` covers workspace navigation and backend failure fixtures. A live research-mode browser and history check is recorded in the [backend implementation report](../backend/PHASE2_IMPLEMENTATION_REPORT.md). See [WORKSPACE.md](WORKSPACE.md) for data-flow and UI limits.
+
+## Historical Milestone 1 notes
+
+The section below records the original cinematic-only milestone. Its scope statements describe that milestone, not the current integrated application.
+
 # AERION — Milestone 1
 
 Run from the repository root in PowerShell:
 
 ```powershell
-cd D:\aircraft\frontend
+cd 'D:\projects D\aircraft\frontend'
 npm.cmd install
 npm.cmd run dev
 ```

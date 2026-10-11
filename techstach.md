@@ -15,7 +15,7 @@ AERION is a full-stack digital-twin prototype for the aero-piston engine of a co
 - a deterministic generated aero-engine dataset generator; and
 - an offline scikit-learn fault-classification experiment.
 
-Live diagnostic assessments come from engineering rules plus statistical history features. The original offline classifier failed its release gate. A separate live-compatible candidate is connected through an optional backend provider, but is disabled by default because it also failed the gate. An explicit development override can expose its independent, uncalibrated prediction without changing the engineering assessment.
+Live engineering assessments come from rules plus statistical history features. A separate live-compatible Dataset v1 classifier is connected through an optional, checksum-verified backend provider. It is disabled by default because it failed the release gate. Explicit development research mode exposes its independent, uncalibrated prediction in the typed `diagnostic_result` while the legacy `predicted_fault` and fault cards retain engineering meaning. Dataset v2/Stage 6 Candidate B is not a runtime model because the independent audit found methodological blockers.
 
 ## 2. High-level architecture
 
@@ -86,7 +86,7 @@ There is no imported aircraft GLB/GLTF in the current repository. The aircraft, 
 | SQLite (`sqlite3`) | Python standard library | Telemetry/history, users, and audit events |
 | pandas | >=2.2,<3 | CSV generation, feature engineering, splits, reports |
 | NumPy | >=2.0,<3 | Numerical simulation and feature calculations |
-| scikit-learn | >=1.5,<2 | Offline preprocessing, model training, predictions, and metrics |
+| scikit-learn | ==1.9.1 in `requirements.txt` | Live-compatible artifact loading and inference; separate historical experimental tests require 1.7.2 |
 | Matplotlib | >=3.9,<4 | Evaluation and dataset graphs |
 | joblib | installed through scikit-learn dependency | Candidate model serialization |
 | pytest | >=8,<10 | Backend, dataset, model protocol, security, and integration tests |
@@ -151,7 +151,7 @@ It combines two active evidence sources:
 - correlated engineering-rule evidence; and
 - causal statistical anomalies derived only from previous/current samples in the same mission, using a robust median/MAD-style z-score.
 
-An optional `MLDiagnosticProvider` is connected to the normal digital-twin path. It reports its own class and uncalibrated model score in `ml_inference`. Its output is independent evidence: it does not alter rule/statistical scores, health, severity, or the primary engineering assessment. It is disabled by default because the candidate failed validation. The engineering diagnostic still reports `probability: null` and an **uncalibrated engineering score**.
+An optional ML provider is connected to the normal digital-twin path. It reports its own class and uncalibrated model score in `ml_inference` and the typed assessment `diagnostic_result`. Its output does not alter rule/statistical scores, health, severity, or the legacy primary engineering assessment. It is disabled by default because the candidate failed validation. The engineering diagnostic still reports `probability: null` and an **uncalibrated engineering score**; aggregate assessment `confidence` is null.
 
 The eleven live diagnostic categories are:
 
@@ -208,16 +208,16 @@ The earlier recorded challenge/test result was approximately 84.06% accuracy, 74
 - `model_status`: `NOT_VALIDATED`
 - `release_readiness`: `NOT_RELEASE_READY`
 - release gate: failed
-- live serving: disabled
+- live serving: disabled by default; explicit development research mode only for the separate live-compatible candidate
 
 A separate live-compatible HGB/Extra Trees search uses only fields accepted by
 the live telemetry API. Its validation-selected regularized HGB trial has
 challenge macro F1 0.5090 and balanced accuracy 0.5157, below the existing
 offline benchmark. The experimental artifact is versioned under
 `backend/model_evaluation/outputs/live_candidate/`. Its provider loads only
-when `DIGITAL_TWIN_ML_ENABLED=true`; because the gate failed, development also
+when `AERION_ENABLE_ML_DIAGNOSTICS=1` (or legacy `DIGITAL_TWIN_ML_ENABLED=true`); because the gate failed, development also
 requires `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true`. Production never serves this
-failed candidate. Feature schema, class mapping, invalid/stale telemetry, and
+failed candidate. Trusted artifact checksum, sidecar, scikit-learn version, feature schema, class mapping, invalid/stale telemetry, and
 inference errors are checked before reporting ML evidence.
 
 ### 4.6 AI/LLM and external models
@@ -228,7 +228,7 @@ No LLM, generative-AI API, computer-vision model, hosted foundation model, OpenA
 
 The dataset package lives in `backend/dataset/`. It creates deterministic, physics-guided telemetry because representative real run-to-failure flight data was not supplied.
 
-Current generated dataset summary:
+Dataset v1 generated summary (Dataset v2 is separately preserved under `backend/dataset/dataset_v2/` and has 200,000 rows):
 
 - 100,000 rows and 40 columns;
 - 120 complete missions;
@@ -286,10 +286,10 @@ Main API prefix: `/api/v1`.
 
 | Area | Representative endpoints |
 |---|---|
-| Health/demo | `GET /health`, `GET /demo/status` |
+| Health/readiness/demo | `GET /health`, `GET /ready`, `GET /demo/status` |
 | Authentication | `POST /auth/token`, `POST /auth/users`, `GET /auth/audit` |
 | Telemetry | `POST /telemetry`, `POST /telemetry/synchronize`, `POST /telemetry/batch` |
-| Engine state | `GET /engines/{id}/latest`, `/history`, `/state` |
+| Engine state and saved diagnostics | `GET /engines/{id}/latest`, `/history`, `/state`; `assessment.diagnostic_result` carries source and score kind |
 | Simulation | `POST /simulations`, configuration and deterministic replay endpoints |
 | Mission history | mission listing, paged replay, and mission report endpoints |
 | Stateful replay | create, status, pause, resume, seek, advance, and report endpoints |
@@ -300,7 +300,7 @@ Interactive endpoint schemas are available at `http://127.0.0.1:8000/docs` when 
 
 ## 7. Security design
 
-Except for health/demo status and token acquisition, operations use time-limited bearer tokens and server-side role checks. Roles are Admin, Operator, Analyst, Maintenance Engineer, and Viewer, with endpoint permissions selected according to the operation.
+Except for health, readiness, demo status, and token acquisition, operations use time-limited bearer tokens and server-side role checks when demo mode is off. Local demo mode bypasses authorization; it must not be used for network-accessible deployment. Roles are Admin, Operator, Analyst, Maintenance Engineer, and Viewer, with endpoint permissions selected according to the operation.
 
 Security mechanisms include:
 
@@ -378,11 +378,12 @@ From the repository root on Windows:
 .\run_project.bat
 ```
 
-The launcher creates `.venv` if necessary, installs missing backend/frontend dependencies, sets development/demo environment variables, starts FastAPI on port 8000, waits for its health response, and starts Vite on port 5173. Open:
+The launcher creates `.venv` if necessary, installs missing backend/frontend dependencies, sets development/demo environment variables, starts FastAPI on port 8000, waits for its readiness response, and starts Vite on port 5173. Open:
 
 - application: `http://127.0.0.1:5173`
 - API docs: `http://127.0.0.1:8000/docs`
 - health endpoint: `http://127.0.0.1:8000/api/v1/health`
+- readiness endpoint: `http://127.0.0.1:8000/api/v1/ready`
 
 Custom first-run local credentials can be supplied with:
 
@@ -395,17 +396,12 @@ The bootstrap account is only created if the configured database contains no use
 ## 11. Verification commands
 
 ```powershell
-# All Python tests
-python -m pytest -q
+# Focused backend and live-model contract checks in the pinned 1.9.1 venv
+.\.venv\Scripts\python.exe -m pytest backend/tests/test_application_pipeline.py backend/tests/test_api.py backend/tests/test_ml_diagnostics.py -q
 
-# Validate generated data
-python -m backend.dataset.validate_dataset
-
-# Regenerate data (overwrites generated dataset outputs)
-python -m backend.dataset.generate_dataset
-
-# Retrain/evaluate offline candidate; expected to exit 2 while its gate fails
-python -m backend.model_evaluation.evaluate_fault_classifier
+# Read-only validation of the preserved v1 and v2 datasets
+.\.venv\Scripts\python.exe -c "from backend.dataset.validate_dataset import validate; checks,_=validate(False); print(sum(not c['passed'] for c in checks), 'failed v1 checks')"
+.\.venv\Scripts\python.exe -c "from backend.dataset.validate_dataset_v2 import validate_v2; checks,_=validate_v2(False); print(sum(not c['passed'] for c in checks), 'failed v2 checks')"
 
 # Frontend checks
 cd frontend
@@ -417,6 +413,8 @@ npm.cmd run test:e2e
 
 Backend tests cover APIs, authentication/RBAC, adapters, physics, quality handling, sensor fusion, diagnostics, twin state, simulations, replay, and frontend synchronization. Dataset and model-evaluation tests check reproducibility and split/leakage integrity. Browser tests cover scroll reversal, the click gate, responsive behavior, overflow, errors, refresh behavior, and the workspace.
 
+The full historical Python suite spans scikit-learn 1.7.2 and 1.9.1 environments; see `backend/PHASE2_IMPLEMENTATION_REPORT.md` for exact matching-environment commands. Dataset generation and offline evaluators write to their default artifact directories. Do not invoke them for routine verification or overwrite historical output files.
+
 ## 12. Configuration
 
 Important environment variables include:
@@ -425,6 +423,9 @@ Important environment variables include:
 |---|---|
 | `DIGITAL_TWIN_ENV` | `development` or `production` |
 | `DIGITAL_TWIN_DB` | SQLite database path |
+| `DIGITAL_TWIN_HISTORY_LIMIT` | maximum bounded history response (1–10,000) |
+| `AERION_ENABLE_ML_DIAGNOSTICS` | optional research ML flag; defaults to `0` |
+| `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED` | separate development-only acknowledgement for failed-gate candidate |
 | `DIGITAL_TWIN_TOKEN_SECRET` | bearer-token signing secret |
 | `DIGITAL_TWIN_TOKEN_MINUTES` | token lifetime |
 | `DIGITAL_TWIN_RATE_LIMIT` | requests per minute |
@@ -459,4 +460,4 @@ Engineering behavior is separately configurable through `engineering_thresholds.
 
 When the combined launcher starts, FastAPI initializes configuration, SQLite storage, authentication, the selected adapter, the twin processor, and optional demo dataset feed. Vite serves the React application and proxies `/api`. The user enters through a WebGL aircraft sequence and opens the workspace. Telemetry—whether demo, simulated, historical, adapter-originated, or API-submitted—is validated, assigned explicit quality state, evaluated by the prototype physics model, fused into subsystem health, assessed by explainable diagnostics, assembled into a synchronized twin state, persisted where requested, and exposed as JSON. The frontend normalizes that JSON into a common frame, keeps bounded history, and renders engineering metrics, charts, faults, 3D state, simulation, and replay controls.
 
-That is the complete implemented stack: a local full-stack digital-twin demonstrator with procedural 3D visualization, typed web UI, validated telemetry APIs, generated engineering models/data, explainable live diagnostics, and a deliberately quarantined offline ML candidate.
+That is the implemented stack: a local full-stack digital-twin demonstrator with procedural 3D visualization, typed web UI, validated telemetry APIs, generated engineering models/data, explainable engineering diagnostics, and an explicitly gated research classifier whose score and failed release status remain visible. Stage 6 Candidate B stays isolated pending methodological resolution.

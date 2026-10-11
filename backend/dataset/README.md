@@ -1,4 +1,4 @@
-# SIH26054 physics-guided generated dataset
+# AERION physics-guided generated datasets
 
 This package creates deterministic telemetry for a generic turbocharged,
 four-cylinder, four-stroke aero piston engine used by a conceptual MALE UAV.
@@ -9,10 +9,11 @@ confidential DRDO or manufacturer data.
 
 ## Contents
 
-- `data/`: full, train, validation, and test CSV files. Splits contain complete missions.
+- `data/`: Dataset v1 full, train, validation, and test CSV files. Splits contain complete missions.
 - `reports/`: machine-readable validation, summary statistics, and class balance.
 - `graphs/`: dataset-quality scores and exploratory/physics-validation plots.
 - `config.py`: all assumed limits, labels, sampling, sizes, and reproducibility seed (`26054`).
+- `dataset_v2/`: separately preserved 200,000-row Dataset v2 CSVs, mission manifest, reports, and graphs. Its class/label assumptions are documented in `LABEL_SPECIFICATION.md`; its configuration and validator are `config_v2.py` and `validate_dataset_v2.py`.
 
 ## Telemetry and units
 
@@ -38,17 +39,17 @@ bearing wear raises vibration and reduces efficiency; combustion instability
 oscillates RPM/EGT/vibration; sensor drift offsets one CHT sensor while peers stay
 consistent; alternator degradation reduces and destabilizes output voltage.
 
-## Commands
+## Read-only validation
 
 From the repository root:
 
 ```powershell
-python -m backend.dataset.generate_dataset
-python -m backend.dataset.validate_dataset
-python -m pytest backend/dataset/tests -v
+.\.venv\Scripts\python.exe -c "from backend.dataset.validate_dataset import validate; checks,_=validate(False); print(sum(not c['passed'] for c in checks), 'failed v1 checks')"
+.\.venv\Scripts\python.exe -c "from backend.dataset.validate_dataset_v2 import validate_v2; checks,_=validate_v2(False); print(sum(not c['passed'] for c in checks), 'failed v2 checks')"
+.\.venv\Scripts\python.exe -m pytest backend/dataset/tests -q
 ```
 
-For a fast custom run: `python -m backend.dataset.generate_dataset --rows 5000 --missions 18 --seed 26054`.
+These calls avoid rewriting saved validation reports and graphs. The generator scripts and validator CLI defaults write output files; use an isolated destination for any new experiment and preserve the historical Dataset v1/v2 artifacts. The [Stage 6 independent audit](../model_evaluation/outputs_stage6/stage6_independent_audit.md) records the currently unresolved partition reproduction issue.
 
 ## Limitations
 

@@ -5,11 +5,7 @@ CSVs. It predicts `fault_type` from current telemetry and mission phase. IDs,
 timestamps, severity, anomaly, health, RUL, reliability, outcome, operating hours,
 and cycle count are excluded to prevent direct label or mission-identity leakage.
 
-Run from the repository root:
-
-```powershell
-.\.venv\Scripts\python.exe -m backend.model_evaluation.evaluate_fault_classifier
-```
+The stored evaluation under `outputs/` is historical evidence. `evaluate_fault_classifier.py`, `live_candidate.py`, and the Stage 4–6 evaluators write to their default output directories, so **do not rerun them merely to verify application startup or tests**. A new experiment needs a separate output directory and the frozen protocol. Read the saved metrics and reports without modifying them.
 
 The current protocol creates engine-disjoint validation and challenge groups,
 uses later missions from the fitting-engine population for a separate
@@ -20,8 +16,8 @@ Machine-readable metrics, split manifests, class distributions, calibration,
 confusion matrices, precision-recall curves, and false-positive/negative analyses
 are written to `outputs/reports`. Graphs are written to `outputs/graphs`.
 
-The saved candidate artifact is accompanied by `MODEL_NOT_FOR_PRODUCTION.txt`.
-It must not be connected to live diagnostics while its release gate fails.
+The saved offline benchmark artifact is accompanied by `MODEL_NOT_FOR_PRODUCTION.txt`.
+It is not used for live inference because its broad offline feature set is incompatible with the live API and its release gate fails.
 Results apply only to this generated dataset and do not establish real-flight
 performance or airworthiness.
 
@@ -65,7 +61,11 @@ differences have not been isolated. Use the current rerun for like-for-like
 comparison and do not treat either result as real-world validation.
 
 The experimental artifact and complete per-class/confusion metrics are in
-`outputs/live_candidate/`. It is about 5 MB, marked `NOT_VALIDATED`, and has
-uncalibrated scores. Only load trusted local joblib files. The backend rejects
-feature or class schema mismatches. It does not serve this failed candidate by
-default; explicit development override is documented in the root README.
+`outputs/live_candidate/`. It is marked `NOT_VALIDATED`, and its scores are
+uncalibrated. Runtime inference uses this **live-compatible Dataset v1 candidate** only when `AERION_ENABLE_ML_DIAGNOSTICS=1` and `DIGITAL_TWIN_ML_ALLOW_UNVALIDATED=true` are explicitly set in development. The loader checks the trusted repository path, SHA-256, evaluation sidecar, scikit-learn version, feature order, and class mapping before deserialization. Its prediction is exposed as `assessment.diagnostic_result` with source `ml_research`; the legacy `predicted_fault` remains the independent engineering result. Without a compatible artifact, engineering fallback remains active.
+
+The saved minimum required-fault recalls are 0.021 on validation, 0.119 on challenge, and 0.000 on time-forward. The frozen 0.80 release gate therefore fails. This is an application integration for research demonstration, not a model promotion or a claim of flight performance. See the [implementation report](../PHASE2_IMPLEMENTATION_REPORT.md) for executed verification.
+
+## Dataset v2 and Stage 6
+
+Dataset v2 and the Stage 4–6 artifacts are preserved under `../dataset/dataset_v2/`, `outputs_v2/`, `outputs_stage4/`, and `outputs_stage6/`. Stage 6 Candidate B is **not** the runtime model. The [independent audit](outputs_stage6/stage6_independent_audit.md) found a partition reproduction mismatch and cruise-baseline implementation differences; Candidate B also fails the recall gate. Do not overwrite these artifacts or use challenge/time-forward results for tuning. Read-only dataset validation is documented in the [dataset guide](../dataset/README.md).

@@ -1,6 +1,6 @@
 # AERION: beginner's demonstration script
 
-Use this as a click-by-click rehearsal guide. The workspace now opens with the earlier **2D engine cutaway**. Detected faults produce simple component highlights. The optional **3D engine** button is still available.
+Use this as a click-by-click rehearsal guide for the engineering fallback demonstration. The current research ML workflow and release-gate warning are covered in [DEMO_GUIDE.md](DEMO_GUIDE.md). The workspace opens with the **2D engine cutaway**; engineering faults produce component highlights, and the optional **3D engine** button remains available.
 
 ## 1. Understand what you are presenting
 
@@ -21,11 +21,11 @@ Remember these meanings:
 | Replay | Reviewing earlier recorded samples |
 | Seed | A number used to reproduce generated mission behavior |
 
-This project demonstrates generated engine behavior. The live diagnostics use engineering rules and statistics. The offline ML candidate is not serving these results. Say “the system detects evidence of a fault,” rather than “it predicts an exact failure date.”
+This project demonstrates generated engine behavior. By default, diagnostics use engineering rules and statistics. A separately labelled trained classifier can be enabled explicitly for research, but it fails the release gate and its score is uncalibrated. Say “the system detects evidence of a fault,” rather than “it predicts an exact failure date.”
 
 ## 2. Start everything before presenting
 
-1. Open a PowerShell terminal in `D:\aircraft`.
+1. Open a PowerShell terminal in `D:\projects D\aircraft`.
 2. Run ` .\run_project.bat `.
 3. Leave this terminal running throughout the presentation.
 4. Open `http://127.0.0.1:5173` in the browser.
