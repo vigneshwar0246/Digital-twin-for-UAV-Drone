@@ -7,6 +7,8 @@ scarce, safety-sensitive, and not supplied with this prototype. This is an
 educational simulator, not flight-certified data and not validated against
 confidential DRDO or manufacturer data.
 
+Dataset v1 contains 100,000 generated rows across 120 missions and 12 simulated engine IDs. The separately preserved Dataset v2 contains 200,000 rows across 240 missions and 20 simulated engine IDs; both use five-second sampling. The application runtime mission simulator is a **third, separate generator**. Its ten scenario labels are not the nine historical dataset labels, and its 95.28% synthetic classifier result must not be attributed to Dataset v1 or v2. See the [scenario mapping](../app/SCENARIOS.md) and [model evaluation guide](../model_evaluation/README.md).
+
 ## Contents
 
 - `data/`: Dataset v1 full, train, validation, and test CSV files. Splits contain complete missions.

@@ -1,5 +1,7 @@
 # Digital Twin backend — complete implementation audit
 
+> **Historical audit (2026-09-11):** This records the state observed at that audit date. For the current backend and research-ML integration, use [README.md](README.md) and the [engineering upgrade record](../ENGINEERING_UPGRADE_REPORT_2026-10-11.md). The operational and airworthiness limitations still apply.
+
 Audit date: 2026-09-11  
 Scope: all backend source, APIs, datasets, model reports, tests, configuration,
 security, simulation, replay, persistence and adapter code.

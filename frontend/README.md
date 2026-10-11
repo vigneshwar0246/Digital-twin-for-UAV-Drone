@@ -12,7 +12,7 @@ npm.cmd run dev
 
 Open `http://127.0.0.1:5173/diagnostics`. Vite proxies `/api` to `http://127.0.0.1:8000` by default; `DIGITAL_TWIN_API_TARGET` changes that development proxy target. `VITE_API_BASE_URL` defaults to `/api/v1`. `VITE_WS_URL` should remain empty until an actual WebSocket backend is supplied.
 
-The Diagnostics page keeps engineering fault cards separate from `diagnostic_result`, which identifies `engineering_rules`, `ml_research`, or `unavailable`. Research ML scores are uncalibrated and the model failed its release gate. The **Load saved diagnostic history** control reads persisted, bounded backend history. The browser's local simulation controls and visual models are still demonstrators; they do not establish aircraft performance.
+The Diagnostics page keeps engineering fault cards separate from `diagnostic_result`, which identifies `engineering_rules`, `ml_research`, or `unavailable`. The historical live-candidate research score is uncalibrated and that model failed its release gate. The separate simulator-scenario research result is also uncalibrated and does not validate real UAV faults. The **Load saved diagnostic history** control reads persisted, bounded backend history. The browser's local simulation controls and visual models are still demonstrators; they do not establish aircraft performance.
 
 For a saved backend simulation, **Load saved synthetic mission research** requests the separate opt-in simulator-scenario classifier and displays its version, recent classes, and uncalibrated scores. This requires a supported ten-minute mission sampled every five seconds and the development-only research setup in the backend guide. Its synthetic benchmark does not approve the historical live classifier.
 

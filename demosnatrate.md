@@ -1,6 +1,6 @@
 # AERION: beginner's demonstration script
 
-Use this as a click-by-click rehearsal guide for the engineering fallback demonstration. The current research ML workflow and release-gate warning are covered in [DEMO_GUIDE.md](DEMO_GUIDE.md). The workspace opens with the **2D engine cutaway**; engineering faults produce component highlights, and the optional **3D engine** button remains available.
+Use this as a click-by-click rehearsal guide for the engineering fallback demonstration. The historical live-candidate research workflow and release-gate warning are covered in [DEMO_GUIDE.md](DEMO_GUIDE.md). The separate 95.28% result belongs only to the simulator-scenario classifier; see the [model evaluation guide](backend/model_evaluation/README.md). The workspace opens with the **2D engine cutaway**; engineering faults produce component highlights, and the optional **3D engine** button remains available.
 
 ## 1. Understand what you are presenting
 

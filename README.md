@@ -48,11 +48,18 @@ For a separate-terminal setup, custom database path, or direct telemetry POST, s
 - **Research ML result:** when explicitly enabled and ready, `diagnostic_result` gives the trained model's class, version, and *uncalibrated model score*. The UI labels its source `ml_research`. It does not turn the engineering score or RUL into a model probability.
 - **Fallback or unavailable result:** the same field identifies engineering rules when ML is off or cannot load, and marks a diagnosis unavailable for stale or invalid required telemetry. The dashboard can fetch bounded diagnostic history from SQLite.
 
-The integrated model is the existing Dataset v1 `live-telemetry-v1` candidate, selected for its compatibility with live API fields. It **fails** the unchanged release gate of at least 0.80 recall for every required fault class on every required partition. The saved evaluation's lowest required-fault recalls are 0.021 on validation, 0.119 on challenge, and 0.000 on time-forward. A high displayed model score is not evidence of a safe engine or a calibrated probability. Stage 6 Candidate B remains blocked by the [independent audit](backend/model_evaluation/outputs_stage6/stage6_independent_audit.md) and is not connected to runtime diagnostics.
+There are two separate research classifiers:
 
-An 85–95% accuracy target has not been demonstrated. The live candidate's held-out accuracies are 0.671 on validation, 0.699 on challenge, and 0.616 on time-forward data. These are synthetic-data results; the per-fault recall gate is the binding safety check. Do not advertise or deploy this classifier as a validated UAV diagnostic model. The application can still be run locally as a research demonstrator with engineering diagnostics.
+| Model | Data and labels | Saved result | Runtime status |
+| --- | --- | --- | --- |
+| `live-telemetry-v1` candidate | Dataset v1; nine historical fault classes | Accuracy 0.671 validation, 0.699 challenge, 0.616 time-forward | Explicit development override only; **fails** the unchanged 0.80 per-fault recall release gate. |
+| `severity-v4` scenario classifier | Runtime simulator; ten scenario classes | Accuracy 0.9508 validation, **0.9528 synthetic challenge**, macro F1 0.9546 challenge | Separate opt-in endpoint for saved ten-minute, five-second missions; never enabled in production. |
 
-New simulated missions save their exact telemetry and results in SQLite schema v4. Replay sessions use recorded samples and clearly label current-rule diagnostics as re-analysis. For older configuration-only missions, the API labels replay as regenerated because the original samples were not saved. Mission IDs cannot be reassigned to a different configuration.
+The scenario result measures recognition of this application's generated patterns. It is **not** real UAV fault-detection accuracy and does not promote the historical model. Stage 6 Candidate B remains blocked by the [independent audit](backend/model_evaluation/outputs_stage6/stage6_independent_audit.md). All model scores are uncalibrated; see the [evaluation guide](backend/model_evaluation/README.md) for split details and limitations.
+
+The scenario artifact is a **local runtime file** and is not published with the repository. A fresh checkout starts in engineering mode; generate the artifact in a new `backend/runtime/scenario_model/` directory with the command in the evaluation guide before enabling that research endpoint. The historical dataset and evaluation artifacts are preserved separately.
+
+New simulated missions save their exact telemetry and results in SQLite schema v4. The optional scenario endpoint stores its complete prediction response by mission, model checksum, and input checksum. Replay sessions use recorded samples and clearly label current-rule diagnostics as re-analysis. For older configuration-only missions, the API labels replay as regenerated because the original samples were not saved. Mission IDs cannot be reassigned to a different configuration.
 
 ## Verify locally
 
@@ -65,10 +72,24 @@ npx.cmd tsc --noEmit
 npm.cmd run build
 ```
 
-The full historical Python suite spans two scikit-learn environments: the live model requires 1.9.1, while two experimental feature tests assert 1.7.2. See the [implementation and test record](backend/PHASE2_IMPLEMENTATION_REPORT.md) for the matching-environment commands and measured outcomes. Dataset validation can be run read-only as described in the [dataset guide](backend/dataset/README.md). **Do not run dataset generation or offline evaluators against their default output directories merely to verify startup:** those commands can overwrite historical artifacts.
+The full historical Python suite spans two scikit-learn environments: the live model requires 1.9.1, while two experimental feature tests assert 1.7.2. The latest complete local checks are in the [engineering upgrade record](ENGINEERING_UPGRADE_REPORT_2026-10-11.md): 118 applicable backend tests, 2 version-specific tests, 3 frontend tests, and 7 browser acceptance tests passed. See the [backend guide](backend/README.md) for exact current commands. Dataset validation can be run read-only as described in the [dataset guide](backend/dataset/README.md). **Do not run dataset generation or offline evaluators against their default output directories merely to verify startup:** those commands can overwrite historical artifacts.
 
-The [software CI workflow](.github/workflows/ci.yml) runs backend, dataset, frontend, and separate scikit-learn 1.7.2 experimental checks. Its green status is a software correctness signal; it does not promote the failed ML release gate. The original dataset files and evaluation outputs remain historical evidence.
+The [software CI workflow](.github/workflows/ci.yml) runs backend, dataset, frontend, and separate scikit-learn 1.7.2 experimental checks. A green run is a software correctness signal; it does not promote the failed ML release gate. The original dataset files and evaluation outputs remain historical evidence.
 
 The [engineering upgrade record](ENGINEERING_UPGRADE_REPORT_2026-10-11.md) lists the implementation, exact verification results, and important remaining limits.
 
 Useful endpoints: `http://127.0.0.1:8000/docs` for OpenAPI, `/api/v1/health` for liveness, `/api/v1/ready` for database/adapter/ML readiness, and `/api/v1/model/report` for stored evaluation results. The [demo guide](DEMO_GUIDE.md) walks through the application, including the distinction between engineering and research ML output.
+
+## Documentation map
+
+| Need | Start here |
+| --- | --- |
+| Quick demonstration | [Judge demo guide](DEMO_GUIDE.md) or [beginner walkthrough](demosnatrate.md) |
+| Backend setup, API, authentication, research inference | [Backend README](backend/README.md) and [security guide](backend/SECURITY.md) |
+| Frontend setup and data flow | [Frontend README](frontend/README.md) and [workspace guide](frontend/WORKSPACE.md) |
+| Dataset provenance and label meanings | [Dataset README](backend/dataset/README.md), [label specification](backend/dataset/LABEL_SPECIFICATION.md), and [scenario mapping](backend/app/SCENARIOS.md) |
+| ML protocols, metrics, and release limits | [Model evaluation README](backend/model_evaluation/README.md) and [Stage 6 independent audit](backend/model_evaluation/outputs_stage6/stage6_independent_audit.md) |
+| Physics and visualization assumptions | [Physics assumptions](backend/app/PHYSICS_MODEL.md), [fault visualization](FAULT_VISUALIZATION.md), and [model replacement slots](frontend/public/models/README.md) |
+| Chronological changes and verified checks | [Engineering upgrade record](ENGINEERING_UPGRADE_REPORT_2026-10-11.md) |
+
+Older milestone, audit, and evaluation-output Markdown files are historical evidence. Their test counts and repository-state statements describe their original dates; use the current guides above for startup and present behavior. The [technology stack](techstach.md) describes implemented components in more detail.

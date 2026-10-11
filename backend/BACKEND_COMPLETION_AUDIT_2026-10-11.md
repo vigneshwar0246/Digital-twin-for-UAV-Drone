@@ -1,5 +1,7 @@
 # Backend completion inventory — 2026-10-11
 
+> **Historical inventory:** Verification gaps and working-tree descriptions below are observations from this audit, not current project status. See the [engineering upgrade record](../ENGINEERING_UPGRADE_REPORT_2026-10-11.md) for later implementation and checks.
+
 This inventory describes observed repository state, not a release sign-off. The working tree already contained uncommitted Dataset v2 and Stage 4–6 files; they were preserved.
 
 | Category | Findings |

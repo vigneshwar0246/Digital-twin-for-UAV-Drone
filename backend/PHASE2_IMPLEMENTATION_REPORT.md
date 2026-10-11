@@ -1,5 +1,7 @@
 # AERION backend and research ML integration — 2026-10-11
 
+> **Historical Phase 2 record:** Schema, test counts, and publication statements below describe that milestone. The current SQLite schema is v4 and current verification is in the [engineering upgrade record](../ENGINEERING_UPGRADE_REPORT_2026-10-11.md).
+
 ## Implemented
 
 - `app/config.py`: validated history bounds, database target, demo dataset, and production research-mode restriction. `AERION_ENABLE_ML_DIAGNOSTICS` defaults to `0`; the prior `DIGITAL_TWIN_ML_ENABLED` name remains a fallback.

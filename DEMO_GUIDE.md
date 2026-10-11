@@ -8,7 +8,7 @@ Close old project terminals, then run this once from `D:\projects D\aircraft`:
 .\run_project.bat
 ```
 
-Open `http://127.0.0.1:5173/twin`. No sign-in is required in local demo mode.
+Open `http://127.0.0.1:5173/twin`. No sign-in is required in local demo mode. This is the recommended presentation path; the documented scenario-research workflow uses an authenticated, non-demo backend as described in the [backend guide](backend/README.md).
 Keep `http://127.0.0.1:8000/docs` open in a second tab as backend evidence.
 Check `http://127.0.0.1:8000/api/v1/ready` for database, adapter, and ML status. The launcher starts in engineering fallback mode unless research ML is explicitly enabled before launch.
 
@@ -63,7 +63,7 @@ Explain that `backend/app/core.py` calculates the synchronized state;
 `backend/app/sensor_fusion.py` combines related channels over a time window;
 and `backend/app/diagnostics.py` ranks supported fault hypotheses. The engineering cards remain separate from the research classifier. Neither engineering scores nor research model scores are calibrated fault probabilities. The legacy API `predicted_fault` is the engineering result; `diagnostic_result` identifies the currently selected source.
 
-Open **RUL & Degradation**. Explain that RUL falls as/beause health loss and
+Open **RUL & Degradation**. Explain that RUL falls as health loss and
 cumulative damage rise. It includes wide uncertainty and is explicitly an
 engineering proxy until real run-to-failure engine data is available.
 
@@ -115,6 +115,8 @@ storage, calibrated ML trained on real engine data, and certification evidence.â
 | Readiness and saved diagnostic history | `GET /api/v1/ready` and `GET /api/v1/engines/{engine_id}/history` |
 
 ## Honest answers to likely judge questions
+
+- **Did the ML reach 95% accuracy?** The separate `severity-v4` classifier reached **95.28% on a synthetic simulator challenge set**. It has not been validated on a real UAV. The historical nine-fault live model still fails its release gate. Keep these results separate.
 
 - **Is this flight certified?** No. It is a functional software demonstrator
   using generated data and prototype engineering assumptions.

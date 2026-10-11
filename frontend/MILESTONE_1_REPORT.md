@@ -1,5 +1,7 @@
 # Milestone 1 implementation and verification
 
+> **Historical Milestone 1 record:** This describes the original cinematic-only frontend. The current backend-connected workspace is documented in [README.md](README.md) and [WORKSPACE.md](WORKSPACE.md).
+
 ## Initial project audit
 
 The existing frontend directory contained empty src and public directories.

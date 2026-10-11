@@ -1,5 +1,7 @@
 # AERION engineering upgrade record — 2026-10-11
 
+> **Current status:** This is a chronological engineering log. Earlier branch, working-tree, and publication statements describe the state at the time of each section. The latest code and documentation are on `main`; the historical nine-class ML release gate remains failed. For current startup instructions use [README.md](README.md) and [backend/README.md](backend/README.md).
+
 ## Scope and baseline
 
 The working tree was clean on `main` at commit `d913e89` before this work. The existing FastAPI, React/Vite/Three.js, physics, sensor fusion, diagnostics, auth, dataset, evaluation, and SQLite modules were retained. The pre-change Python suite in the scikit-learn 1.9.1 virtual environment had **95 passed, 2 failed**: both failures explicitly required the separate 1.7.2 experimental environment. Frontend unit tests (3) and TypeScript checking passed.

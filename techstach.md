@@ -17,6 +17,8 @@ AERION is a full-stack digital-twin prototype for the aero-piston engine of a co
 
 Live engineering assessments come from rules plus statistical history features. A separate live-compatible Dataset v1 classifier is connected through an optional, checksum-verified backend provider. It is disabled by default because it failed the release gate. Explicit development research mode exposes its independent, uncalibrated prediction in the typed `diagnostic_result` while the legacy `predicted_fault` and fault cards retain engineering meaning. Dataset v2/Stage 6 Candidate B is not a runtime model because the independent audit found methodological blockers.
 
+A **second and independent** classifier recognizes the runtime simulator's ten scenario labels. The selected `severity-v4` Extra Trees pipeline uses current and earlier telemetry; its synthetic challenge accuracy is 0.9528 and macro F1 is 0.9546. It is opt-in for saved ten-minute missions sampled every five seconds, with predictions stored in SQLite schema v4. It is not a real-engine model, does not affect engineering cards, and cannot pass or bypass the historical nine-class release gate. The current [backend guide](backend/README.md) gives the exact startup and inference workflow.
+
 ## 2. High-level architecture
 
 ```text

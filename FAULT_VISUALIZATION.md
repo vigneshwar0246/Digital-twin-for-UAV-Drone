@@ -10,7 +10,7 @@ Live history and mission replay already contain `state.faults.diagnostics`. Back
 
 `api.ts` preserves `fault_code`, `fault_name`, `severity`, `engineering_score`, `affected_subsystems`, `evidence`, and `uncertainty`. Only faults tagged `BACKEND_DIAGNOSTIC` enter the visualization controller. Legacy assessment alerts and locally scripted faults cannot activate physical effects. Scores are displayed as engineering scores.
 
-The diagnostics panel also displays the separate typed `diagnostic_result`: its source is `engineering_rules`, `ml_research`, or `unavailable`. When the optional research classifier is enabled, its class and uncalibrated score appear in that panel. Component highlights continue to follow the backend engineering fault cards; an ML class alone does not localize a fault on the engine drawing.
+The diagnostics panel also displays the separate typed `diagnostic_result`: its source is `engineering_rules`, `ml_research`, or `unavailable`. When the optional historical research classifier is enabled, its class and uncalibrated score appear in that panel. A separate control can load saved simulator-scenario research predictions for a backend mission. Component highlights continue to follow the backend engineering fault cards; an ML class alone does not localize a fault on the engine drawing.
 
 `FaultVisualizationController.ts` maps these results into semantic regions, colors, intensity, pulse behavior, and vibration amplitude. `EngineFaultScene.jsx` adapts those regions to the existing mesh names and drives emissive materials and the camera. `useFaultSurfaces.ts` applies the same mapping to the SVG component groups.
 
@@ -52,6 +52,6 @@ The existing live diagnostics generally provide subsystem evidence, not exact co
 
 ## Verification
 
-Frontend build, TypeScript check, and three Node tests pass. Six Playwright checks pass, covering the cinematic introduction, responsive layout, backend faults, focus/reset, clearing, backend demo/recorded replay, navigation, exports, and backend failure. Twelve focused backend tests pass, including one-state-per-simulation-sample diagnostic contract coverage. Browser fixtures are confined to tests; no test faults are injected into application code.
+Frontend build, TypeScript check, and three Node tests pass. Seven Playwright checks pass, covering the cinematic introduction, responsive layout, backend faults, focus/reset, clearing, backend demo/recorded replay, navigation, exports, and backend failure. Twelve focused backend tests pass, including one-state-per-simulation-sample diagnostic contract coverage. Browser fixtures are confined to tests; no test faults are injected into application code.
 
 Vite still reports the Three.js shared bundle exceeding its 500 kB advisory. Backend tests report existing Starlette/HTTPX deprecation warnings.
