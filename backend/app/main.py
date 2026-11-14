@@ -52,38 +52,57 @@ async def lifespan(app: FastAPI):
     telemetry_adapter.stop()
 
 async def feed_demo_dataset():
-    """Continuously feed a CSV mission segment through the normal twin path."""
+    """Feed short, labelled dataset mission segments through the normal twin path."""
     global demo_status
-    rows=[]
+    mission_ids=(settings.demo_mission_id,)
+    if settings.demo_mission_id=="MISSION_0110":
+        mission_ids+=("MISSION_0034","MISSION_0035")
+    missions={mission_id:[] for mission_id in mission_ids}
     with settings.replay_data_path.open(encoding="utf-8",newline="") as handle:
         for row in csv.DictReader(handle):
-            if row.get("mission_id")==settings.demo_mission_id: rows.append(row)
-    if not rows:
-        demo_status={"enabled":True,"running":False,"error":"configured dataset mission was not found"}; return
-    # Begin with one minute of healthy context, then reach the clearly
-    # observable low-oil-pressure region quickly during a judge demo.
-    first_fault=next((i for i,row in enumerate(rows)
-        if float(row["rpm"])>1000 and float(row["oil_pressure_kpa"])<150),len(rows)//2)
-    rows=rows[max(0,first_fault-60):]
+            if row.get("mission_id") in missions: missions[row["mission_id"]].append(row)
+    if any(not rows for rows in missions.values()):
+        missing=[mission_id for mission_id,rows in missions.items() if not rows]
+        demo_status={"enabled":True,"running":False,"error":f"dataset missions not found: {', '.join(missing)}"}; return
+    if settings.demo_mission_id=="MISSION_0110":
+        # Verified against the prototype rules: healthy, then sustained oil,
+        # misfire and electrical diagnoses. The dataset labels are not used as
+        # diagnoses; each sample still passes through the normal twin path.
+        windows=(("MISSION_0110",480,540),("MISSION_0110",680,740),
+                 ("MISSION_0034",690,750),("MISSION_0035",376,436))
+        segments=[(f"{mission_id}_{start}",mission_id,missions[mission_id][start:end])
+                  for mission_id,start,end in windows]
+    else:
+        rows=missions[settings.demo_mission_id]
+        first_fault=next((i for i,row in enumerate(rows) if row.get("fault_type") not in {"Healthy","None",""}),len(rows)//2)
+        start=max(0,first_fault-70)
+        segments=[(settings.demo_mission_id,settings.demo_mission_id,rows[start:first_fault+60])]
     demo_status={"enabled":True,"running":True,"source":"backend/dataset/data/aero_engine_full.csv",
-        "dataset_mission":settings.demo_mission_id,"engine_id":"DATASET_ENGINE_010","samples_in_loop":len(rows),"position":0}
+        "dataset_missions":list(mission_ids),"engine_id":"DATASET_ENGINE_010",
+        "samples_in_loop":sum(len(rows) for _,_,rows in segments),"position":0}
     assert store is not None
     store.clear_engine("DATASET_ENGINE_010")
     virtual_clock=datetime.now(timezone.utc)
+    cycle=0
     while True:
-        assert twin is not None
-        twin.reset_engine_state("DATASET_ENGINE_010")
-        base_time=virtual_clock; first_seconds=float(rows[0]["time_seconds"])
-        for index,row in enumerate(rows):
-            sample=csv_row_to_telemetry(row).model_copy(update={"engine_id":"DATASET_ENGINE_010",
-                "mission_id":f"LIVE_{settings.demo_mission_id}",
-                "timestamp":base_time+timedelta(seconds=float(row["time_seconds"])-first_seconds)})
-            assessment,state=process_telemetry_state(sample,persist=True)
-            demo_status.update(position=index+1,phase=sample.mission_phase,health_index=assessment.health_index,
-                anomaly_score=assessment.anomaly_score,predicted_fault=assessment.predicted_fault,rul_hours=assessment.rul_hours,
-                source_fault_label=row.get("fault_type"),last_timestamp=sample.timestamp.isoformat())
-            await asyncio.sleep(.15)
-        virtual_clock=sample.timestamp+timedelta(seconds=5)
+        position=0
+        for segment_id,mission_id,rows in segments:
+            assert twin is not None
+            twin.reset_engine_state("DATASET_ENGINE_010")
+            base_time=virtual_clock; first_seconds=float(rows[0]["time_seconds"])
+            for row in rows:
+                sample=csv_row_to_telemetry(row).model_copy(update={"engine_id":"DATASET_ENGINE_010",
+                    "mission_id":f"LIVE_{segment_id}_{cycle}",
+                    "timestamp":base_time+timedelta(seconds=float(row["time_seconds"])-first_seconds)})
+                assessment,state=process_telemetry_state(sample,persist=True)
+                position+=1
+                demo_status.update(position=position,dataset_mission=mission_id,phase=sample.mission_phase,
+                    health_index=assessment.health_index,anomaly_score=assessment.anomaly_score,
+                    predicted_fault=assessment.predicted_fault,rul_hours=assessment.rul_hours,
+                    source_fault_label=row.get("fault_type"),last_timestamp=sample.timestamp.isoformat())
+                await asyncio.sleep(.15)
+            virtual_clock=sample.timestamp+timedelta(seconds=5)
+        cycle+=1
 
 app=FastAPI(title=settings.title,version=settings.version,lifespan=lifespan,
     description="Prototype digital-twin API. Generated test evidence only; not flight-certified.")

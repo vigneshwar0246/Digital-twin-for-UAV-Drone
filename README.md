@@ -25,10 +25,10 @@ From PowerShell in the repository root:
 
 ```powershell
 cd 'D:\projects D\aircraft'
-.\run_project.bat
+.\start.bat
 ```
 
-The launcher uses `.venv` (creating and installing dependencies if needed), starts FastAPI at `http://127.0.0.1:8000`, waits for `/api/v1/ready`, and starts Vite at `http://127.0.0.1:5173`. Open `/twin` for the digital twin or `/diagnostics` for fault results and saved history. The local launcher enables a bundled dataset feed; demo mode does not require sign-in. Press Ctrl+C in its terminal to stop the services. Existing accounts in `backend/runtime/local-development.db` are preserved.
+The launcher uses `.venv` (creating and installing dependencies if needed), starts FastAPI at `http://127.0.0.1:8000`, waits for `/api/v1/ready`, and starts Vite at `http://127.0.0.1:5173`. Open `/twin` for the digital twin or `/diagnostics` for fault results and saved history. The local launcher enables a bundled dataset feed; demo mode does not require sign-in. The default feed begins with a healthy recorded segment, then rotates through lubrication, misfire, and electrical fault segments, about nine seconds each. The displayed diagnoses are still produced by prototype backend rules from those telemetry samples. Press Ctrl+C in its terminal to stop the services. Its default database is `start-local.db` in the repository root; set `DIGITAL_TWIN_DB` before launch to use another path. `run_project.bat` remains an alias for `start.bat`.
 
 The default is **engineering-rule fallback**, with `AERION_ENABLE_ML_DIAGNOSTICS=0`. To inspect the existing model in an explicitly labelled **research-only** mode, set both flags before starting the launcher:
 

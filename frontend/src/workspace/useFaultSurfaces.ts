@@ -8,6 +8,7 @@ export function useFaultSurfaces(ref:RefObject<SVGSVGElement|null>,visuals:Fault
   const svg=ref.current;if(!svg)return;
   const nodes=Array.from(svg.querySelectorAll<SVGGElement>('[data-region]'));
   for(const node of nodes){node.removeAttribute('data-fault');node.style.removeProperty('--surface-color');node.style.removeProperty('--surface-opacity');node.querySelectorAll('[data-fault-surface]').forEach(n=>n.remove());}
+  if(!visible)return;
   const assigned=new Map<SVGGElement,FaultVisual>();
   for(const visual of visuals){
    const cylinder=cylinderFromEvidence(visual.fault);

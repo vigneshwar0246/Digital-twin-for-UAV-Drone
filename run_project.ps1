@@ -10,9 +10,24 @@ $frontendDir = Join-Path $projectRoot "frontend"
 
 Set-Location $projectRoot
 
+foreach ($port in 8000, 5173) {
+    $client = [System.Net.Sockets.TcpClient]::new()
+    try {
+        $attempt = $client.BeginConnect("127.0.0.1", $port, $null, $null)
+        if ($attempt.AsyncWaitHandle.WaitOne(500) -and $client.Connected) {
+            throw "Port $port is already in use. Stop the existing service before starting this project."
+        }
+    } finally { $client.Dispose() }
+}
+
+if (-not (Get-Command npm.cmd -ErrorAction SilentlyContinue)) {
+    throw "npm was not found. Install Node.js 22 and try again."
+}
+
 if (-not (Test-Path $venvPython)) {
     Write-Host "[SETUP] Creating Python virtual environment..."
     python -m venv .venv
+    if ($LASTEXITCODE -ne 0) { throw "Python virtual environment creation failed." }
 }
 
 $savedErrorPreference = $ErrorActionPreference
@@ -29,13 +44,18 @@ if (-not $dependenciesReady) {
 if (-not (Test-Path (Join-Path $frontendDir "node_modules"))) {
     Write-Host "[SETUP] Installing frontend dependencies..."
     Push-Location $frontendDir
-    try { npm.cmd install } finally { Pop-Location }
+    try {
+        npm.cmd install
+        if ($LASTEXITCODE -ne 0) { throw "Frontend dependency installation failed." }
+    } finally { Pop-Location }
 }
 
 $env:DIGITAL_TWIN_ENV = "development"
 $env:DIGITAL_TWIN_DEMO_MODE = "true"
 $env:DIGITAL_TWIN_DEMO_MISSION = "MISSION_0110"
-$env:DIGITAL_TWIN_DB = Join-Path $projectRoot "backend\runtime\local-development.db"
+if (-not $env:DIGITAL_TWIN_DB) {
+    $env:DIGITAL_TWIN_DB = Join-Path $projectRoot "start-local.db"
+}
 if ($Password) {
     $env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_USERNAME = $Username
     $env:DIGITAL_TWIN_BOOTSTRAP_ADMIN_PASSWORD = $Password
@@ -65,7 +85,8 @@ try {
     Write-Host "[START] Frontend: http://127.0.0.1:5173"
     Write-Host "[STOP] Press Ctrl+C to stop both services."
     Set-Location $frontendDir
-    npm.cmd run dev
+    npm.cmd run dev -- --port 5173 --strictPort
+    if ($LASTEXITCODE -ne 0) { throw "Frontend server exited with code $LASTEXITCODE." }
 } finally {
     if ($backend -and -not $backend.HasExited) {
         Stop-Process -Id $backend.Id
